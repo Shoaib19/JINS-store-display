@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "target": "ES2022",
+    "allowJs": false,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "strictFunctionTypes": false,
+    "noImplicitThis": false,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "types": ["reflect-metadata", "@types/jest"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "outDir": "build",
+    "baseUrl": "./",
+    "paths": {
+      "*": ["./node_modules/*"],
+      "~/*": ["./app/*"],
+      "~/__tests__": ["./app/__tests__/*"]
+
+    }
+  },
+  "include": ["./app/**/*", "./app/__tests__"]
+}

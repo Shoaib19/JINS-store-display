@@ -1,0 +1,169 @@
+openapi: 3.0.3
+
+info:
+  title: Sample API
+  description: |-
+    ## OpenAPIserverサンプル
+    ### 共通仕様
+    #### リクエストヘッダー
+    TBD
+    #### レスポンスヘッダー
+    TBD
+    #### エラーレスポンス
+    TBD
+    ##### エラーコード
+    * 400: Bad Request
+    * 401: Unauthorized
+    * 403: Forbidden
+    * 404: Not Found
+    * 405: Method Not Allowed
+    * 406: Not Acceptable
+    * 429: Too Many Requests
+    * 500: Internal Server Error
+    * 501: Not Implemented
+    * 503: Service Unavailable
+    * 504: Gateway Timeout
+  version: 0.0.1
+externalDocs:
+  description: デジタル基盤側API仕様(TBD)
+  url: https://example.com
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: sample
+    description: サンプル
+  - name: system
+    description: システム
+paths:
+  /api/status:
+    get:
+      tags:
+        - system
+      summary: health check
+      operationId: status
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: string
+              example: healthy
+        '400':
+          description: failure
+          content:
+            application/json:
+              schema:
+                type: string
+              example: unhealthy
+  /api/dummy:
+    get:
+      tags:
+        - dummy
+      summary: dummy function to call external API
+      operationId: dummy
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: string
+                example: healthy
+        '400':
+          description: failure
+          content:
+            application/json:
+              schema:
+                type: string
+                example: unhealthy
+components:
+  parameters:
+    Authorization:
+      in: header
+      name: Authorization
+      required: true
+      description: "POST us/v1/jins/oauth/token で取得したOAuthのBearerトークン。<br>許可された値:
+        Bearer {access_token}"
+      schema:
+        type: string
+    Content-Type:
+      in: header
+      name: Content-Type
+      required: true
+      description: リソース・コンテンツのアプリケーション・メディアタイプ。<br>許可された値:application/json
+      schema:
+        type: string
+        enum:
+          - application/json
+    Accept:
+      in: header
+      name: Accept
+      required: true
+      description: リソース・コンテンツのアプリケーション・メディアタイプ。<br>許可された値:application/json
+      schema:
+        type: string
+        enum:
+          - application/json
+    X-API-KEY:
+      in: header
+      name: X-API-KEY
+      required: true
+      description: 各アプリ・システムに対して環境ごとに払い出されたAPI認証キー
+      schema:
+        type: string
+    Accept-Language:
+      in: header
+      name: Accept-Language
+      required: false
+      description: 言語指定<br>デフォルト値:en<br>許可された値:en
+      schema:
+        type: string
+        enum:
+          - en
+    X-Cursor:
+      in: header
+      name: X-Cursor
+      required: false
+      description: 取得開始位置<br>レスポンスヘッダで返却された X-Cursor の値を指定
+      schema:
+        type: string
+  schemas:
+    ApplicationError:
+      required:
+        - Jins-Trace-ID
+        - timestamp
+        - code
+        - systemName
+        - message
+        - details
+      type: object
+      properties:
+        Jins-Trace-ID:
+          description: アプリケーションノード間のトレーサビリティを確保するためのID
+          type: string
+          format: uuid
+          nullable: false
+        timestamp:
+          description: エラー発生時刻
+          type: string
+          format: date-time
+          nullable: false
+        code:
+          description: |-
+            エラーコード
+          type: string
+          nullable: false
+        systemName:
+          description: |-
+            システム名
+          type: string
+          nullable: false
+        message:
+          description: エラーメッセージ
+          type: string
+          nullable: false
+        details:
+          description: エラー詳細
+          type: string
+          nullable: false
