@@ -1,0 +1,351 @@
+openapi: 3.0.3
+info:
+  title: ${info.title}
+  description: ''
+  version: ${api.version}
+paths:
+  /diameter/check:
+    post:
+      tags:
+        - Diameters
+      summary: 径不足チェックAPI
+      operationId: checkDiameter
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/UserID'
+      requestBody:
+        required: true
+        description: 径不足チェックのリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DiametersPostRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiametersPostResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                validationError:
+                  $ref: '#/components/examples/COM_0001'
+                bussinessError:
+                  $ref: '#/components/examples/DPFM_DIAMETER_0001'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        uri: ${apigateway.uri}/diameter/check
+        type: ${apigateway.etc}
+components:
+  parameters:
+    JinsTraceID:
+      name: jins-trace-id
+      description: <BFFシステムコード>_\<UUID>
+      in: header
+      required: true
+      example: bff_usgjpic_ab623ca6-b1e4-3796-a761-ca05605da64a
+      schema:
+        type: string
+        maxLength: 64
+    UserID:
+      name: jins-user-id
+      description: UI側でユーザを識別できるIDを格納
+      in: header
+      required: true
+      example: U00001
+      schema:
+        type: string
+        maxLength: 64
+  schemas:
+    FrameItemId:
+      description: フレーム商品ID
+      type: integer
+      format: int64
+      example: 1137261
+    FrameItemCode:
+      description: フレーム商品コード
+      type: string
+      maxLength: 18
+      example: LMN-18S-034-184
+    SphericalPower:
+      description: SPH（球面度数）
+      type: number
+      maximum: 999.99
+      example: 123.12
+    AstigmatismPrescription:
+      description: CYL（乱視度数）
+      type: number
+      maximum: 999.99
+      example: 123.12
+    AddPower:
+      description: ADD（加入度数）
+      type: number
+      maximum: 9999.99
+      example: 1234.12
+    PupillaryDistance:
+      description: P.D（瞳孔間距離）
+      type: number
+      maximum: 999.99
+      example: 123.12
+    EyePoint:
+      description: E.P（目の位置）
+      type: number
+      maximum: 999.99
+      example: 123.12
+    StandardDiameter:
+      description: 基準径
+      type: integer
+      example: 1234
+    LensPint:
+      description: レンズピント
+      type: string
+      maxLength: 2
+      minLength: 1
+      example: 1
+    RefractiveIndex:
+      description: 屈折率
+      type: number
+      maximum: 9999.99
+      example: 1234.12
+    SalesColorNameId:
+      description: 販売用カラー名称ID
+      type: integer
+      format: int64
+      example: 123
+    SalesLensSpecId:
+      description: 販売用レンズ仕様ID
+      type: integer
+      format: int64
+      example: 123
+    FocusCategoryId:
+      description: 焦点分類ID
+      type: integer
+      format: int64
+      example: 123
+    ProgressiveCategoryId:
+      description: 累進分類ID
+      type: integer
+      format: int64
+      example: 123
+    RefractiveIndexNameId:
+      description: 屈折率名称ID
+      type: integer
+      format: int64
+      example: 123
+    CountryCodeAlpha2:
+      description: 販売国コード(国コード(alpha-2))
+      type: string
+      maxLength: 2
+      example: US
+    DiameterPostRequest:
+      type: object
+      properties:
+        frameItemId:
+          $ref: '#/components/schemas/FrameItemId'
+        frameItemCode:
+          $ref: '#/components/schemas/FrameItemCode'
+        sphericalPowerLeft:
+          $ref: '#/components/schemas/SphericalPower'
+        astigmatismPrescriptionLeft:
+          $ref: '#/components/schemas/AstigmatismPrescription'
+        addPowerLeft:
+          $ref: '#/components/schemas/AddPower'
+        pupillaryDistanceLeft:
+          $ref: '#/components/schemas/PupillaryDistance'
+        eyePointLeft:
+          $ref: '#/components/schemas/EyePoint'
+        standardDiameterLeft:
+          $ref: '#/components/schemas/StandardDiameter'
+        sphericalPowerRight:
+          $ref: '#/components/schemas/SphericalPower'
+        astigmatismPrescriptionRight:
+          $ref: '#/components/schemas/AstigmatismPrescription'
+        addPowerRight:
+          $ref: '#/components/schemas/AddPower'
+        pupillaryDistanceRight:
+          $ref: '#/components/schemas/PupillaryDistance'
+        eyePointRight:
+          $ref: '#/components/schemas/EyePoint'
+        standardDiameterRight:
+          $ref: '#/components/schemas/StandardDiameter'
+        lensPint:
+          $ref: '#/components/schemas/LensPint'
+        refractiveIndex:
+          $ref: '#/components/schemas/RefractiveIndex'
+        salesColorNameId:
+          $ref: '#/components/schemas/SalesColorNameId'
+        salesLensSpecId:
+          $ref: '#/components/schemas/SalesLensSpecId'
+        focusCategoryId:
+          $ref: '#/components/schemas/FocusCategoryId'
+        progressiveCategoryId:
+          $ref: '#/components/schemas/ProgressiveCategoryId'
+        refractiveIndexNameId:
+          $ref: '#/components/schemas/RefractiveIndexNameId'
+        countryCodeAlpha2:
+          $ref: '#/components/schemas/CountryCodeAlpha2'
+      required:
+        - sphericalPowerLeft
+        - astigmatismPrescriptionLeft
+        - pupillaryDistanceLeft
+        - sphericalPowerRight
+        - astigmatismPrescriptionRight
+        - pupillaryDistanceRight
+        - lensPint
+        - salesColorNameId
+        - salesLensSpecId
+        - focusCategoryId
+        - progressiveCategoryId
+        - refractiveIndexNameId
+        - countryCodeAlpha2
+    DiametersPostRequest:
+      description: 径不足チェック対象商品のリクエストボディ
+      type: object
+      properties:
+        records:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/DiameterPostRequest'
+      required:
+        - records
+    DiametersPostResponse:
+      type: array
+      description: 商品リスト
+      items:
+        type: object
+        description: 商品リスト
+        properties:
+          frameItemId:
+            description: フレーム商品ID
+            type: integer
+            format: int64
+            example: 1137261
+          frameItemCode:
+            description: フレーム商品コード
+            type: string
+            maxLength: 18
+            example: LMN-18S-034-184
+          resCode:
+            description: 処理結果コード
+            type: integer
+            example: 1
+          resMessage:
+            description: 処理結果メッセージ
+            type: string
+            maxLength: 40000
+            example: The diameter is insufficient.
+            nullable: true
+          resLensCount:
+            description: レンズの取得件数
+            type: integer
+            example: 1
+          lensLists:
+            type: array
+            description: レンズリスト
+            items:
+              type: object
+              description: レンズリスト
+              properties:
+                lensResCode:
+                  description: レンズ処理結果コード
+                  type: integer
+                  example: 1
+                lensResMessage:
+                  description: レンズ処理結果メッセージ
+                  type: string
+                  maxLength: 40000
+                  example: The diameter is insufficient.
+                  nullable: true
+                lensResCodeLeft:
+                  description: 左レンズ処理結果コード
+                  type: integer
+                  example: 1
+                lensItemIdLeft:
+                  description: 左レンズ商品ID
+                  type: integer
+                  format: int64
+                  example: 1234567890
+                  nullable: true
+                lensItemCodeLeft:
+                  description: 左レンズ商品コード
+                  type: string
+                  maxLength: 18
+                  example: A1234567890
+                  nullable: true
+                lensShortageWidthLeft:
+                  description: 左レンズ不足mm幅
+                  type: integer
+                  example: 1
+                  nullable: true
+                lensResCodeRight:
+                  description: 右レンズ処理結果コード
+                  type: integer
+                  example: 1
+                lensItemIdRight:
+                  description: 右レンズ商品ID
+                  type: integer
+                  format: int64
+                  example: 1234567890
+                  nullable: true
+                lensItemCodeRight:
+                  description: 右レンズ商品コード
+                  type: string
+                  maxLength: 18
+                  example: A1234567890
+                  nullable: true
+                lensShortageWidthRight:
+                  description: 右レンズ不足mm幅
+                  type: integer
+                  example: 1
+                  nullable: true
+    CommonErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+      required:
+        - code
+        - message
+  examples:
+    COM_0001:
+      value:
+        code: COM_0001
+        message: Validation error occurred.
+    DPFM_DIAMETER_0001:
+      value:
+        code: DPFM_DIAMETER_0001
+        message: At least item Code or item ID is required.
+  responses:
+    TooManyRequests:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0004
+            message: Duplicate api invocation detected.
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0000
+            message: Unexpected error occurred.

@@ -1,0 +1,1693 @@
+openapi: 3.0.3
+info:
+  title: ${info.title}
+  description: |-
+    ### 保証書サービスAPI (L2-1)
+    ### 共通仕様
+    #### リクエストヘッダー
+    TBD
+    #### レスポンスヘッダー
+    TBD
+    #### エラーレスポンス
+    TBD
+    ##### エラーコード
+    * 400: Bad Request
+    * 401: Unauthorized
+    * 403: Forbidden
+    * 404: Not Found
+    * 405: Method Not Allowed
+    * 406: Not Acceptable
+    * 429: Too Many Requests
+    * 500: Internal Server Error
+    * 501: Not Implemented
+    * 503: Service Unavailable
+    * 504: Gateway Timeout
+  version: ${api.version}
+paths:
+  /warranty/warranties:
+    post:
+      tags:
+        - Warranties
+      summary: 保証書登録API
+      operationId: postWarranties
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+      requestBody:
+        required: true
+        description: 保証書登録APIのリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarrantiesPostRequest'
+      responses:
+        '204':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        uri: ${apigateway.uri}/warranty/warranties
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+  /warranty/warranties/{warrantyNumber}:
+    get:
+      tags:
+        - Warranties
+      summary: 保証情報取得API
+      description: 保証書番号をキーに保証書・保証対象テーブルのレコードを取得する
+      operationId: findWarranties
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: warrantyNumber
+          description: 保証書番号
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 240123US000001-1
+            maxLength: 17
+        - name: deleteFlag
+          description: 削除レコード取得フラグ
+          in: query
+          required: false
+          schema:
+            type: boolean
+            example: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WarrantiesResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/warranty/warranties/{warrantyNumber}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.path.warrantyNumber: method.request.path.warrantyNumber
+    delete:
+      tags:
+        - Warranties
+      summary: 保証書削除API
+      operationId: deleteWarranties
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: warrantyNumber
+          description: 保証書番号
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 240123US000001-1
+            maxLength: 17
+      responses:
+        '204':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: DELETE
+        uri: ${apigateway.uri}/warranty/warranties/{warrantyNumber}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.path.warrantyNumber: method.request.path.warrantyNumber
+    patch:
+      tags:
+        - Warranties
+      summary: 保証書論理削除API
+      operationId: patchWarranties
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: warrantyNumber
+          description: 保証書番号
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 240123US000001-1
+            maxLength: 17
+      requestBody:
+        required: true
+        description: 保証書論理削除APIのリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarrantyPatchRequest'
+      responses:
+        '204':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: PATCH
+        uri: ${apigateway.uri}/warranty/warranties/{warrantyNumber}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.path.warrantyNumber: method.request.path.warrantyNumber
+    put:
+      tags:
+        - Warranties
+      summary: 保証書更新API
+      operationId: putWarranties
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: warrantyNumber
+          description: 保証書番号
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 240123US000001-1
+            maxLength: 17
+      requestBody:
+        required: true
+        description: 保証書更新APIのリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarrantiesPutRequest'
+      responses:
+        '204':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: PUT
+        uri: ${apigateway.uri}/warranty/warranties/{warrantyNumber}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.path.warrantyNumber: method.request.path.warrantyNumber
+  /warranty/warranty-histories:
+    post:
+      tags:
+        - Warranties
+      summary: 保証履歴登録API
+      operationId: postWarrantyHistories
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+      requestBody:
+        required: true
+        description: 保証履歴登録APIのリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarrantyHistoriesPostRequest'
+      responses:
+        '204':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        uri: ${apigateway.uri}/warranty/warranty-histories
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+    get:
+      tags:
+        - Warranties
+      summary: 保証履歴情報取得API
+      description: 保証書番号をキーに保証履歴テーブルのレコードを取得する（保証書番号、受付番号どちらかを指定しなければならない）
+      operationId: findWarrantyHistories
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: warrantyNumber
+          description: 保証書番号
+          in: query
+          required: false
+          schema:
+            type: string
+            example: 240123US000001-1
+            maxLength: 17
+        - name: receptionNumber
+          description: 受付番号
+          in: query
+          required: false
+          schema:
+            type: string
+            example: 240123US000001
+            maxLength: 14
+        - name: replacementStatusCode
+          description: 保証交換ステータスコード(複数指定の場合、カンマ区切り)
+          in: query
+          required: false
+          schema:
+            type: string
+            example: 010,011,020
+            maxLength: 256
+        - name: deleteFlag
+          description: 削除レコード取得フラグ
+          in: query
+          required: false
+          schema:
+            type: boolean
+            example: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WarrantyHistoriesResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/warranty/warranty-histories
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+  /warranty/warranty-histories/{receptionNumber}:
+    put:
+      tags:
+        - Warranties
+      summary: 保証履歴更新API
+      operationId: putWarrantyHistories
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: receptionNumber
+          description: 受付番号
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 240123US000001
+            maxLength: 14
+      requestBody:
+        required: true
+        description: 保証履歴更新APIのリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarrantyHistoriesPutRequest'
+      responses:
+        '204':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: PUT
+        uri: ${apigateway.uri}/warranty/warranty-histories/{receptionNumber}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.path.receptionNumber: method.request.path.receptionNumber
+  /warranty/powers:
+    post:
+      tags:
+        - Powers
+      summary: 度数・処方箋登録API
+      operationId: postPowers
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+      requestBody:
+        required: true
+        description: 度数・処方箋登録APIのリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PowersPostRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PowersPostResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        uri: ${apigateway.uri}/warranty/powers
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+  /warranty/powers/{powerId}:
+    delete:
+      tags:
+        - Powers
+      summary: 度数・処方箋削除API
+      operationId: deletePowers
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: powerId
+          description: 度数ID
+          in: path
+          required: true
+          schema:
+            type: number
+            example: '1234567890'
+            maxLength: 19
+      responses:
+        '204':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: DELETE
+        uri: ${apigateway.uri}/warranty/powers/{powerId}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.path.powerId: method.request.path.powerId
+  /warranty/powers-by-id/{powerId}:
+    patch:
+      tags:
+        - Powers
+      summary: 度数・処方箋論理削除API
+      operationId: patchPowers
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: powerId
+          description: 度数ID
+          in: path
+          required: true
+          schema:
+            type: number
+            example: '1234567890'
+            maxLength: 19
+      requestBody:
+        required: true
+        description: 度数・処方箋論理削除APIのリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PowerPatchRequest'
+      responses:
+        '204':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: PATCH
+        uri: ${apigateway.uri}/warranty/powers-by-id/{powerId}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.path.powerId: method.request.path.powerId
+    get:
+      tags:
+        - Powers
+      summary: 度数・処方箋情報取得API
+      operationId: getPowers
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: powerId
+          description: 度数ID
+          in: path
+          required: true
+          schema:
+            type: number
+            example: '1234567890'
+            maxLength: 19
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PowersGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: get
+        uri: ${apigateway.uri}/warranty/powers-by-id/{powerId}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.path.powerId: method.request.path.powerId
+components:
+  parameters:
+    JinsTraceID:
+      in: header
+      name: jins-trace-id
+      description: アプリケーションノード間のトレーサビリティを確保するためのID
+      required: true
+      example: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+      schema:
+        type: string
+        nullable: false
+    JinsTraceIdBranchNo:
+      name: jins-trace-id-branch-no
+      description: jins-trace-idに紐付く呼出し枝番
+      in: header
+      example: 1
+      schema:
+        type: string
+        maxLength: 64
+    JinsUserID:
+      in: header
+      name: jins-user-id
+      description: UI側でユーザを識別できるIDを格納
+      required: true
+      example: U00001
+      schema:
+        type: string
+        maxLength: 256
+  schemas:
+    itemType:
+      type: string
+      nullable: false
+      description: |
+        商品タイプ（＝交換部位コード）
+        |コード|内容|備考|
+        |:---|:---|:---|
+        |000|All|L1での呼び名はSet ※JINS-Hubで使用|
+        |001|Frame|※JINS-Hubで使用|
+        |002|Lens Both|※JINS-Hubで使用|
+        |003|Lens Left||
+        |004|Lens Right||
+        <br>
+      maxLength: 3
+    WarrantyItem:
+      type: object
+      description: 保証対象
+      properties:
+        itemType:
+          $ref: '#/components/schemas/itemType'
+        purchaseDate:
+          description: 購入日（未使用）
+          type: string
+          format: date
+          nullable: false
+        warrantyStartDate:
+          description: 保証開始日
+          type: string
+          format: date-time
+          nullable: true
+        channel:
+          description: 保証書発行元チャネル
+          type: string
+          nullable: false
+    WarrantiesPostRequest:
+      type: object
+      description: 保証書登録APIリクエスト
+      properties:
+        jinsAccountId:
+          description: JINSアカウントID
+          type: string
+          nullable: true
+        warrantyNumber:
+          description: 保証書番号
+          type: string
+          nullable: false
+          maxLength: 17
+        orderNumber:
+          description: オーダー番号
+          type: string
+          nullable: false
+        receptionNumber:
+          description: 受付番号
+          type: string
+          nullable: false
+          maxLength: 14
+        isExchangeLens:
+          type: boolean
+          nullable: true
+          description: レンズ交換フラグ
+        powerId:
+          description: 度数ID
+          type: integer
+          format: int64
+          nullable: true
+        storeCode:
+          description: 店舗コード
+          type: string
+          nullable: false
+          maxLength: 19
+        customerName:
+          description: 顧客名
+          type: string
+          nullable: false
+        phoneNumber:
+          description: 電話番号
+          type: string
+          nullable: false
+        lensColorName:
+          description: レンズカラー名称
+          type: string
+          nullable: true
+        receiptDatetime:
+          type: string
+          format: date-time
+          description: 受付日時
+          nullable: true
+        frameItemCode:
+          type: string
+          description: フレームコード
+          nullable: true
+          maxLength: 18
+        lensNameCode:
+          type: string
+          description: レンズコード
+          nullable: true
+          maxLength: 18
+        caseItemName:
+          type: string
+          description: ケース名
+          nullable: true
+          maxLength: 40
+        warrantyItems:
+          type: array
+          description: 保証対象
+          items:
+            $ref: '#/components/schemas/WarrantyItem'
+      example:
+        jinsAccountId: adxgekljjo
+        warrantyNumber: 241201US000001-1
+        orderNumber: USA123456
+        receptionNumber: 241201US000001
+        isExchangeLens: false
+        powerId: 1234561234561234700
+        storeCode: '83005'
+        customerName: Yamada
+        phoneNumber: '07011112222'
+        lensColorName: Clear
+        receiptDatetime: '2025-04-25T13:16:01'
+        frameItemCode: MCF-17S-028-128
+        lensNameCode: LHK0000-M04M04M
+        caseItemName: Japan Gray Case
+        warrantyItems:
+          - itemType: '001'
+            purchaseDate: '2024-12-01'
+            warrantyStartDate: null
+            channel: S
+          - itemType: '003'
+            purchaseDate: '2024-12-01'
+            warrantyStartDate: null
+            channel: S
+          - itemType: '004'
+            purchaseDate: '2024-12-01'
+            warrantyStartDate: null
+            channel: S
+    CommonErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+      required:
+        - code
+        - message
+    warrantyItemInfo:
+      type: object
+      description: 保証書情報
+      properties:
+        warrantyItemId:
+          description: 保証対象ID
+          type: integer
+          format: int64
+        warrantyNumber:
+          description: 保証書番号
+          type: string
+        purchaseDate:
+          description: 購入日
+          type: string
+          format: date-time
+        warrantyStartDate:
+          description: 保証開始日
+          type: string
+          format: date-time
+        channel:
+          description: 保証書発行元チャネル
+          type: string
+        storeId:
+          description: 店舗ID
+          type: integer
+          format: int64
+        storeCode:
+          description: 店舗コード
+          type: string
+        itemType:
+          $ref: '#/components/schemas/itemType'
+        exchangeCount:
+          description: 交換回数
+          type: number
+        deletedFlag:
+          type: number
+          description: 削除フラグ
+        optimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号
+    warrantyInfo:
+      description: 保証情報
+      type: object
+      properties:
+        warrantyNumber:
+          type: string
+          description: 保証書番号
+        receptionNumber:
+          type: string
+          description: 受付番号
+        orderNumber:
+          type: string
+          description: オーダー番号
+        isExchangeLens:
+          type: boolean
+          description: レンズ交換フラグ
+        powerId:
+          type: integer
+          format: int64
+          description: 度数情報
+        storeId:
+          type: integer
+          format: int64
+          description: 店舗ID
+        storeCode:
+          type: string
+          description: 店舗コード
+        lensCoatCode:
+          type: string
+          description: レンズコートコード
+        lensProcessingCode:
+          type: string
+          description: レンズ加工情報コード
+        lensColorName:
+          type: string
+          description: レンズカラーコード
+        lensType:
+          type: string
+          description: レンズタイプ
+        exchangeCount:
+          type: number
+          description: 交換回数
+        deletedFlag:
+          type: number
+          description: 削除フラグ
+        optimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号
+        warrantyItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/warrantyItemInfo'
+    WarrantiesResponse:
+      type: object
+      description: 保証情報取得APIレスポンス
+      properties:
+        warrantyInfo:
+          $ref: '#/components/schemas/warrantyInfo'
+      example:
+        warrantyInfo:
+          warrantyNumber: 241201US000001-1
+          receptionNumber: 241201US000001
+          orderNumber: USA123456
+          isExchangeLens: false
+          powerId: 1234561234561234700
+          storeId: 1143416
+          storeCode: '83005'
+          lensCoatCode: null
+          lensProcessingCode: null
+          lensColorName: null
+          lensType: null
+          exchangeCount: 1
+          deletedFlag: 0
+          optimisticLockVerNo: 1
+          warrantyItems:
+            - warrantyItemId: 1
+              warrantyNumber: 2241201US000001-1
+              purchaseDate: '2024-12-01T00:00:00'
+              warrantyStartDate: '2024-12-25T13:00:00'
+              channel: S
+              storeId: 1143416
+              storeCode: '83005'
+              itemType: '003'
+              exchangeCount: 1
+              deletedFlag: 0
+              optimisticLockVerNo: 3
+            - warrantyItemId: 2
+              warrantyNumber: 2241201US000001-1
+              purchaseDate: '2024-12-01T00:00:00'
+              warrantyStartDate: '2024-12-25T13:00:00'
+              channel: S
+              storeId: 1143416
+              storeCode: '83005'
+              itemType: '002'
+              exchangeCount: 2
+              deletedFlag: 0
+              optimisticLockVerNo: 3
+    WarrantiesPutRequest:
+      type: object
+      description: 保証書更新APIリクエスト
+      properties:
+        warrantyStartDate:
+          description: 保証開始日
+          type: string
+          format: date-time
+          nullable: true
+          example: '2024-12-25T13:00:00'
+    WarrantyPatchRequest:
+      type: object
+      description: 保証書論理削除APIリクエスト
+      properties:
+        deletedFlag:
+          type: number
+          description: 削除フラグ
+          example: 1
+          nullable: false
+        optimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号
+          example: 1
+    WarrantyHistories:
+      type: object
+      description: 保証履歴情報
+      properties:
+        visitorId:
+          type: integer
+          format: int64
+          description: 来客情報
+        receptionNumber:
+          type: string
+          description: 受付番号
+        orderNumber:
+          type: string
+          description: オーダー番号
+        claimTicketCreatedAt:
+          type: string
+          format: date-time
+          description: 引換証出力日時
+        boxNo:
+          type: string
+          description: 加工箱番号
+        warrantyNumber:
+          type: string
+          description: 保証書番号
+        previousReceptionNumber:
+          type: string
+          description: 元受付番号
+        previousItemgroupCode:
+          type: string
+          description: 元商品グループCD
+        receiptDatetime:
+          type: string
+          format: date-time
+          description: 受付日時
+        note:
+          type: string
+          description: 備考
+        retailStoreStaffNo:
+          type: string
+          description: 店舗スタッフ社員番号
+        deliveryStoreStaffNo:
+          type: string
+          description: 受け渡し店舗スタッフ社員番号
+        retailStoreId:
+          type: integer
+          format: int64
+          description: 購入店舗ID
+        deliveryStoreId:
+          type: integer
+          format: int64
+          description: 受け渡し店舗ID
+        retailStoreCode:
+          type: string
+          description: 購入店舗コード
+        deliveryStoreCode:
+          type: string
+          description: 受け渡し店舗コード
+        warrantyItemIdList:
+          type: array
+          description: 保証対象アイテム
+          items:
+            type: integer
+            format: int64
+            description: 保証対象アイテムID
+        warrantyItemCodeList:
+          type: array
+          description: 保証箇所
+          items:
+            type: string
+            description: 保証箇所コード
+        exchangedCount:
+          type: number
+          description: 保証交換回数
+        warrantyCreatedAt:
+          type: string
+          format: date-time
+          description: 保証書出力日時
+        lensExchange:
+          type: boolean
+          description: レンズ交換
+        isExchangeLensTicket:
+          type: boolean
+          description: レンズ交換券フラグ
+        isPosAccounting:
+          type: boolean
+          description: 会計-POS連携フラグ
+        isSfdcLensOrder:
+          type: boolean
+          description: レンズ発注-SFDC連携フラグ
+        isSfdcLensArrive:
+          type: boolean
+          description: レンズ着-SFDC連携フラグ
+        measurementCode:
+          type: string
+          description: 測定方法コード値
+        signatureFileUrl:
+          type: string
+          description: 署名画像ファイルURL
+        signatureFileName:
+          type: string
+          description: 署名ファイル名
+        isLensOrder:
+          type: boolean
+          description: レンズ発注フラグ
+        codeProductionNote:
+          type: array
+          description: 製作備考 - コード値
+          items:
+            type: string
+            description: 製作備考 - コード
+        measurementTypeForPrint:
+          type: string
+          description: 印刷用度数測定方法
+        isFrameBringIn:
+          type: boolean
+          description: レンズ持ち込みフラグ
+        isLensReorder:
+          type: boolean
+          description: レンズ再発注フラグ
+        shippingAddress:
+          type: string
+          description: 配送先住所
+        shippingDate:
+          type: string
+          format: date
+          description: 配送日
+        shippingMethodCode:
+          type: string
+          description: 配送方法コード
+        shippingPostalCode:
+          type: string
+          description: 配送先郵便番号
+        crmFlag:
+          type: boolean
+          description: CRMフラグ
+        handOverDate:
+          type: string
+          format: date
+          description: お渡し日
+        handOverMethod:
+          type: string
+          description: お渡し方法
+        replacementPart:
+          type: string
+          description: 交換部位
+        replacementType:
+          type: string
+          description: 保証種類
+        replacementReason:
+          type: string
+          description: 交換理由
+        exchangeCountIncrementFlag:
+          type: boolean
+          description: 保証回数加算フラグ
+        replacementStoreId:
+          type: integer
+          format: int64
+          description: 交換店舗ID
+        replacementStoreCode:
+          type: string
+          description: 交換店舗コード
+        replacementStatusCode:
+          type: string
+          description: 保証交換ステータスコード
+        deletedFlag:
+          type: number
+          description: 削除フラグ
+        optimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号
+    WarrantyHistoriesResponse:
+      type: object
+      description: 保証履歴取得APIレスポンス
+      properties:
+        warrantyHistories:
+          type: array
+          items:
+            $ref: '#/components/schemas/WarrantyHistories'
+      example:
+        warrantyHistories:
+          - visitorId: null
+            receptionNumber: 241201US000008
+            orderNumber: null
+            claimTicketCreatedAt: null
+            boxNo: null
+            warrantyNumber: 241201US000001-1
+            previousReceptionNumber: 241201US000007
+            previousItemgroupCode: 241201US000007-1
+            receiptDatetime: '2025-12-25T13:16:01'
+            note: null
+            retailStoreStaffNo: jins-user-id
+            deliveryStoreStaffNo: null
+            retailStoreId: 1143416
+            deliveryStoreId: 1143416
+            retailStoreCode: '83005'
+            deliveryStoreCode: '83005'
+            warrantyItemIdList: null
+            warrantyItemCodeList: null
+            exchangedCount: 1
+            warrantyCreatedAt: '2025-12-25T13:16:01'
+            lensExchange: true
+            isExchangeLensTicket: null
+            isPosAccounting: null
+            isSfdcLensOrder: null
+            isSfdcLensArrive: null
+            measurementCode: null
+            signatureFileUrl: null
+            signatureFileName: null
+            isLensOrder: null
+            codeProductionNote: null
+            measurementTypeForPrint: null
+            isFrameBringIn: null
+            isLensReorder: null
+            shippingAddress: null
+            shippingDate: null
+            shippingMethodCode: null
+            shippingPostalCode: null
+            crmFlag: false
+            handOverDate: null
+            handOverMethod: null
+            replacementPart: '004'
+            replacementType: '001'
+            replacementReason: '002'
+            exchangeCountIncrementFlag: true
+            replacementStoreId: 1143416
+            replacementStoreCode: '83005'
+            replacementStatusCode: '010'
+            deletedFlag: 0
+            optimisticLockVerNo: 1
+          - visitorId: null
+            receptionNumber: 241201US000009
+            orderNumber: null
+            claimTicketCreatedAt: null
+            boxNo: null
+            warrantyNumber: 241201US000001-1
+            previousReceptionNumber: 241201US000008
+            previousItemgroupCode: 241201US000001-1
+            receiptDatetime: '2025-12-25T13:16:01'
+            note: null
+            retailStoreStaffNo: jins-user-id
+            deliveryStoreStaffNo: null
+            retailStoreId: 1143416
+            deliveryStoreId: 1143416
+            retailStoreCode: '83005'
+            deliveryStoreCode: '83005'
+            warrantyItemIdList: null
+            warrantyItemCodeList: null
+            exchangedCount: 1
+            warrantyCreatedAt: '2025-12-25T13:16:01'
+            lensExchange: true
+            isExchangeLensTicket: null
+            isPosAccounting: null
+            isSfdcLensOrder: null
+            isSfdcLensArrive: null
+            measurementCode: null
+            signatureFileUrl: null
+            signatureFileName: null
+            isLensOrder: null
+            codeProductionNote: null
+            measurementTypeForPrint: null
+            isFrameBringIn: null
+            isLensReorder: null
+            shippingAddress: null
+            shippingDate: null
+            shippingMethodCode: null
+            shippingPostalCode: null
+            crmFlag: false
+            handOverDate: null
+            handOverMethod: null
+            replacementPart: '004'
+            replacementType: '001'
+            replacementReason: '002'
+            exchangeCountIncrementFlag: true
+            replacementStoreId: 1143416
+            replacementStoreCode: '83005'
+            replacementStatusCode: '010'
+            deletedFlag: 0
+            optimisticLockVerNo: 1
+    WarrantyHistoriesPostRequest:
+      type: object
+      description: 保証履歴登録APIリクエスト
+      properties:
+        warrantyNumber:
+          type: string
+          nullable: false
+          example: 241230US000001-1
+          description: 保証書番号
+        receptionNumber:
+          type: string
+          nullable: false
+          example: 241230US000001
+          description: 受付番号
+        replacementType:
+          type: string
+          example: '002'
+          nullable: false
+          description: 交換種別
+        replacementPart:
+          type: string
+          example: '002'
+          nullable: false
+          description: 交換部位
+        replacementReason:
+          type: string
+          example: '002'
+          nullable: false
+          description: 交換理由
+        exchangeCountIncrementFlag:
+          type: boolean
+          example: false
+          nullable: false
+          description: 交換回数カウント可否
+        replacementStoreId:
+          type: integer
+          format: int64
+          description: 交換受付店舗ID
+          nullable: true
+          example: 83005
+        receiptDatetime:
+          type: string
+          format: date-time
+          description: 交換受付日時
+          nullable: true
+    replacementStatusCode:
+      type: string
+      nullable: false
+      description: |
+        保証交換ステータスコード
+        |コード|意味|
+        |:---|:---|
+        |000|初期登録|
+        |010|一次保存|
+        |011|交換中|
+        |020|交換済|
+        <br>
+      maxLength: 3
+      example: '020'
+    WarrantyForUpdate:
+      type: object
+      description: 保証書更新用オブジェクト
+      properties:
+        warrantyNumber:
+          description: 保証書番号
+          type: string
+          nullable: false
+          maxLength: 17
+        exchangeCount:
+          description: 交換回数
+          nullable: false
+          type: number
+        deletedFlag:
+          type: number
+          nullable: false
+          description: 削除フラグ
+        optimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号
+          nullable: true
+    WarrantyItemForUpdate:
+      type: object
+      description: 保証対象更新用オブジェクト
+      properties:
+        itemType:
+          $ref: '#/components/schemas/itemType'
+        exchangeCount:
+          description: 交換回数
+          nullable: false
+          type: number
+        deletedFlag:
+          type: number
+          nullable: false
+          description: 削除フラグ
+        optimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号
+          nullable: true
+    WarrantyHistoriesPutRequest:
+      type: object
+      description: 保証履歴更新APIリクエスト
+      properties:
+        replacementStatusCode:
+          $ref: '#/components/schemas/replacementStatusCode'
+        deletedFlag:
+          type: number
+          nullable: false
+          description: 削除フラグ
+        optimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号
+          nullable: true
+        warranty:
+          $ref: '#/components/schemas/WarrantyForUpdate'
+        warrantyItems:
+          type: array
+          description: 保証対象更新情報
+          items:
+            $ref: '#/components/schemas/WarrantyItemForUpdate'
+      example:
+        replacementStatusCode: '020'
+        deletedFlag: 0
+        optimisticLockVerNo: 1
+        warranty:
+          warrantyNumber: 20250103US00001-2
+          exchangeCount: 1
+          deletedFlag: 0
+          optimisticLockVerNo: 1
+        warrantyItems:
+          - itemType: '003'
+            exchangeCount: 1
+            deletedFlag: 0
+            optimisticLockVerNo: 1
+          - itemType: '004'
+            exchangeCount: 1
+            deletedFlag: 0
+            optimisticLockVerNo: 1
+    PowersPostRequest:
+      type: object
+      description: 度数・処方箋登録APIリクエスト
+      properties:
+        powerId:
+          description: 度数ID
+          type: integer
+          format: int64
+          nullable: true
+        addLeft:
+          type: number
+          nullable: true
+          description: 加入度数(L)、累進レンズで必須、小数点以下2桁まで。プラス・マイナス表記なし。
+        addRight:
+          type: number
+          nullable: true
+          description: 加入度数(R)、累進レンズで必須、小数点以下2桁まで。プラス・マイナス表記なし。
+        axisLeft:
+          type: integer
+          nullable: true
+          description: AXS(L)、小数点なし。プラス・マイナス表記なし。
+        axisRight:
+          type: integer
+          nullable: true
+          description: AXS(R)、小数点なし。プラス・マイナス表記なし。
+        baseVLeft:
+          type: string
+          nullable: true
+          description: ベースV_L、プリズムレンズで必須(BU/BD)
+          maxLength: 2
+        baseVRight:
+          type: string
+          nullable: true
+          description: ベースV_R、プリズムレンズで必須(BU/BD)
+          maxLength: 2
+        baseHLeft:
+          type: string
+          nullable: true
+          description: ベースH_L、プリズムレンズで必須(BI/BO)
+          maxLength: 2
+        baseHRight:
+          type: string
+          nullable: true
+          description: ベースH_R、プリズムレンズで必須(BI/BO)
+          maxLength: 2
+        cylLeft:
+          type: number
+          nullable: true
+          description: CYL(L)、小数点以下2桁まで。プラス・マイナス表記あり。
+        cylRight:
+          type: number
+          nullable: true
+          description: CYL(R)、小数点以下2桁まで。プラス・マイナス表記あり。
+        pdLeft:
+          type: number
+          nullable: true
+          description: PD(L)、小数点以下2桁まで。プラス・マイナス表記なし。
+        pdRight:
+          type: number
+          nullable: true
+          description: PD(R)、小数点以下2桁まで。プラス・マイナス表記なし。
+        prism01Left:
+          type: number
+          nullable: true
+          description: プリズム01_L、プリズムレンズで必須、小数点以下2桁まで。プラス・マイナス表記なし。
+        prism01Right:
+          type: number
+          nullable: true
+          description: プリズム01_R、プリズムレンズで必須、小数点以下2桁まで。プラス・マイナス表記なし。
+        prism02Left:
+          type: number
+          nullable: true
+          description: プリズム02_L、プリズムレンズで必須、小数点以下2桁まで。プラス・マイナス表記なし。
+        prism02Right:
+          type: number
+          nullable: true
+          description: プリズム02_R、プリズムレンズで必須、小数点以下2桁まで。プラス・マイナス表記なし。
+        sphLeft:
+          type: number
+          nullable: true
+          description: SPH(L)、小数点以下2桁まで。プラス・マイナス表記あり。
+        sphRight:
+          type: number
+          nullable: true
+          description: SPH(R)、小数点以下2桁まで。プラス・マイナス表記あり。
+        eyepointLeft:
+          type: number
+          nullable: true
+          description: アイポイント(L)、小数点以下1桁まで、プラス・マイナス表記あり。
+        eyepointRight:
+          type: number
+          nullable: true
+          description: アイポイント(R)、小数点以下1桁まで、プラス・マイナス表記あり。
+        vision:
+          type: number
+          nullable: true
+          description: 矯正両目視力(maxLength仮)(9-11スコープではNull)
+        perspectiveTypeCode:
+          type: string
+          nullable: true
+          description: 遠中近区分コード
+          maxLength: 3
+        prismFlag:
+          type: boolean
+          nullable: true
+          description: プリズムレンズかどうかを判定するフラグ
+        powerItem:
+          type: object
+          description: 処方箋情報
+          properties:
+            prescriptionId:
+              description: 処方箋ID
+              type: integer
+              format: int64
+              nullable: true
+            channel:
+              description: 処方箋登録元チャネル
+              type: string
+            customerName:
+              description: 顧客名
+              type: string
+            jinsAccountId:
+              description: JINSアカウントID
+              type: string
+            expirationDate:
+              description: 処方箋有効期限
+              type: string
+              format: date-time
+              nullable: true
+            prescriptionFileName:
+              description: 処方箋ファイル名
+              type: string
+              nullable: true
+      example:
+        powerId: 0
+        addLeft: 0
+        addRight: 0
+        axisLeft: 0
+        axisRight: 0
+        baseVLeft: BO
+        baseVRight: BI
+        baseHLeft: BU
+        baseHRight: BD
+        cylLeft: 8.75
+        cylRight: 8.75
+        pdLeft: 0
+        pdRight: 0
+        prism01Left: 0
+        prism01Right: 0
+        prism02Left: 0
+        prism02Right: 0
+        sphLeft: -0.5
+        sphRight: -0.25
+        eyepointLeft: 2
+        eyepointRight: 2
+        vision: 1
+        perspectiveTypeCode: '2'
+        prismFlag: true
+        powerItem:
+          prescriptionId: 1
+          channel: Physical Store
+          custmeName: AShley Jins
+          jinsAccountId: '12345678'
+          expirationDate: '2025-03-25T15:00:00'
+          prescriptionFileName: aaa
+    PowersPostResponse:
+      type: object
+      description: 度数・処方箋登録APIレスポンス
+      properties:
+        powerId:
+          type: number
+          description: 度数ID
+          example: 1111
+        prescriptionId:
+          type: number
+          description: 処方箋ID
+          example: 2222
+    PowersGetResponse:
+      type: object
+      description: 度数・処方箋取得APIレスポンス
+      properties:
+        powerId:
+          description: 度数ID
+          type: integer
+          format: int64
+          nullable: true
+        addLeft:
+          type: number
+          nullable: true
+          description: 加入度数(L)、累進レンズで必須、小数点以下2桁まで。プラス・マイナス表記なし。
+        addRight:
+          type: number
+          nullable: true
+          description: 加入度数(R)、累進レンズで必須、小数点以下2桁まで。プラス・マイナス表記なし。
+        axisLeft:
+          type: integer
+          nullable: true
+          description: AXS(L)、小数点なし。プラス・マイナス表記なし。
+        axisRight:
+          type: integer
+          nullable: true
+          description: AXS(R)、小数点なし。プラス・マイナス表記なし。
+        baseVLeft:
+          type: string
+          nullable: true
+          description: ベースV_L、プリズムレンズで必須(BU/BD)
+          maxLength: 2
+        baseVRight:
+          type: string
+          nullable: true
+          description: ベースV_R、プリズムレンズで必須(BU/BD)
+          maxLength: 2
+        baseHLeft:
+          type: string
+          nullable: true
+          description: ベースH_L、プリズムレンズで必須(BI/BO)
+          maxLength: 2
+        baseHRight:
+          type: string
+          nullable: true
+          description: ベースH_R、プリズムレンズで必須(BI/BO)
+          maxLength: 2
+        cylLeft:
+          type: number
+          nullable: true
+          description: CYL(L)、小数点以下2桁まで。プラス・マイナス表記あり。
+        cylRight:
+          type: number
+          nullable: true
+          description: CYL(R)、小数点以下2桁まで。プラス・マイナス表記あり。
+        pdLeft:
+          type: number
+          nullable: true
+          description: PD(L)、小数点以下2桁まで。プラス・マイナス表記なし。
+        pdRight:
+          type: number
+          nullable: true
+          description: PD(R)、小数点以下2桁まで。プラス・マイナス表記なし。
+        prism01Left:
+          type: number
+          nullable: true
+          description: プリズム01_L、プリズムレンズで必須、小数点以下2桁まで。プラス・マイナス表記なし。
+        prism01Right:
+          type: number
+          nullable: true
+          description: プリズム01_R、プリズムレンズで必須、小数点以下2桁まで。プラス・マイナス表記なし。
+        prism02Left:
+          type: number
+          nullable: true
+          description: プリズム02_L、プリズムレンズで必須、小数点以下2桁まで。プラス・マイナス表記なし。
+        prism02Right:
+          type: number
+          nullable: true
+          description: プリズム02_R、プリズムレンズで必須、小数点以下2桁まで。プラス・マイナス表記なし。
+        sphLeft:
+          type: number
+          nullable: true
+          description: SPH(L)、小数点以下2桁まで。プラス・マイナス表記あり。
+        sphRight:
+          type: number
+          nullable: true
+          description: SPH(R)、小数点以下2桁まで。プラス・マイナス表記あり。
+        eyepointLeft:
+          type: number
+          nullable: true
+          description: アイポイント(L)、小数点以下1桁まで、プラス・マイナス表記あり。
+        eyepointRight:
+          type: number
+          nullable: true
+          description: アイポイント(R)、小数点以下1桁まで、プラス・マイナス表記あり。
+        vision:
+          type: number
+          nullable: true
+          description: 矯正両目視力(maxLength仮)(9-11スコープではNull)
+        perspectiveTypeCode:
+          type: string
+          nullable: true
+          description: 遠中近区分コード
+          maxLength: 3
+        prismFlag:
+          type: boolean
+          nullable: true
+          description: プリズムレンズかどうかを判定するフラグ
+        PowerItem:
+          type: object
+          description: 処方箋情報
+          properties:
+            prescriptionId:
+              description: 処方箋ID
+              type: integer
+              format: int64
+              nullable: true
+            channel:
+              description: 処方箋登録元チャネル
+              type: string
+              nullable: true
+            customerName:
+              description: 顧客名
+              type: string
+              nullable: true
+            jinsAccountId:
+              description: JINSアカウントID
+              type: string
+              nullable: true
+            expirationDate:
+              description: 処方箋有効期限
+              type: string
+              format: date-time
+              nullable: true
+            prescriptionFileName:
+              description: 処方箋ファイル名
+              type: string
+              nullable: true
+      example:
+        powerId: 0
+        addLeft: 0
+        addRight: 0
+        axisLeft: 0
+        axisRight: 0
+        baseVLeft: BO
+        baseVRight: BI
+        baseHLeft: BU
+        baseHRight: BD
+        cylLeft: 8.75
+        cylRight: 8.75
+        pdLeft: 0
+        pdRight: 0
+        prism01Left: 0
+        prism01Right: 0
+        prism02Left: 0
+        prism02Right: 0
+        sphLeft: -0.5
+        sphRight: -0.25
+        eyepointLeft: 2
+        eyepointRight: 2
+        vision: 1
+        perspectiveTypeCode: '2'
+        prismFlag: true
+        powerItem:
+          prescriptionId: 1
+          channel: Physical Store
+          custmeName: AShley Jins
+          jinsAccountId: '12345678'
+          expirationDate: '2025-03-25T15:00:00'
+          prescriptionFileName: aaa
+    PowerPatchRequest:
+      type: object
+      description: 度数・処方箋論理削除APIリクエスト
+      properties:
+        deletedFlag:
+          type: number
+          description: 削除フラグ
+          example: 1
+          nullable: false
+        optimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号
+          example: 1
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0001
+            message: Validation error occurred.
+    TooManyRequests:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0004
+            message: Duplicate api invocation detected.
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0000
+            message: Unexpected error occurred.
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0002
+            message: Specified data not found.
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0003
+            message: Transaction failed due to optimisitic lock failure.

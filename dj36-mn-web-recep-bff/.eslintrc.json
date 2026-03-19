@@ -1,0 +1,21 @@
+{
+  "rules": {
+
+  },
+  "extends": [
+    "plugin:@typescript-eslint/recommended", // Uses the recommended rules from the @typescript-eslint/eslint-plugin
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest", // Allows for the parsing of modern ECMAScript features
+    "sourceType": "module", // Allows for the use of imports
+    "project": "./tsconfig.json"
+  },
+  "plugins": [
+      "@typescript-eslint"
+  ],
+  "env": {
+    "node": true
+  }
+}

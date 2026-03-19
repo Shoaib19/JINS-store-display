@@ -1,0 +1,552 @@
+openapi: 3.0.3
+info:
+  title: BFF Validator API
+  description: |-
+    ### 共通仕様
+    #### リクエストヘッダー
+    TBD
+    #### レスポンスヘッダー
+    TBD
+    #### エラーレスポンス
+    TBD
+    ##### エラーコード
+    * 400: Bad Request
+    * 401: Unauthorized
+    * 403: Forbidden
+    * 404: Not Found
+    * 405: Method Not Allowed
+    * 406: Not Acceptable
+    * 429: Too Many Requests
+    * 500: Internal Server Error
+    * 501: Not Implemented
+    * 503: Service Unavailable
+    * 504: Gateway Timeout
+  version: 1.0.0
+tags:
+  - name: eyesightcombi
+    description: 度数組合せチェックAPI
+  - name: eyepointmeasure
+    description: アイポイント測定チェックAPI
+paths:
+  /status:
+    get:
+      tags:
+        - system
+      summary: health check
+      operationId: status
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: string
+              example: healthy
+        '400':
+          description: failure
+          content:
+            application/json:
+              schema:
+                type: string
+              example: unhealthy
+  /dummy:
+    get:
+      tags:
+        - dummy
+      summary: dummy function to call external API
+      operationId: dummy
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: string
+                example: healthy
+        '400':
+          description: failure
+          content:
+            application/json:
+              schema:
+                type: string
+                example: unhealthy
+  /validator/eyesightcombi:
+    post:
+      tags:
+      - validator
+      summary: 度数組合せチェックAPI
+      description: 度数の組合せを確認し、組合せが妥当かを返却する
+      operationId: postEyesightCombi
+      parameters:
+        - $ref: "#/components/parameters/JinsTraceID"
+        - $ref: "#/components/parameters/JinsTraceIdBranchNo"
+        - $ref: "#/components/parameters/StaffID"
+      requestBody:
+        required: false
+        description: 度数組合せチェックリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EyesightCombiPostRequest'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EyesightCombiPostResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          $ref: '#/components/responses/TooManyRequests'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /validator/eyepointmeasure:
+    post:
+      tags:
+      - validator
+      summary: アイポイント測定チェックAPI
+      description: アイポイントが必須であれば必須チェックを実施して結果を返却する
+      operationId: postEyepointMeasure
+      parameters:
+        - $ref: "#/components/parameters/JinsTraceID"
+        - $ref: "#/components/parameters/JinsTraceIdBranchNo"
+        - $ref: "#/components/parameters/StaffID"
+      requestBody:
+        required: false
+        description: アイポイント測定チェックリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EyepointMeasurePostRequest'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EyepointMeasurePostResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        429:
+          $ref: '#/components/responses/TooManyRequests'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  parameters:
+    Authorization:
+      in: header
+      name: Authorization
+      required: true
+      description: "POST us/v1/jins/oauth/token で取得したOAuthのBearerトークン。<br>許可された値:
+        Bearer {access_token}"
+      schema:
+        type: string
+    Content-Type:
+      in: header
+      name: Content-Type
+      required: true
+      description: リソース・コンテンツのアプリケーション・メディアタイプ。<br>許可された値:application/json
+      schema:
+        type: string
+        enum:
+          - application/json
+    Accept:
+      in: header
+      name: Accept
+      required: true
+      description: リソース・コンテンツのアプリケーション・メディアタイプ。<br>許可された値:application/json
+      schema:
+        type: string
+        enum:
+          - application/json
+    X-API-KEY:
+      in: header
+      name: X-API-KEY
+      required: true
+      description: 各アプリ・システムに対して環境ごとに払い出されたAPI認証キー
+      schema:
+        type: string
+    Accept-Language:
+      in: header
+      name: Accept-Language
+      required: false
+      description: 言語指定<br>デフォルト値:en<br>許可された値:en
+      schema:
+        type: string
+        enum:
+          - en
+    X-Cursor:
+      in: header
+      name: X-Cursor
+      required: false
+      description: 取得開始位置<br>レスポンスヘッダで返却された X-Cursor の値を指定
+      schema:
+        type: string
+    JinsTraceID:
+      in: header
+      name: Jins-Trace-ID
+      description: アプリケーションノード間のトレーサビリティを確保するためのID
+      required: true
+      example: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+      schema:
+        type: string
+        format: uuid
+        nullable: false
+    JinsTraceIdBranchNo:
+      name: jins-trace-id-branch-no
+      description: jins-trace-idに紐付く呼出し枝番
+      in: header
+      example: 1
+      schema:
+        type: string
+        maxLength: 64
+    StaffID:
+      name: staffID
+      description: UI側でユーザを識別できるIDを格納
+      in: header
+      required: true
+      example: "00028"
+      schema:
+        type: string
+        maxLength: 8
+
+  schemas:
+    EyesightCombiPostResponse:
+        description: 度数組合せチェックAPIレスポンス
+        properties:
+          resCodeLeft:
+            description: 左処理結果コード
+            type: integer
+            example: 1
+          resMessageLeft:
+            description: 左処理結果メッセージ
+            type: string
+            example: 加入度数(ADD)が設定されていません。
+          resCodeRight:
+            description: 右処理結果コード
+            type: integer
+            example: 1
+          resMessageRight:
+            description: 右処理結果メッセージ
+            type: string
+            example: 加入度数(ADD)が設定されていません。
+
+    EyepointMeasurePostResponse:
+      description: アイポイント測定チェックAPIレスポンス
+      properties:
+        resCodeLeft:
+          description: 左処理結果コード
+          type: integer
+          example: 1
+        resMessageLeft:
+          description: 左処理結果メッセージ
+          type: string
+          example: 加入度数(ADD)が設定されていません。
+        resCodeRight:
+          description: 右処理結果コード
+          type: integer
+          example: 1
+        resMessageRight:
+          description: 右処理結果メッセージ
+          type: string
+          example: 加入度数(ADD)が設定されていません。
+
+    EyesightCombiPostRequest:
+      description: 度数組合せチェックAPIリクエスト
+      properties:
+        sphericalPowerLeft:
+          $ref: '#/components/schemas/SphericalPower'
+        astigmatismPrescriptionLeft:
+          $ref: '#/components/schemas/AstigmatismPrescription'
+        addPowerLeft:
+          $ref: '#/components/schemas/AddPower'
+        sphericalPowerRight:
+          $ref: '#/components/schemas/SphericalPower'
+        astigmatismPrescriptionRight:
+          $ref: '#/components/schemas/AstigmatismPrescription'
+        addPowerRight:
+          $ref: '#/components/schemas/AddPower'
+        lensPint:
+          $ref: '#/components/schemas/LensPint'
+        salesColorNameId:
+          $ref: '#/components/schemas/SalesColorNameId'
+        salesLensSpecId:
+          $ref: '#/components/schemas/SalesLensSpecId'
+        focusCategoryId:
+          $ref: '#/components/schemas/FocusCategoryId'
+        progressiveCategoryId:
+          $ref: '#/components/schemas/ProgressiveCategoryId'
+        refractiveIndexNameId:
+          $ref: '#/components/schemas/RefractiveIndexNameId'
+        countryCodeAlpha2:
+          $ref: '#/components/schemas/CountryCodeAlpha2'
+      required:
+        - sphericalPowerLeft
+        - astigmatismPrescriptionLeft
+        - sphericalPowerRight
+        - astigmatismPrescriptionRight
+        - lensPint
+        - countryCodeAlpha2
+
+    EyepointMeasurePostRequest:
+      description: アイポイント測定チェックAPIリクエスト
+      properties:
+        eyePointLeft:
+          $ref: '#/components/schemas/EyePoint'
+        sphericalPowerLeft:
+          $ref: '#/components/schemas/SphericalPower'
+        astigmatismPrescriptionLeft:
+          $ref: '#/components/schemas/AstigmatismPrescription'
+        addPowerLeft:
+          $ref: '#/components/schemas/AddPower'
+        eyePointRight:
+          $ref: '#/components/schemas/EyePoint'
+        sphericalPowerRight:
+          $ref: '#/components/schemas/SphericalPower'
+        astigmatismPrescriptionRight:
+          $ref: '#/components/schemas/AstigmatismPrescription'
+        addPowerRight:
+          $ref: '#/components/schemas/AddPower'
+        lensPint:
+          $ref: '#/components/schemas/LensPint'
+        salesColorNameId:
+          description: 販売用カラー名称ID
+          type: integer
+          format: int64
+          example: 123
+        salesLensSpecId:
+          description: 販売用レンズ仕様ID
+          type: integer
+          format: int64
+          example: 123
+        focusCategoryId:
+          description: 焦点分類ID
+          type: integer
+          format: int64
+          example: 123
+        progressiveCategoryId:
+          description: 累進分類ID
+          type: integer
+          format: int64
+          example: 123
+        refractiveIndexNameId:
+          description: 屈折率名称ID
+          type: integer
+          format: int64
+          example: 123
+        countryCodeAlpha2:
+          $ref: '#/components/schemas/CountryCodeAlpha2'
+      required:
+        - sphericalPowerLeft
+        - astigmatismPrescriptionLeft
+        - sphericalPowerRight
+        - astigmatismPrescriptionRight
+        - lensPint
+        - salesColorNameId
+        - salesLensSpecId
+        - focusCategoryId
+        - progressiveCategoryId
+        - refractiveIndexNameId
+        - countryCodeAlpha2
+
+    SphericalPower:
+      description: SPH（球面度数）
+      type: number
+      maximum: 999.99
+      example: 123.12
+    AstigmatismPrescription:
+      description: CYL（乱視度数）
+      type: number
+      maximum: 999.99
+      example: 123.12
+    EyePoint:
+      description: E.P（アイポイント）
+      type: number
+      maximum: 999.99
+      example: 123.12
+      nullable: true
+    AddPower:
+      description: ADD（加入度数）
+      type: number
+      maximum: 9999.99
+      example: 1234.12
+      nullable: true
+    LensPint:
+      description: レンズピント
+      type: string
+      maxLength: 2
+      minLength: 1
+      example: 1
+    SalesColorNameId:
+      description: 販売用カラー名称ID
+      type: integer
+      format: int64
+      example: 123
+      nullable: true
+    SalesLensSpecId:
+      description: 販売用レンズ仕様ID
+      type: integer
+      format: int64
+      example: 123
+      nullable: true
+    FocusCategoryId:
+      description: 焦点分類ID
+      type: integer
+      format: int64
+      example: 123
+      nullable: true
+    ProgressiveCategoryId:
+      description: 累進分類ID
+      type: integer
+      format: int64
+      example: 123
+      nullable: true
+    RefractiveIndexNameId:
+      description: 屈折率名称ID
+      type: integer
+      format: int64
+      example: 123
+      nullable: true
+    CountryCodeAlpha2:
+      description: 販売国コード(国コード(alpha-2))
+      type: string
+      maxLength: 2
+      example: US
+
+    ApplicationError:
+      required:
+        - Jins-Trace-ID
+        - timestamp
+        - code
+        - systemName
+        - message
+        - details
+      type: object
+      properties:
+        Jins-Trace-ID:
+          description: アプリケーションノード間のトレーサビリティを確保するためのID
+          type: string
+          format: uuid
+          nullable: false
+        timestamp:
+          description: エラー発生時刻
+          type: string
+          format: date-time
+          nullable: false
+        code:
+          description: |-
+            エラーコード
+          type: string
+          nullable: false
+        systemName:
+          description: |-
+            システム名
+          type: string
+          nullable: false
+        message:
+          description: エラーメッセージ
+          type: string
+          nullable: false
+        details:
+          description: エラー詳細
+          type: string
+          nullable: false
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApplicationError'
+          example:
+            Jins-Trace-ID: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+            timestamp: 2024-09-30 23:26:25.536
+            systemName: DJ36-Sales
+            code: COM_0001
+            message: Validation error occurred.
+            details: The XXXX is requied.
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApplicationError'
+          example:
+            Jins-Trace-ID: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+            timestamp: 2024-09-30 23:26:25.536
+            systemName: DJ36-Sales
+            code: COM_0002
+            message: Session expired.
+            details: Session has expired or is invalid.
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApplicationError'
+          example:
+            Jins-Trace-ID: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+            timestamp: 2024-09-30 23:26:25.536
+            systemName: DJ36-Sales
+            code: COM_0003
+            message: Forbidden.
+            details: You do not have permission to access this resource.
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApplicationError'
+          example:
+            Jins-Trace-ID: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+            timestamp: 2024-09-30 23:26:25.536
+            systemName: DJ36-Sales
+            code: COM_0004
+            message: Specified data not found.
+            details: There is no recode matched XXXX.
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApplicationError'
+          example:
+            Jins-Trace-ID: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+            timestamp: 2024-09-30 23:26:25.536
+            systemName: DJ36-Sales
+            code: COM_0005
+            message: Transaction failed due to optimisitic lock failure.
+            details: The request could not be completed due to a conflict with the current state of the resource.
+    TooManyRequests:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApplicationError'
+          example:
+            Jins-Trace-ID: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+            timestamp: 2024-09-30 23:26:25.536
+            systemName: DJ36-Sales
+            code: COM_0006
+            message: Too Many Requests.
+            details: Duplicate api invocation detected.
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApplicationError'
+          example:
+            Jins-Trace-ID: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+            timestamp: 2024-09-30 23:26:25.536
+            systemName: DJ36-Sales
+            code: COM_0007
+            message: Internal Server Error.
+            details: Unexpected error occurred.

@@ -1,0 +1,337 @@
+openapi: 3.0.3
+info:
+  title: ${info.title}
+  description: ''
+  version: ${api.version}
+paths:
+  /price/selling-prices:
+    get:
+      tags:
+        - SellingPrices
+      summary: 売価検索API
+      description: 検索パラメータのうち、countryId、countryCodeのいずれかと、sellingPriceCategoryId、sellingPriceCategoryCodeのいずれかと、salesDateがそれぞれ必須。総件数や取得件数は親のカウントである。
+      operationId: getSellingPrices
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/CountryCodeAlpha2'
+        - $ref: '#/components/parameters/CountryId'
+        - $ref: '#/components/parameters/query'
+        - $ref: '#/components/parameters/SalesDate'
+        - $ref: '#/components/parameters/SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellingPricesGetResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                validationError:
+                  $ref: '#/components/examples/COM_0001'
+                businessError:
+                  $ref: '#/components/examples/DPFM_PRICE_0001'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/price/selling-prices
+        type: ${apigateway.etc}
+components:
+  parameters:
+    JinsTraceID:
+      name: jins-trace-id
+      description: <BFFシステムコード>_\<UUID>
+      in: header
+      required: true
+      example: bff_usgjpic_ab623ca6-b1e4-3796-a761-ca05605da64a
+      schema:
+        type: string
+        maxLength: 64
+    JinsTraceIdBranchNo:
+      name: jins-trace-id-branch-no
+      description: jins-trace-idに紐付く呼出し枝番
+      in: header
+      example: 1
+      schema:
+        type: string
+        maxLength: 64
+    UserID:
+      name: jins-user-id
+      description: UI側でユーザを識別できるIDを格納
+      in: header
+      required: true
+      example: U00001
+      schema:
+        type: string
+        maxLength: 64
+    CountryCodeAlpha2:
+      name: countryCodeAlpha2
+      description: 国コード
+      in: query
+      required: false
+      example: US
+      schema:
+        type: string
+        maxLength: 2
+    CountryId:
+      name: countryId
+      description: 国ID
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int64
+        example: 91000000001
+    query:
+      name: query
+      description: |
+        検索条件
+
+        ※このリクエストパラーメータはJSON形式の文字列で値を入力してください。
+
+        JSON必須項目に関して
+
+        (※)はいずれかが必須になります。
+
+         // を使用したコメントはOASの定義上わかりやすくするために記載しているため、実際のリクエストには記載不要になります。
+
+         値を設定しない項目は記載不要になります。
+
+        ```
+        {
+            "searchTargetList": [ // 検索対象リスト
+                {
+                    "sellingPriceCategoryCode": "XXXX", // 売価分類コード(※)
+                    "sellingPriceCategoryId": 2, // 売価分類ID（※）
+                    "salesTargetId": 1 // 販売対象ID
+                },
+                {
+                    "sellingPriceCategoryCode": "XXXX", // 売価分類コード(※)
+                    "salesTargetId": 1 // 販売対象ID
+                },
+                {
+                    "sellingPriceCategoryId": 2, // 売価分類ID（※）
+                    "salesTargetId": 1 // 販売対象ID
+                }
+            ]
+        }
+        ```
+      in: query
+      required: true
+      example: ' {"searchTargetList": [ { "sellingPriceCategoryCode": "XXXX", "sellingPriceCategoryId": 2, "salesTargetId": 1 }, { "sellingPriceCategoryCode": "XXXX", "salesTargetId": 1 }, { "sellingPriceCategoryId": 2, "salesTargetId": 1 } ] }'
+      schema:
+        type: string
+    SalesDate:
+      name: salesDate
+      description: 販売年月日
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date
+        example: '2024-01-01'
+    SortKey:
+      name: sortKey
+      description: |
+        ソートキー
+        昇順降順はコロン区切り
+        複数の場合はカンマ区切り
+        スペースは挟まない
+      in: query
+      required: false
+      example: sellingPriceCategoryCode:ASC,sellingPriceCategoryId:DESC
+      schema:
+        type: string
+        default: salesTargetId:ASC
+    Limit:
+      name: limit
+      description: 取得制限数
+      in: query
+      required: false
+      example: 20
+      schema:
+        $ref: '#/components/schemas/Limit'
+    Offset:
+      name: offset
+      description: 取得開始位置
+      in: query
+      required: false
+      example: 0
+      schema:
+        $ref: '#/components/schemas/Offset'
+  schemas:
+    Limit:
+      description: 取得制限数
+      type: integer
+      minimum: 1
+      maximum: 100000
+      example: 20
+      default: 100000
+    Offset:
+      description: 取得開始位置
+      type: integer
+      minimum: 0
+      example: 0
+      default: 0
+    Count:
+      description: 今回取得件数
+      type: integer
+      example: 20
+    TotalResults:
+      description: 総件数
+      type: integer
+      example: 10000
+    HasMore:
+      description: 次回データ存在有無
+      type: boolean
+      example: true
+    SellingPriceGetResponse:
+      type: object
+      properties:
+        sellingPriceId:
+          description: 売価ID
+          type: integer
+          format: int64
+          example: 6100000000000009
+        salesTargetId:
+          description: 販売対象ID
+          type: integer
+          format: int64
+          example: 6100000000000009
+        applicationStartDate:
+          description: 適用開始年月日
+          type: string
+          format: date
+          example: '2024-01-01'
+        sellingPriceExcludingTax:
+          description: 売価（税抜き）
+          type: number
+          example: 198.12
+        currencyCode:
+          description: 通貨コード
+          type: string
+          maxLength: 3
+          example: USD
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: int32
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          example: USER123456
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+        sellingPriceCategory:
+          type: object
+          properties:
+            sellingPriceCategoryId:
+              description: 売価分類ID
+              type: integer
+              format: int64
+              example: 10000012
+            sellingPriceCategoryCode:
+              description: 売価分類コード
+              type: string
+              maxLength: 2
+              example: '01'
+            sellingPriceCategoryName:
+              description: 売価分類名
+              type: string
+              maxLength: 40
+              example: lens option
+        country:
+          type: object
+          properties:
+            countryId:
+              description: 国ID
+              type: integer
+              format: int64
+              example: 91000000001
+            countryCodeAlpha2:
+              description: 国コード（alpha-2)
+              type: string
+              maxLength: 2
+              example: US
+            countryCodeAlpha3:
+              description: 国コード（alpha-3)
+              type: string
+              maxLength: 3
+              example: USA
+            countryName:
+              description: 国名
+              type: string
+              maxLength: 100
+              example: America
+    SellingPricesGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/SellingPriceGetResponse'
+    CommonErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+      required:
+        - code
+        - message
+  examples:
+    COM_0001:
+      value:
+        code: COM_0001
+        message: Validation error occurred.
+    DPFM_PRICE_0001:
+      value:
+        code: DPFM_PRICE_0001
+        message: At least country ID or country Code alpha2 is required.
+  responses:
+    TooManyRequests:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0004
+            message: Duplicate api invocation detected.
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0000
+            message: Unexpected error occurred.

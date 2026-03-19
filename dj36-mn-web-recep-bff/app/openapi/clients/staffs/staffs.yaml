@@ -1,0 +1,214 @@
+openapi: 3.0.3
+info:
+  title: ${info.title}
+  description: |-
+    ### スタッフサービスAPI (L2-2)
+    ### 共通仕様
+    #### リクエストヘッダー
+    TBD
+    #### レスポンスヘッダー
+    TBD
+    #### エラーレスポンス
+    TBD
+    ##### エラーコード
+    * 400: Bad Request
+    * 401: Unauthorized
+    * 403: Forbidden
+    * 404: Not Found
+    * 405: Method Not Allowed
+    * 406: Not Acceptable
+    * 429: Too Many Requests
+    * 500: Internal Server Error
+    * 501: Not Implemented
+    * 503: Service Unavailable
+    * 504: Gateway Timeout
+  version: ${api.version}
+paths:
+  /staff/authentication:
+    get:
+      tags:
+        - Authentication
+      summary: スタッフ認証API
+      description: スタッフIDとパスワードで認証を行う。
+      operationId: authenticateStaff
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: staffId
+          description: スタッフID
+          in: query
+          required: true
+          example: JINS12345
+          schema:
+            type: string
+            maxLength: 256
+        - name: password
+          description: パスワード
+          in: query
+          required: true
+          example: ABCD1234
+          schema:
+            type: string
+            maxLength: 256
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationResponse'
+        '400':
+          $ref: '#/components/responses/Unanthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/staff/authentication
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+  /staff/staff/{staffId}:
+    get:
+      tags:
+        - Staff
+      summary: スタッフ情報取得API
+      description: スタッフ情報を取得する。
+      operationId: getStaff
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: staffId
+          description: スタッフID
+          in: path
+          required: true
+          example: JINS12345
+          schema:
+            type: string
+            maxLength: 256
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffGetResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/staff/staff/{staffId}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.path.staffId: method.request.path.staffId
+components:
+  parameters:
+    JinsTraceID:
+      in: header
+      name: jins-trace-id
+      description: アプリケーションノード間のトレーサビリティを確保するためのID
+      required: true
+      example: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+      schema:
+        type: string
+        nullable: false
+    JinsTraceIdBranchNo:
+      name: jins-trace-id-branch-no
+      description: jins-trace-idに紐付く呼出し枝番
+      in: header
+      example: 1
+      schema:
+        type: string
+        maxLength: 64
+    JinsUserID:
+      in: header
+      name: jins-user-id
+      description: UI側でユーザを識別できるIDを格納
+      required: true
+      example: U00001
+      schema:
+        type: string
+        maxLength: 256
+  schemas:
+    AuthenticationResponse:
+      type: object
+      description: スタッフ認証APIレスポンス
+      properties:
+        token:
+          type: string
+          description: トークン
+          example: abcdefgh12345678
+    CommonErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+      required:
+        - code
+        - message
+    StaffGetResponse:
+      type: object
+      description: スタッフ情報取得APIレスポンス
+      properties:
+        staffId:
+          type: string
+          description: スタッフID
+        staffName:
+          type: string
+          description: スタッフ名
+      example:
+        staffId: JINS12345
+        staffName: Jon Staff
+  responses:
+    Unanthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0007
+            message: Authentication failed.
+    TooManyRequests:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0004
+            message: Duplicate api invocation detected.
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0000
+            message: Unexpected error occurred.
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0002
+            message: Specified data not found.

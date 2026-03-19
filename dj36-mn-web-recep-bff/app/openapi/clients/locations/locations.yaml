@@ -1,0 +1,1322 @@
+openapi: 3.0.3
+info:
+  title: ${info.title}
+  description: ''
+  version: ${api.version}
+paths:
+  /location/locations:
+    get:
+      tags:
+        - Locations
+      summary: ロケーションマスタ検索API
+      description: 必須のクエリパラメータは存在しません。<br> クエリパラメータを指定しない場合は、すべての検索結果が返されます。 総件数や取得件数は親のカウントです。
+      operationId: getLocations
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/LocationIdList'
+        - $ref: '#/components/parameters/LocationCodeList'
+        - $ref: '#/components/parameters/LocationMajorClassCodeList'
+        - $ref: '#/components/parameters/LocationMinorClassCodeList'
+        - $ref: '#/components/parameters/InventoryHoldingFlag'
+        - $ref: '#/components/parameters/ReceptionFlag'
+        - $ref: '#/components/parameters/ExamFlag'
+        - $ref: '#/components/parameters/CheckoutFlag'
+        - $ref: '#/components/parameters/ProcessingFlag'
+        - $ref: '#/components/parameters/AdjustmentPickupFlag'
+        - $ref: '#/components/parameters/ContactLensSalesFlag'
+        - $ref: '#/components/parameters/WarrantyFlag'
+        - $ref: '#/components/parameters/CountryCodeAlpha2'
+        - $ref: '#/components/parameters/DeletedGetFlag'
+        - $ref: '#/components/parameters/SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationsGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/location/locations
+        type: ${apigateway.etc}
+  /location/location-major-classes:
+    get:
+      tags:
+        - LocationMajorClasses
+      summary: ロケーション大分類マスタ検索API
+      description: 必須のクエリパラメータは存在しません。<br> クエリパラメータを指定しない場合は、すべての検索結果が返されます。
+      operationId: getLocationMajorClasses
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/LocationMajorClassIdList'
+        - $ref: '#/components/parameters/LocationMajorClassCodeList'
+        - $ref: '#/components/parameters/parameters-SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationMajorClassesGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/location/location-major-classes
+        type: ${apigateway.etc}
+  /location/location-minor-classes:
+    get:
+      tags:
+        - LocationMinorClasses
+      summary: ロケーション小分類マスタ検索API
+      description: 必須のクエリパラメータは存在しません。<br> クエリパラメータを指定しない場合は、すべての検索結果が返されます。 総件数や取得件数は親のカウントです。
+      operationId: getLocationMinorClasses
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/LocationMinorClassIdList'
+        - $ref: '#/components/parameters/parameters-LocationMinorClassCodeList'
+        - $ref: '#/components/parameters/LocationMajorClassIdList'
+        - $ref: '#/components/parameters/LocationMajorClassCodeList'
+        - $ref: '#/components/parameters/InventoryHoldingFlag'
+        - $ref: '#/components/parameters/ReceptionFlag'
+        - $ref: '#/components/parameters/ExamFlag'
+        - $ref: '#/components/parameters/CheckoutFlag'
+        - $ref: '#/components/parameters/ProcessingFlag'
+        - $ref: '#/components/parameters/AdjustmentPickupFlag'
+        - $ref: '#/components/parameters/ContactLensSalesFlag'
+        - $ref: '#/components/parameters/WarrantyFlag'
+        - $ref: '#/components/parameters/components-parameters-SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationMinorClassesGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/location/location-minor-classes
+        type: ${apigateway.etc}
+  /location/countries:
+    get:
+      tags:
+        - Countries
+      summary: 国マスタ検索API
+      operationId: getCountries
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/CountryIdList'
+        - $ref: '#/components/parameters/CountryCodeAlpha2List'
+        - $ref: '#/components/parameters/CountryCodeAlpha3List'
+        - $ref: '#/components/parameters/countries_components-parameters-SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountriesGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/location/countries
+        type: ${apigateway.etc}
+  /location/stores-attributes:
+    get:
+      tags:
+        - storesAttributes
+      summary: 店舗属性マスタ検索API
+      description: 必須のクエリパラメータは存在しません。<br> クエリパラメータを指定しない場合は、すべての検索結果が返されます。 総件数や取得件数は親のカウントです。
+      operationId: getStoresAttributes
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/StoreAttributesIdList'
+        - $ref: '#/components/parameters/LocationIdList'
+        - $ref: '#/components/parameters/LocationCodeList'
+        - $ref: '#/components/parameters/stores-attributes_components-parameters-SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoresAttributesGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/location/stores-attributes
+        type: ${apigateway.etc}
+components:
+  parameters:
+    JinsTraceID:
+      name: jins-trace-id
+      description: <BFFシステムコード>_\<UUID>
+      in: header
+      required: true
+      example: bff_usgjpic_ab623ca6-b1e4-3796-a761-ca05605da64a
+      schema:
+        type: string
+        maxLength: 64
+    JinsTraceIdBranchNo:
+      name: jins-trace-id-branch-no
+      description: jins-trace-idに紐付く呼出し枝番
+      in: header
+      example: 1
+      schema:
+        type: string
+        maxLength: 64
+    UserID:
+      name: jins-user-id
+      description: UI側でユーザを識別できるIDを格納
+      in: header
+      required: true
+      example: U00001
+      schema:
+        type: string
+        maxLength: 64
+    LocationIdList:
+      name: locationIdList
+      description: ロケーションIDリスト
+      in: query
+      required: false
+      example: 123,124
+      schema:
+        type: array
+        items:
+          description: ロケーションID
+          type: integer
+          format: int64
+          example: 1143001
+      style: form
+      explode: false
+    LocationCodeList:
+      name: locationCodeList
+      description: ロケーションコードリスト
+      in: query
+      required: false
+      example: aaa-abcdefg,bbb-abcdefg
+      schema:
+        type: array
+        items:
+          description: ロケーションコード
+          type: string
+          maxLength: 80
+          example: 89001
+      style: form
+      explode: false
+    LocationMajorClassCodeList:
+      name: locationMajorClassCodeList
+      description: ロケーション大分類コードリスト
+      in: query
+      required: false
+      example: aaa-abcdefg,bbb-abcdefg
+      schema:
+        type: array
+        items:
+          description: ロケーション大分類コード
+          type: string
+          maxLength: 2
+          example: 1
+      style: form
+      explode: false
+    LocationMinorClassCodeList:
+      name: locationMinorClassCodeList
+      description: ロケーション小分類コードリスト
+      in: query
+      required: false
+      example: aaa-abcdefg,bbb-abcdefg
+      schema:
+        type: array
+        items:
+          description: ロケーション小分類コード
+          type: string
+          maxLength: 2
+          example: 1
+      style: form
+      explode: false
+    InventoryHoldingFlag:
+      name: inventoryHoldingFlag
+      description: 在庫保有フラグ
+      in: query
+      required: false
+      example: 1
+      schema:
+        type: integer
+        format: Int32
+        maximum: 1
+    ReceptionFlag:
+      name: receptionFlag
+      description: 受付業務可能フラグ
+      in: query
+      required: false
+      example: 1
+      schema:
+        type: integer
+        format: Int32
+        maximum: 1
+    ExamFlag:
+      name: examFlag
+      description: 測定業務可能フラグ
+      in: query
+      required: false
+      example: 1
+      schema:
+        type: integer
+        format: Int32
+        maximum: 1
+    CheckoutFlag:
+      name: checkoutFlag
+      description: 会計業務可能フラグ
+      in: query
+      required: false
+      example: 1
+      schema:
+        type: integer
+        format: Int32
+        maximum: 1
+    ProcessingFlag:
+      name: processingFlag
+      description: 加工業務可能フラグ
+      in: query
+      required: false
+      example: 1
+      schema:
+        type: integer
+        format: Int32
+        maximum: 1
+    AdjustmentPickupFlag:
+      name: adjustmentPickupFlag
+      description: 調整・お渡し業務可能フラグ
+      in: query
+      required: false
+      example: 1
+      schema:
+        type: integer
+        format: Int32
+        maximum: 1
+    ContactLensSalesFlag:
+      name: contactLensSalesFlag
+      description: コンタクト販売可能フラグ
+      in: query
+      required: false
+      example: 1
+      schema:
+        type: integer
+        format: Int32
+        maximum: 1
+    WarrantyFlag:
+      name: warrantyFlag
+      description: 保証業務可能フラグ
+      in: query
+      required: false
+      example: 1
+      schema:
+        type: integer
+        format: Int32
+        maximum: 1
+    CountryCodeAlpha2:
+      name: countryCodeAlpha2
+      description: 国コード(alpha-2)
+      in: query
+      required: false
+      example: JP
+      schema:
+        type: string
+        maxLength: 2
+    DeletedGetFlag:
+      name: deletedGetFlag
+      description: 削除レコード取得フラグ<br> true:削除されたレコードも含めて返します。<br> false:削除されていないレコードのみを返します。
+      in: query
+      required: false
+      example: true
+      schema:
+        type: boolean
+        default: true
+    SortKey:
+      name: sortKey
+      description: ソートキー<br> 昇順降順はコロン区切り<br> 複数の場合はカンマ区切り<br> スペースは挟まない
+      in: query
+      required: false
+      example: locationId:ASC
+      schema:
+        type: string
+        default: locationId:ASC
+    Limit:
+      name: limit
+      description: 取得制限数
+      in: query
+      required: false
+      example: 1000000
+      schema:
+        $ref: '#/components/schemas/Limit'
+    Offset:
+      name: offset
+      description: 取得開始位置
+      in: query
+      required: false
+      example: 0
+      schema:
+        $ref: '#/components/schemas/Offset'
+    LocationMajorClassIdList:
+      name: locationMajorClassIdList
+      description: ロケーション大分類IDリスト
+      in: query
+      required: false
+      example: 123,124
+      schema:
+        type: array
+        items:
+          description: ロケーション大分類ID
+          type: integer
+          format: int64
+          example: 100001
+      style: form
+      explode: false
+    parameters-SortKey:
+      name: sortKey
+      description: |
+        ソートキー<br>
+        昇順降順はコロン区切り<br>
+        複数の場合はカンマ区切り<br>
+        スペースは挟まない
+      in: query
+      required: false
+      example: locationMajorClassCode:ASC
+      schema:
+        type: string
+        default: locationMajorClassCode:ASC
+    LocationMinorClassIdList:
+      name: locationMinorClassIdList
+      description: ロケーション小分類IDリスト
+      in: query
+      required: false
+      example: 123,124
+      schema:
+        type: array
+        items:
+          description: ロケーション小分類ID
+          type: integer
+          format: int64
+          example: 10011
+      style: form
+      explode: false
+    parameters-LocationMinorClassCodeList:
+      name: locationMinorClassCodeList
+      description: ロケーション小分類コードリスト
+      in: query
+      required: false
+      example: aa,bb
+      schema:
+        type: array
+        items:
+          description: ロケーション小分類コード
+          type: string
+          maxLength: 2
+          example: 1
+      style: form
+      explode: false
+    components-parameters-SortKey:
+      name: sortKey
+      description: ソートキー<br> 昇順降順はコロン区切り<br> 複数の場合はカンマ区切り<br> スペースは挟まない
+      in: query
+      required: false
+      example: locationMinorClassCode:ASC
+      schema:
+        type: string
+        default: locationMinorClassCode:ASC
+    CountryIdList:
+      name: countryIdList
+      description: 国IDリスト
+      in: query
+      required: false
+      example: 123,124
+      schema:
+        type: array
+        items:
+          description: countryID
+          type: integer
+          format: int64
+          maximum: 9223372036854776000
+          maxLength: 19
+          example: 123
+      style: form
+      explode: false
+    CountryCodeAlpha2List:
+      name: countryCodeAlpha2List
+      description: 国コード(Alpha-2)リスト
+      in: query
+      required: false
+      example: JP,US
+      schema:
+        type: array
+        items:
+          description: countryCodeAlpha2
+          type: string
+          maxLength: 2
+          example: US
+      style: form
+      explode: false
+    CountryCodeAlpha3List:
+      name: countryCodeAlpha3List
+      description: 国コード(Alpha-3)リスト
+      in: query
+      required: false
+      example: JPN,USA
+      schema:
+        type: array
+        items:
+          description: countryCodeAlpha3
+          type: string
+          maxLength: 3
+          example: USA
+      style: form
+      explode: false
+    countries_components-parameters-SortKey:
+      name: sortKey
+      description: |
+        ソートキー
+        昇順降順はコロン区切り
+        複数の場合はカンマ区切り
+        スペースは挟まない
+      in: query
+      required: false
+      example: countryId:ASC
+      schema:
+        type: string
+        default: countryId:ASC
+    StoreAttributesIdList:
+      name: storeAttributesIdList
+      description: 店舗属性IDリスト
+      in: query
+      required: false
+      example: 123,124
+      schema:
+        type: array
+        items:
+          description: 店舗属性ID
+          type: integer
+          format: int64
+          example: 123
+      style: form
+      explode: false
+    stores-attributes_components-parameters-SortKey:
+      name: sortKey
+      description: ソートキー 昇順降順はコロン区切り<br> 複数の場合はカンマ区切り<br> スペースは挟まない
+      in: query
+      required: false
+      example: storeAttributesId:ASC
+      schema:
+        type: string
+        default: storeAttributesId:ASC
+  schemas:
+    Limit:
+      description: 取得制限数
+      type: integer
+      minimum: 1
+      maximum: 100000
+      example: 20
+      default: 100000
+    Offset:
+      description: 取得開始位置
+      type: integer
+      minimum: 0
+      example: 0
+      default: 0
+    Count:
+      description: 今回取得件数
+      type: integer
+      example: 20
+    TotalResults:
+      description: 総件数
+      type: integer
+      example: 10000
+    HasMore:
+      description: 次回データ存在有無
+      type: boolean
+      example: true
+    LocationGetResponse:
+      type: object
+      properties:
+        locationId:
+          description: ロケーションID
+          type: integer
+          format: int64
+          example: 1143001
+        locationDivision:
+          description: ロケーション区分
+          type: string
+          maxLength: 4
+          example: 6001
+          nullable: true
+        locationCode:
+          description: ロケーションコード
+          type: string
+          maxLength: 80
+          example: 89001
+        locationName:
+          description: ロケーション名
+          type: string
+          maxLength: 40
+          example: JINS Valley Fair
+        postalCode:
+          description: 郵便番号
+          type: string
+          maxLength: 10
+          example: 95050
+          nullable: true
+        address1:
+          description: 住所1
+          type: string
+          maxLength: 40
+          example: 2855 Stevens Creek Boulevard
+          nullable: true
+        address2:
+          description: 住所2
+          type: string
+          maxLength: 40
+          example: Santa Clara
+          nullable: true
+        address3:
+          description: 住所3
+          type: string
+          maxLength: 40
+          example: CA 95050
+          nullable: true
+        address4:
+          description: 住所4
+          type: string
+          maxLength: 40
+          example: Level 2, next to Old Navy
+          nullable: true
+        latitude:
+          description: 緯度
+          type: number
+          example: 37.325137
+          nullable: true
+        longitude:
+          description: 経度
+          type: number
+          example: -121.946243
+          nullable: true
+        timezone:
+          description: タイムゾーン
+          type: string
+          maxLength: 40
+          example: America/Los_Angeles
+          nullable: true
+        primaryPhoneNumber:
+          description: 電話番号（代表）
+          type: string
+          maxLength: 40
+          example: 1 (609) 681-2485
+          nullable: true
+        openingDate:
+          description: 開業日<br>※現地時間
+          type: string
+          format: date
+          example: '2024-01-01'
+          nullable: true
+        closingDate:
+          description: 閉業日<br>※現地時間
+          type: string
+          format: date
+          example: '2024-01-31'
+          nullable: true
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: Int32
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          maxLength: 256
+          example: Usa00001
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+        locationMajorClass:
+          type: object
+          properties:
+            locationMajorClassId:
+              description: ロケーション大分類ID
+              type: integer
+              format: int64
+              example: 100001
+            locationMajorClassCode:
+              description: ロケーション大分類コード
+              type: string
+              maxLength: 2
+              example: 1
+            locationMajorClassName:
+              description: ロケーション大分類名
+              type: string
+              maxLength: 40
+              example: Store
+            displayOrder:
+              description: 表示順
+              type: integer
+              format: int32
+              example: 1
+        locationMinorClass:
+          type: object
+          properties:
+            locationMinorClassId:
+              description: ロケーション小分類ID
+              type: integer
+              format: int64
+              example: 10011
+            locationMinorClassCode:
+              description: ロケーション小分類コード
+              type: string
+              maxLength: 2
+              example: 1
+            locationMinorClassName:
+              description: ロケーション小分類名
+              type: string
+              maxLength: 40
+              example: Regular store
+            inventoryHoldingFlag:
+              description: 在庫保有フラグ
+              type: integer
+              format: int32
+              nullable: true
+            receptionFlag:
+              description: 受付業務可能フラグ
+              type: integer
+              format: int32
+              nullable: true
+            examFlag:
+              description: 測定業務可能フラグ
+              type: integer
+              format: int32
+              nullable: true
+            checkoutFlag:
+              description: 会計業務可能フラグ
+              type: integer
+              format: int32
+              nullable: true
+            processingFlag:
+              description: 加工業務可能フラグ
+              type: integer
+              format: int32
+              nullable: true
+            adjustmentPickupFlag:
+              description: 調整・お渡し業務可能フラグ
+              type: integer
+              format: int32
+              nullable: true
+            contactLensSalesFlag:
+              description: コンタクト販売可能フラグ
+              type: integer
+              format: int32
+              nullable: true
+            warrantyFlag:
+              description: 保証業務可能フラグ
+              type: integer
+              format: int32
+              nullable: true
+            displayOrder:
+              description: 表示順
+              type: integer
+              format: int32
+              example: 1
+        country:
+          type: object
+          properties:
+            countryId:
+              description: 国ID
+              type: integer
+              format: int64
+              example: 91000000001
+            countryCodeAlpha2:
+              description: 国コード(alpha-2)
+              type: string
+              maxLength: 2
+              example: JP
+            countryCodeAlpha3:
+              description: 国コード(alpha-3)
+              type: string
+              maxLength: 3
+              example: JPN
+              nullable: true
+            countryName:
+              description: 国名
+              type: string
+              maxLength: 100
+              example: Japan
+    LocationsGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationGetResponse'
+    CommonErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+      required:
+        - code
+        - message
+    LocationMajorClassGetResponse:
+      type: object
+      properties:
+        locationMajorClassId:
+          description: ロケーション大分類ID
+          type: integer
+          format: int64
+          example: 100001
+        locationMajorClassCode:
+          description: ロケーション大分類コード
+          type: string
+          maxLength: 2
+          example: 1
+        locationMajorClassName:
+          description: ロケーション大分類名
+          type: string
+          maxLength: 40
+          example: Store
+        displayOrder:
+          description: 表示順
+          type: integer
+          format: int32
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: Int32
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          maxLength: 256
+          example: Usa00001
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+    LocationMajorClassesGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationMajorClassGetResponse'
+    LocationMinorClassGetResponse:
+      type: object
+      properties:
+        locationMinorClassId:
+          description: ロケーション小分類ID
+          type: integer
+          format: int64
+          example: 10011
+        locationMinorClassCode:
+          description: ロケーション小分類コード
+          type: string
+          maxLength: 2
+          example: 1
+        locationMinorClassName:
+          description: ロケーション小分類名
+          type: string
+          maxLength: 40
+          example: Regular store
+        inventoryHoldingFlag:
+          description: 在庫保有フラグ
+          type: integer
+          format: Int32
+          nullable: true
+        receptionFlag:
+          description: 受付業務可能フラグ
+          type: integer
+          format: Int32
+          nullable: true
+        examFlag:
+          description: 測定業務可能フラグ
+          type: integer
+          format: Int32
+          nullable: true
+        checkoutFlag:
+          description: 会計業務可能フラグ
+          type: integer
+          format: Int32
+          nullable: true
+        processingFlag:
+          description: 加工業務可能フラグ
+          type: integer
+          format: Int32
+          nullable: true
+        adjustmentPickupFlag:
+          description: 調整・お渡し業務可能フラグ
+          type: integer
+          format: Int32
+          nullable: true
+        contactLensSalesFlag:
+          description: コンタクト販売可能フラグ
+          type: integer
+          format: Int32
+          nullable: true
+        warrantyFlag:
+          description: 保証業務可能フラグ
+          type: integer
+          format: Int32
+          nullable: true
+        displayOrder:
+          description: 表示順
+          type: integer
+          format: int32
+          example: 1
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: Int32
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          maxLength: 256
+          example: Usa00001
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+        locationMajorClass:
+          type: object
+          properties:
+            locationMajorClassId:
+              description: ロケーション大分類ID
+              type: integer
+              format: int64
+              example: 100001
+            locationMajorClassCode:
+              description: ロケーション大分類コード
+              type: string
+              maxLength: 2
+              example: 1
+            locationMajorClassName:
+              description: ロケーション大分類名
+              type: string
+              maxLength: 40
+              example: Store
+            displayOrder:
+              description: 表示順
+              type: integer
+              format: int32
+              example: 1
+    LocationMinorClassesGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationMinorClassGetResponse'
+    CountryId:
+      description: 国ID
+      type: integer
+      format: int64
+      maxLength: 19
+      example: 123
+    CountryGetResponse:
+      type: object
+      properties:
+        countryId:
+          $ref: '#/components/schemas/CountryId'
+        countryCodeAlpha2:
+          description: 国コード(alpha-2)
+          type: string
+        countryCodeAlpha3:
+          description: 国コード(alpha-3)
+          type: string
+          nullable: true
+        countryName:
+          description: 国名
+          type: string
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          example: GHIJKL123456
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+    CountriesGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryGetResponse'
+    StoreAttributesGetResponse:
+      type: object
+      properties:
+        storeAttributesId:
+          description: 店舗属性ID
+          type: integer
+          format: int64
+          example: 123
+        openTimeMon:
+          description: 開店時間（月曜）
+          type: string
+          maxLength: 5
+          example: '10:00'
+          nullable: true
+        openTimeTue:
+          description: 開店時間（火曜）
+          type: string
+          maxLength: 5
+          example: '10:00'
+          nullable: true
+        openTimeWed:
+          description: 開店時間（水曜）
+          type: string
+          maxLength: 5
+          example: '10:00'
+          nullable: true
+        openTimeThu:
+          description: 開店時間（木曜）
+          type: string
+          maxLength: 5
+          example: '10:00'
+          nullable: true
+        openTimeFri:
+          description: 開店時間（金曜）
+          type: string
+          maxLength: 5
+          example: '10:00'
+          nullable: true
+        openTimeSat:
+          description: 開店時間（土曜）
+          type: string
+          maxLength: 5
+          example: '10:00'
+          nullable: true
+        openTimeSun:
+          description: 開店時間（日曜）
+          type: string
+          maxLength: 5
+          example: '11:00'
+          nullable: true
+        openTimeHol:
+          description: 開店時間（祝日）
+          type: string
+          maxLength: 5
+          example: '11:00'
+          nullable: true
+        closeTimeMon:
+          description: 閉店時間（月曜）
+          type: string
+          maxLength: 5
+          example: '21:00'
+          nullable: true
+        closeTimeTue:
+          description: 閉店時間（火曜）
+          type: string
+          maxLength: 5
+          example: '21:00'
+          nullable: true
+        closeTimeWed:
+          description: 閉店時間（水曜）
+          type: string
+          maxLength: 5
+          example: '21:00'
+          nullable: true
+        closeTimeThu:
+          description: 閉店時間（木曜）
+          type: string
+          maxLength: 5
+          example: '21:00'
+          nullable: true
+        closeTimeFri:
+          description: 閉店時間（金曜）
+          type: string
+          maxLength: 5
+          example: '21:00'
+          nullable: true
+        closeTimeSat:
+          description: 閉店時間（土曜）
+          type: string
+          maxLength: 5
+          example: '21:00'
+          nullable: true
+        closeTimeSun:
+          description: 閉店時間（日曜）
+          type: string
+          maxLength: 5
+          example: '19:00'
+          nullable: true
+        closeTimeHol:
+          description: 閉店時間（祝日）
+          type: string
+          maxLength: 5
+          example: '19:00'
+          nullable: true
+        pickupLockerHoldingFlag:
+          description: ピックアップロッカー保有フラグ
+          type: integer
+          format: Int32
+          nullable: true
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: Int32
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          maxLength: 256
+          example: Usa00001
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+        location:
+          type: object
+          properties:
+            locationId:
+              description: ロケーションID
+              type: integer
+              format: int64
+              example: 1143001
+            locationCode:
+              description: ロケーションコード
+              type: string
+              maxLength: 80
+              example: 89001
+            locationName:
+              description: ロケーション名
+              type: string
+              maxLength: 40
+              example: JINS Valley Fair
+            locationMinorClassId:
+              description: ロケーション小分類ID
+              type: integer
+              format: int64
+              example: 10011
+            countryId:
+              description: 国ID
+              type: integer
+              format: int64
+              example: 91000000001
+            postalCode:
+              description: 郵便番号
+              type: string
+              maxLength: 10
+              example: 95050
+              nullable: true
+            address1:
+              description: 住所1
+              type: string
+              maxLength: 40
+              example: 2855 Stevens Creek Boulevard
+              nullable: true
+            address2:
+              description: 住所2
+              type: string
+              maxLength: 40
+              example: Santa Clara
+              nullable: true
+            address3:
+              description: 住所3
+              type: string
+              maxLength: 40
+              example: CA 95050
+              nullable: true
+            address4:
+              description: 住所4
+              type: string
+              maxLength: 40
+              example: Level 2, next to Old Navy
+              nullable: true
+            latitude:
+              description: 緯度
+              type: number
+              example: 37.325137
+              nullable: true
+            longitude:
+              description: 経度
+              type: number
+              example: -121.946243
+              nullable: true
+            timezone:
+              description: タイムゾーン
+              type: string
+              maxLength: 40
+              example: America/Los_Angeles
+              nullable: true
+            primaryPhoneNumber:
+              description: 電話番号（代表）
+              type: string
+              maxLength: 40
+              example: 1 (609) 681-2485
+              nullable: true
+            openingDate:
+              description: 開業日
+              type: string
+              format: date
+              example: '2024-01-01'
+              nullable: true
+            closingDate:
+              description: 閉業日
+              type: string
+              format: date
+              example: '2024-01-31'
+              nullable: true
+    StoresAttributesGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/StoreAttributesGetResponse'
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0001
+            message: Validation error occurred.
+    TooManyRequests:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0004
+            message: Duplicate api invocation detected.
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0000
+            message: Unexpected error occurred.
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0002
+            message: Specified data not found.
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0003
+            message: Transaction failed due to optimisitic lock failure.
