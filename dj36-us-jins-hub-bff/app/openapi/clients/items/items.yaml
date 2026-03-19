@@ -1,0 +1,5659 @@
+openapi: 3.0.3
+info:
+  title: ${info.title}
+  description: ''
+  version: ${api.version}
+paths:
+  /catalog/items:
+    get:
+      tags:
+        - Items
+      summary: 商品検索API
+      description: 次のクエリパラメータのいずれか1つは必須です。<br> - itemCodeList<br> - itemCodeLikeList<br> - countryCodeAlpha2List<br> - countryIdList<br> - itemIdList<br> 総件数や取得件数は親のカウントです。
+      operationId: getItems
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/ItemCodeList'
+        - $ref: '#/components/parameters/ItemCodeLikeList'
+        - $ref: '#/components/parameters/CountryCodeAlpha2List'
+        - $ref: '#/components/parameters/CountryIdList'
+        - $ref: '#/components/parameters/ItemIdList'
+        - $ref: '#/components/parameters/SalesItemCategoryId'
+        - $ref: '#/components/parameters/SalesItemCategoryMgmtCode'
+        - $ref: '#/components/parameters/SalesItemCategoryCode'
+        - $ref: '#/components/parameters/DeletedGetFlag'
+        - $ref: '#/components/parameters/SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemsGetResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                validationError:
+                  $ref: '#/components/examples/COM_0001'
+                businessError:
+                  $ref: '#/components/examples/DPFM_CATALOG_0001'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/catalog/items
+        type: ${apigateway.etc}
+  /catalog/frame-trace-data:
+    get:
+      tags:
+        - FrameTraceData
+      summary: フレームトレース情報検索API
+      description: 次のクエリパラメータのいずれか1つは必須です。<br> - itemCode<br> - itemId
+      operationId: getFrameTraceData
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/ItemCode'
+        - $ref: '#/components/parameters/ItemId'
+        - $ref: '#/components/parameters/parameters-DeletedGetFlag'
+        - $ref: '#/components/parameters/parameters-SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FrameTracesGetResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                validationError:
+                  $ref: '#/components/examples/COM_0001'
+                bussinessError:
+                  $ref: '#/components/examples/DPFM_CATALOG_0002'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/catalog/frame-trace-data
+        type: ${apigateway.etc}
+  /catalog/lens-spec-major-classes:
+    get:
+      tags:
+        - LensSpecMajorClasses
+      summary: レンズ仕様大分類検索API
+      description: 必須のクエリパラメータは存在しません。<br> クエリパラメータを設定しない場合は、すべての検索結果が返されます。
+      operationId: getLensSpecMajorClasses
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/LensSpecMajorClassIdList'
+        - $ref: '#/components/parameters/LensSpecMajorClassCodeList'
+        - $ref: '#/components/parameters/components-parameters-SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LensSpecMajorClassesGetResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                validationError:
+                  $ref: '#/components/examples/COM_0001'
+                businessError:
+                  $ref: '#/components/examples/DPFM_CATALOG_0001'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/catalog/lens-spec-major-classes
+        type: ${apigateway.etc}
+  /catalog/lens-spec-minor-classes:
+    get:
+      tags:
+        - LensSpecMinorClasses
+      summary: レンズ仕様小分類検索API
+      description: 必須のクエリパラメータは存在しません。<br> クエリパラメータを指定しない場合は、すべての検索結果が返されます。
+      operationId: getLensSpecMinorClasses
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/LensSpecMinorClassCodeList'
+        - $ref: '#/components/parameters/LensSpecMinorClassIdList'
+        - $ref: '#/components/parameters/parameters-LensSpecMajorClassCodeList'
+        - $ref: '#/components/parameters/parameters-LensSpecMajorClassIdList'
+        - $ref: '#/components/parameters/lens-spec-minor-classes_components-parameters-SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LensSpecMinorClassesGetResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                validationError:
+                  $ref: '#/components/examples/COM_0001'
+                businessError:
+                  $ref: '#/components/examples/DPFM_CATALOG_0001'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/catalog/lens-spec-minor-classes
+        type: ${apigateway.etc}
+  /catalog/lens-colors:
+    get:
+      tags:
+        - LensColors
+      summary: レンズカラー検索API
+      description: 次のクエリパラメータのいずれか1つは必須です。<br> - lensColorIdList<br> - lensColorCodeList
+      operationId: getLensColors
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/LensColorIdList'
+        - $ref: '#/components/parameters/LensColorCodeList'
+        - $ref: '#/components/parameters/lens-colors_components-parameters-SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LensColorsGetResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                validationError:
+                  $ref: '#/components/examples/COM_0001'
+                businessError:
+                  $ref: '#/components/examples/DPFM_CATALOG_0001'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/catalog/lens-colors
+        type: ${apigateway.etc}
+  /catalog/lens-color-types:
+    get:
+      tags:
+        - LensColorTypes
+      summary: レンズカラータイプ検索API
+      description: 次のクエリパラメータのいずれか1つは必須です。<br> - lensColorTypeIdList<br> - lensColorTypeCodeList
+      operationId: getLensColorTypes
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/LensColorTypeIdList'
+        - $ref: '#/components/parameters/LensColorTypeCodeList'
+        - $ref: '#/components/parameters/lens-color-types_components-parameters-SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LensColorTypesGetResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                validationError:
+                  $ref: '#/components/examples/COM_0001'
+                businessError:
+                  $ref: '#/components/examples/DPFM_CATALOG_0001'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/catalog/lensColorTypes
+        type: ${apigateway.etc}
+  /catalog/materials:
+    get:
+      tags:
+        - Materials
+      summary: 素材検索API
+      description: |
+        次のクエリパラメータのいずれか1つは必須です。
+        - materialIdList
+        - materialCodeList
+        - partIdList
+        - partCodeList
+      operationId: getMaterials
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/MaterialIdList'
+        - $ref: '#/components/parameters/MaterialCodeList'
+        - $ref: '#/components/parameters/PartIdList'
+        - $ref: '#/components/parameters/PartCodeList'
+        - $ref: '#/components/parameters/materials_components-parameters-SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaterialsGetResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                validationError:
+                  $ref: '#/components/examples/COM_0001'
+                businessError:
+                  $ref: '#/components/examples/DPFM_CATALOG_0001'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/catalog/materials
+        type: ${apigateway.etc}
+  /catalog/selling-prices:
+    get:
+      tags:
+        - SellingPrices
+      summary: 売価検索API
+      description: 検索パラメータのうち、countryId、countryCodeのいずれかと、sellingPriceCategoryId、sellingPriceCategoryCode、salesTargetIdのうちいずれかとsalesDateがそれぞれ必須。総件数や取得件数は親のカウントである。
+      operationId: getSellingPrices
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/CountryCodeAlpha2'
+        - $ref: '#/components/parameters/CountryId'
+        - $ref: '#/components/parameters/SellingPriceCategoryCode'
+        - $ref: '#/components/parameters/SellingPriceCategoryId'
+        - $ref: '#/components/parameters/SalesTargetIdList'
+        - $ref: '#/components/parameters/SalesDate'
+        - $ref: '#/components/parameters/selling-prices_components-parameters-SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SellingPricesGetResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                validationError:
+                  $ref: '#/components/examples/COM_0001'
+                businessError:
+                  $ref: '#/components/examples/DPFM_CATALOG_0003'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/catalog/selling-prices
+        type: ${apigateway.etc}
+  /catalog/lens-color-variations:
+    get:
+      tags:
+        - LensColorVariations
+      summary: レンズカラーバリエーション検索API
+      description: 次のクエリパラメータのいずれか1つは必須です。<br> - lensIdList<br> - lensCodeList<br> - lensNameIdList<br> - lensNameCodeList<br> - itemIdList
+      operationId: getLensColorVariations
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/LensIdList'
+        - $ref: '#/components/parameters/LensCodeList'
+        - $ref: '#/components/parameters/LensNameIdList'
+        - $ref: '#/components/parameters/LensNameCodeList'
+        - $ref: '#/components/parameters/parameters-ItemIdList'
+        - $ref: '#/components/parameters/lens-color-variations_components-parameters-SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LensColorVariationsGetResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                validationError:
+                  $ref: '#/components/examples/COM_0001'
+                businessError:
+                  $ref: '#/components/examples/DPFM_CATALOG_0001'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/catalog/lensColorVariations
+        type: ${apigateway.etc}
+  /catalog/lens-spec-mgmt-for-sales:
+    get:
+      tags:
+        - LensSpecMgmtForSales
+      summary: 販売向けレンズ仕様管理検索API
+      description: 検索パラメータのうち、LensSpecMgmtForSalesIdList必須
+      operationId: getLensSpecMgmtForSales
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/LensSpecMgmtForSalesIdList'
+        - $ref: '#/components/parameters/lens-spec-mgmt-for-sales_components-parameters-SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LensSpecMgmtForSalesGetResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                validationError:
+                  $ref: '#/components/examples/COM_0001'
+                businessError:
+                  $ref: '#/components/examples/DPFM_CATALOG_0001'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/catalog/lens-spec-mgmt-for-sales
+        type: ${apigateway.etc}
+  /catalog/lens-unique-attributes:
+    get:
+      tags:
+        - LensUniqueAttributes
+      summary: レンズ固有属性検索API
+      description: |
+        総件数や取得件数は親のカウントである。
+
+        次のクエリパラメータのうち、いずれか1つは必須です。
+        - countryId
+        - countryCodeAlpha2
+      operationId: getLensUniqueAttributes
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/components-parameters-ItemIdList'
+        - $ref: '#/components/parameters/parameters-ItemCodeList'
+        - $ref: '#/components/parameters/SphericalPower'
+        - $ref: '#/components/parameters/AstigmatismPrescription'
+        - $ref: '#/components/parameters/AddPower'
+        - $ref: '#/components/parameters/RefractiveIndex'
+        - $ref: '#/components/parameters/SalesColorNameId'
+        - $ref: '#/components/parameters/SalesLensSpecId'
+        - $ref: '#/components/parameters/FocusCategoryId'
+        - $ref: '#/components/parameters/ProgressiveCategoryId'
+        - $ref: '#/components/parameters/RefractiveIndexNameId'
+        - $ref: '#/components/parameters/parameters-CountryId'
+        - $ref: '#/components/parameters/parameters-CountryCodeAlpha2'
+        - $ref: '#/components/parameters/components-parameters-DeletedGetFlag'
+        - $ref: '#/components/parameters/lens-unique-attributes_components-parameters-SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LensUniqueAttributesGetResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                validationError:
+                  $ref: '#/components/examples/COM_0001'
+                businessError:
+                  $ref: '#/components/examples/DPFM_CATALOG_0003'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/catalog/lens-unique-attributes
+        type: ${apigateway.etc}
+  /catalog/frame-unique-attributes:
+    get:
+      tags:
+        - FrameUniqueAttributes
+      summary: フレーム固有属性検索API
+      description: |
+        次のクエリパラメータのいずれか1つは必須です。
+        - itemIdList
+        - itemCodeList
+      operationId: getFrameUniqueAttributes
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/frame-unique-attributes_components-parameters-ItemIdList'
+        - $ref: '#/components/parameters/components-parameters-ItemCodeList'
+        - $ref: '#/components/parameters/SalesCountryId'
+        - $ref: '#/components/parameters/SalesCountryCode'
+        - $ref: '#/components/parameters/DeletedGetFlag'
+        - $ref: '#/components/parameters/frame-unique-attributes_components-parameters-SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FrameUniqueAttributesGetResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                validationError:
+                  $ref: '#/components/examples/COM_0001'
+                businessError:
+                  $ref: '#/components/examples/DPFM_CATALOG_0002'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/catalog/frame-unique-attributes
+        type: ${apigateway.etc}
+  /catalog/sales-lens-search:
+    get:
+      tags:
+        - SalesLensSearch
+      summary: 販売用レンズ検索項目検索API
+      description: |
+        次のクエリパラメータは必須です
+        - **salesDate**
+        - **targetTable**
+
+        また、次のパラメータのうち、いずれか1つは必ず指定してください
+        - **countryId**
+        - **countryCodeAlpha2**
+
+        総件数や取得件数のカウントは、対象テーブルで指定したテーブルのレコード数を返します。
+      operationId: getSalesLensSearch
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/parameters-CountryId'
+        - $ref: '#/components/parameters/parameters-CountryCodeAlpha2'
+        - $ref: '#/components/parameters/parameters-SalesDate'
+        - $ref: '#/components/parameters/TargetTable'
+        - $ref: '#/components/parameters/SalesColorNameId'
+        - $ref: '#/components/parameters/SalesLensSpecId'
+        - $ref: '#/components/parameters/FocusCategoryId'
+        - $ref: '#/components/parameters/ProgressiveCategoryId'
+        - $ref: '#/components/parameters/RefractiveIndexNameId'
+        - $ref: '#/components/parameters/parameters-DeletedGetFlag'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalesLensSearchesGetResponse'
+              examples:
+                salesColorNameRecords:
+                  $ref: '#/components/examples/salesColorNameRecords'
+                salesLensSpecRecords:
+                  $ref: '#/components/examples/salesLensSpecRecords'
+                focusCategoryRecords:
+                  $ref: '#/components/examples/focusCategoryRecords'
+                progressiveCategoryRecords:
+                  $ref: '#/components/examples/progressiveCategoryRecords'
+                refractiveIndexNameRecords:
+                  $ref: '#/components/examples/refractiveIndexNameRecords'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                validationError:
+                  $ref: '#/components/examples/COM_0001'
+                businessError:
+                  $ref: '#/components/examples/DPFM_CATALOG_0003'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/catalog/sales-lens-search
+        type: ${apigateway.etc}
+components:
+  parameters:
+    JinsTraceID:
+      name: jins-trace-id
+      description: <BFFシステムコード>_\<UUID>
+      in: header
+      required: true
+      example: bff_usgjpic_ab623ca6-b1e4-3796-a761-ca05605da64a
+      schema:
+        type: string
+        maxLength: 64
+    JinsTraceIdBranchNo:
+      name: jins-trace-id-branch-no
+      description: jins-trace-idに紐付く呼出し枝番
+      in: header
+      example: 1
+      schema:
+        type: string
+        maxLength: 64
+    UserID:
+      name: jins-user-id
+      description: UI側でユーザを識別できるIDを格納
+      in: header
+      required: true
+      example: U00001
+      schema:
+        type: string
+        maxLength: 64
+    ItemCodeList:
+      name: itemCodeList
+      description: 商品コードリスト
+      in: query
+      required: false
+      example: AMMF14S196C96,AMMF14S196C97
+      schema:
+        type: array
+        items:
+          type: string
+          maxLength: 18
+      style: form
+      explode: false
+    ItemCodeLikeList:
+      name: itemCodeLikeList
+      description: 商品コードあいまいリスト
+      in: query
+      required: false
+      example: AMMF,BMMF
+      schema:
+        type: array
+        items:
+          type: string
+          maxLength: 18
+      style: form
+      explode: false
+    CountryCodeAlpha2List:
+      name: countryCodeAlpha2List
+      description: 販売国コード（国コード alpha-2）リスト
+      in: query
+      required: false
+      example: US,JP
+      schema:
+        type: array
+        items:
+          type: string
+          maxLength: 2
+          example: US
+      style: form
+      explode: false
+    CountryIdList:
+      name: countryIdList
+      description: 国IDリスト
+      in: query
+      required: false
+      example: 91000000001,91000000002
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
+          example: 91000000001
+      style: form
+      explode: false
+    ItemIdList:
+      name: itemIdList
+      description: 商品IDリスト
+      in: query
+      required: false
+      example: 11000009860,11000009870
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
+          example: 123
+      style: form
+      explode: false
+    SalesItemCategoryId:
+      name: salesItemCategoryId
+      description: 販売用商品種別ID
+      in: query
+      required: false
+      example: 71000000001
+      schema:
+        type: integer
+        format: int64
+    SalesItemCategoryMgmtCode:
+      name: salesItemCategoryMgmtCode
+      description: 販売用商品種別管理コード
+      in: query
+      required: false
+      example: '01'
+      schema:
+        type: string
+        maxLength: 2
+    SalesItemCategoryCode:
+      name: salesItemCategoryCode
+      description: 販売用商品種別項目コード
+      in: query
+      required: false
+      example: '01'
+      schema:
+        type: string
+        maxLength: 2
+    DeletedGetFlag:
+      name: deletedGetFlag
+      description: |
+        削除レコード取得フラグ
+        true: 削除されたレコードも含めて返します。
+        false: 削除されていないレコードのみを返します。
+      in: query
+      required: false
+      example: true
+      schema:
+        type: boolean
+        default: true
+    SortKey:
+      name: sortKey
+      description: ソートキー<br> 昇順降順はコロン区切り<br> 複数の場合はカンマ区切り<br> スペースは挟まない
+      in: query
+      required: false
+      example: itemCode:ASC,itemId:DESC
+      schema:
+        type: string
+        default: itemCode:ASC
+    Limit:
+      name: limit
+      description: 取得制限数
+      in: query
+      required: false
+      example: 20
+      schema:
+        $ref: '#/components/schemas/Limit'
+    Offset:
+      name: offset
+      description: 取得開始位置
+      in: query
+      required: false
+      example: 0
+      schema:
+        $ref: '#/components/schemas/Offset'
+    ItemCode:
+      name: itemCode
+      description: 商品コード
+      in: query
+      required: false
+      example: AMMF14S196C96
+      schema:
+        type: string
+        maxLength: 18
+        example: AMMF14S196C96
+    ItemId:
+      name: itemId
+      description: 商品ID
+      in: query
+      required: false
+      example: 11000009860
+      schema:
+        type: integer
+        format: int64
+        example: 11000009860
+    parameters-DeletedGetFlag:
+      name: deletedGetFlag
+      description: 削除レコード取得フラグ<br> true:削除されたレコードも含めて返します。<br> false:削除されていないレコードのみを返します。
+      in: query
+      required: false
+      example: true
+      schema:
+        type: boolean
+        default: true
+    parameters-SortKey:
+      name: sortKey
+      description: ソートキー ソートキー<br> 昇順降順はコロン区切り<br> 複数の場合はカンマ区切り<br> スペースは挟まない
+      in: query
+      required: false
+      example: itemCode:ASC,itemId:DESC
+      schema:
+        type: string
+        default: itemCode:ASC
+    LensSpecMajorClassIdList:
+      name: lensSpecMajorClassIdList
+      description: レンズ仕様大分類IDリスト
+      in: query
+      required: false
+      example: 123,124
+      schema:
+        type: array
+        items:
+          description: レンズ仕様大分類ID
+          type: integer
+          format: int64
+          maximum: 9223372036854776000
+          maxLength: 19
+          example: 123
+      style: form
+      explode: false
+    LensSpecMajorClassCodeList:
+      name: lensSpecMajorClassCodeList
+      description: レンズ仕様大分類コードリスト
+      in: query
+      required: false
+      example: A1,B1
+      schema:
+        type: array
+        items:
+          description: レンズ仕様大分類コード
+          type: string
+          maxLength: 2
+          example: A1
+      style: form
+      explode: false
+    components-parameters-SortKey:
+      name: sortKey
+      description: ソートキー<br> 昇順降順はコロン区切り<br> 複数の場合はカンマ区切り<br> スペースは挟まない
+      in: query
+      required: false
+      example: lenSpecMajorClassId:ASC,lensSpecMajorClassCode:DESC
+      schema:
+        type: string
+        default: lensSpecMajorClassCode:ASC
+    LensSpecMinorClassCodeList:
+      name: lensSpecMinorClassCodeList
+      description: レンズ仕様小分類コードリスト
+      in: query
+      required: false
+      example: AA123,BB123
+      schema:
+        type: array
+        items:
+          description: レンズ仕様小分類コード
+          type: string
+          maxLength: 18
+          example: AA123
+      style: form
+      explode: false
+    LensSpecMinorClassIdList:
+      name: lensSpecMinorClassIdList
+      description: レンズ仕様小分類IDリスト
+      in: query
+      required: false
+      example: 1,2
+      schema:
+        type: array
+        items:
+          description: レンズ仕様小分類ID
+          type: integer
+          format: int64
+          maximum: 9223372036854776000
+          maxLength: 19
+          example: 1
+    parameters-LensSpecMajorClassCodeList:
+      name: lensSpecMajorClassCodeList
+      description: レンズ仕様大分類コードリスト
+      in: query
+      required: false
+      example: AA123,BB123
+      schema:
+        type: array
+        items:
+          description: レンズ仕様大分類コード
+          type: string
+          maxLength: 18
+          example: AA123
+      style: form
+      explode: false
+    parameters-LensSpecMajorClassIdList:
+      name: lensSpecMajorClassIdList
+      description: レンズ仕様大分類IDリスト
+      in: query
+      required: false
+      example: 1,2
+      schema:
+        type: array
+        items:
+          description: レンズ仕様大分類ID
+          type: integer
+          format: int64
+          maximum: 9223372036854776000
+          maxLength: 19
+          example: 2
+    lens-spec-minor-classes_components-parameters-SortKey:
+      name: sortKey
+      description: ソートキー<br> 昇順降順はコロン区切り<br> 複数の場合はカンマ区切り<br> スペースは挟まない
+      in: query
+      required: false
+      example: lensSpecMinorClassCode:ASC,lensSpecMinorClassId:DESC
+      schema:
+        type: string
+        default: lensSpecMinorClassCode:ASC
+    LensColorIdList:
+      name: lensColorIdList
+      description: レンズカラーIDリスト
+      in: query
+      required: false
+      example: 12345,13345
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
+          maxLength: 19
+          example: 12345
+      style: form
+      explode: false
+    LensColorCodeList:
+      name: lensColorCodeList
+      description: レンズカラーコードリスト
+      in: query
+      required: false
+      example: AA123,BB123
+      schema:
+        type: array
+        items:
+          description: レンズカラーコード
+          type: string
+          maxLength: 18
+          example: blue,red
+      style: form
+      explode: false
+    lens-colors_components-parameters-SortKey:
+      name: sortKey
+      description: ソートキー<br> 昇順降順はコロン区切り<br> 複数の場合はカンマ区切り<br> スペースは挟まない
+      in: query
+      required: false
+      example: lensColorCode:ASC,lensColorCode:DESC
+      schema:
+        type: string
+        default: lensColorCode:ASC
+    LensColorTypeIdList:
+      name: lensColorTypeIdList
+      description: レンズカラータイプIDリスト
+      in: query
+      required: false
+      example: 12345,13345
+      schema:
+        type: array
+        items:
+          description: レンズカラータイプID
+          type: integer
+          format: int64
+          maxLength: 19
+          example: 12345
+      style: form
+      explode: false
+    LensColorTypeCodeList:
+      name: lensColorTypeCodeList
+      description: レンズカラータイプコードリスト
+      in: query
+      required: false
+      example: AA123,BB123
+      schema:
+        type: array
+        items:
+          description: レンズカラータイプコード
+          type: string
+          maxLength: 18
+          example: AA123
+      style: form
+      explode: false
+    lens-color-types_components-parameters-SortKey:
+      name: sortKey
+      description: ソートキー<br> 昇順降順はコロン区切り<br> 複数の場合はカンマ区切り<br> スペースは挟まない
+      in: query
+      required: false
+      example: lensColorTypeCode:ASC
+      schema:
+        type: string
+        default: lensColorTypeCode:ASC
+    MaterialIdList:
+      name: materialIdList
+      description: 素材IDリスト
+      in: query
+      required: false
+      example: 123,124
+      schema:
+        type: array
+        items:
+          description: 素材ID
+          type: integer
+          format: int64
+          maximum: 9223372036854776000
+          maxLength: 19
+          example: 123
+      style: form
+      explode: false
+    MaterialCodeList:
+      name: materialCodeList
+      description: 素材コードリスト
+      in: query
+      required: false
+      example: A123,B123
+      schema:
+        type: array
+        items:
+          description: 素材コード
+          type: string
+          example: A123
+      style: form
+      explode: false
+    PartIdList:
+      name: partIdList
+      description: 部位IDリスト
+      in: query
+      required: false
+      example: 123,124
+      schema:
+        type: array
+        items:
+          description: 部位ID
+          type: integer
+          format: int64
+          maximum: 9223372036854776000
+          maxLength: 19
+          example: 123
+      style: form
+      explode: false
+    PartCodeList:
+      name: partCodeList
+      description: 部位コードリスト
+      in: query
+      required: false
+      example: A123,B123
+      schema:
+        type: array
+        items:
+          description: 部位コード
+          type: string
+          example: A123
+      style: form
+      explode: false
+    materials_components-parameters-SortKey:
+      name: sortKey
+      description: |
+        ソートキー
+        昇順降順はコロン区切り
+        複数の場合はカンマ区切り
+        スペースは挟まない
+      in: query
+      required: false
+      example: materialCode:ASC,materialId:DESC
+      schema:
+        type: string
+        default: materialCode:ASC
+    CountryCodeAlpha2:
+      name: countryCodeAlpha2
+      description: 国コード
+      in: query
+      required: false
+      example: US
+      schema:
+        type: string
+        maxLength: 2
+    CountryId:
+      name: countryId
+      description: 国ID
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int64
+        example: 91000000001
+    SellingPriceCategoryCode:
+      name: sellingPriceCategoryCode
+      description: 売価分類コード
+      in: query
+      required: false
+      schema:
+        type: string
+        maxLength: 2
+        example: '01'
+    SellingPriceCategoryId:
+      name: sellingPriceCategoryId
+      description: 売価分類ID
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int64
+        example: 11000009860
+    SalesTargetIdList:
+      name: salesTargetIdList
+      description: 販売対象IDリスト
+      in: query
+      required: false
+      example: 123,124
+      schema:
+        type: array
+        items:
+          description: 販売対象ID
+          type: integer
+          format: int64
+          example: 123
+    SalesDate:
+      name: salesDate
+      description: 販売年月日
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date
+        example: '2024-01-01'
+    selling-prices_components-parameters-SortKey:
+      name: sortKey
+      description: |
+        ソートキー
+        昇順降順はコロン区切り
+        複数の場合はカンマ区切り
+        スペースは挟まない
+      in: query
+      required: false
+      example: sellingPriceCategoryCode:ASC,sellingPriceCategoryId:DESC
+      schema:
+        type: string
+        default: salesTargetId:ASC
+    LensIdList:
+      name: lensIdList
+      description: レンズIDリスト
+      in: query
+      required: false
+      example: 12345,13345
+      schema:
+        type: array
+        items:
+          description: レンズID
+          type: integer
+          format: int64
+          maximum: 9223372036854776000
+          maxLength: 19
+          example: 12345
+      style: form
+      explode: false
+    LensCodeList:
+      name: lensCodeList
+      description: レンズコードリスト
+      in: query
+      required: false
+      example: AA123,BB123
+      schema:
+        type: array
+        items:
+          description: レンズコード
+          type: string
+          maxLength: 18
+          example: AA123
+      style: form
+      explode: false
+    LensNameIdList:
+      name: lensNameIdList
+      description: レンズ名称IDリスト
+      in: query
+      required: false
+      example: 12345,13345
+      schema:
+        type: array
+        items:
+          description: レンズ名称ID
+          type: integer
+          format: int64
+          maximum: 9223372036854776000
+          maxLength: 19
+          example: 12345
+      style: form
+      explode: false
+    LensNameCodeList:
+      name: lensNameCodeList
+      description: レンズ名称コードリスト
+      in: query
+      required: false
+      example: AA123,BB123
+      schema:
+        type: array
+        items:
+          description: レンズ名称コード
+          type: string
+          maxLength: 18
+          example: AA123
+      style: form
+      explode: false
+    parameters-ItemIdList:
+      name: itemIdList
+      description: 商品IDリスト
+      in: query
+      required: false
+      example: 11000009860,11000009861
+      schema:
+        type: array
+        items:
+          description: 商品ID
+          type: integer
+          format: int64
+          maximum: 9223372036854776000
+          maxLength: 19
+          example: 11000009860
+      style: form
+      explode: false
+    lens-color-variations_components-parameters-SortKey:
+      name: sortKey
+      description: ソートキー<br> 昇順降順はコロン区切り<br> 複数の場合はカンマ区切り<br> スペースは挟まない
+      in: query
+      required: false
+      example: lensCode:ASC,lensCode:DESC
+      schema:
+        type: string
+        default: lensCode:ASC
+    LensSpecMgmtForSalesIdList:
+      name: lensSpecMgmtForSaleIdList
+      description: 販売向けレンズ仕様管理IDリスト
+      in: query
+      required: false
+      example: 123,124
+      schema:
+        type: array
+        items:
+          description: 販売向けレンズ仕様管理ID
+          type: integer
+          format: int64
+          maxLength: 19
+          example: 123
+      style: form
+      explode: false
+    lens-spec-mgmt-for-sales_components-parameters-SortKey:
+      name: sortKey
+      description: |
+        ソートキー
+        昇順降順はコロン区切り
+        複数の場合はカンマ区切り
+        スペースは挟まない
+      in: query
+      required: false
+      example: LensSpecMgmtForSalesId:ASC
+      schema:
+        type: string
+        default: LensSpecMgmtForSalesId:ASC
+    components-parameters-ItemIdList:
+      name: itemIdList
+      description: 商品IDリスト
+      in: query
+      required: false
+      example: 123,124
+      schema:
+        type: array
+        items:
+          description: 商品ID
+          type: integer
+          format: int64
+          example: 123
+      style: form
+      explode: false
+    parameters-ItemCodeList:
+      name: itemCodeList
+      description: 商品コードリスト
+      in: query
+      required: false
+      example: A123,B456
+      schema:
+        type: array
+        items:
+          description: 商品コード
+          type: string
+          maxLength: 18
+          example: A123
+      style: form
+      explode: false
+    SphericalPower:
+      name: sphericalPower
+      description: 球面度数
+      in: query
+      required: false
+      schema:
+        type: number
+        example: 123.12
+      style: form
+      explode: false
+    AstigmatismPrescription:
+      name: astigmatismPrescription
+      description: 乱視度数
+      in: query
+      required: false
+      schema:
+        type: number
+        example: 123.12
+      style: form
+      explode: false
+    AddPower:
+      name: addPower
+      description: 加入度数
+      in: query
+      required: false
+      schema:
+        type: number
+        example: 1234.12
+      style: form
+      explode: false
+    RefractiveIndex:
+      name: refractiveIndex
+      description: 屈折率
+      in: query
+      required: false
+      schema:
+        type: number
+        example: 1234.12
+      style: form
+      explode: false
+    SalesColorNameId:
+      name: salesColorNameId
+      description: 販売用カラー名称ID
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int64
+        example: 123
+      style: form
+      explode: false
+    SalesLensSpecId:
+      name: salesLensSpecId
+      description: 販売用レンズ仕様ID
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int64
+        example: 123
+      style: form
+      explode: false
+    FocusCategoryId:
+      name: focusCategoryId
+      description: 焦点分類ID
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int64
+        example: 123
+      style: form
+      explode: false
+    ProgressiveCategoryId:
+      name: progressiveCategoryId
+      description: 累進分類ID
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int64
+        example: 123
+      style: form
+      explode: false
+    RefractiveIndexNameId:
+      name: refractiveIndexNameId
+      description: 屈折率名称ID
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int64
+        example: 123
+      style: form
+      explode: false
+    parameters-CountryId:
+      name: countryId
+      description: 販売国ID(国ID)
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int64
+        example: 123
+      style: form
+      explode: false
+    parameters-CountryCodeAlpha2:
+      name: countryCodeAlpha2
+      description: 販売国コード(国コード(alpha-2))
+      in: query
+      required: false
+      schema:
+        type: string
+        maxLength: 2
+        example: US
+      style: form
+      explode: false
+    components-parameters-DeletedGetFlag:
+      name: deletedGetFlag
+      description: |
+        削除レコード取得フラグ
+        true:削除されたレコードも含めて返します。
+        false:削除されていないレコードのみを返します。
+      in: query
+      required: false
+      example: true
+      schema:
+        type: boolean
+        default: true
+    lens-unique-attributes_components-parameters-SortKey:
+      name: sortKey
+      description: |
+        ソートキー
+        昇順降順はコロン区切り
+        複数の場合はカンマ区切り
+        スペースは挟まない
+      in: query
+      required: false
+      example: itemCode:ASC,itemCode:DESC
+      schema:
+        type: string
+        default: itemCode:ASC
+    frame-unique-attributes_components-parameters-ItemIdList:
+      name: itemIdList
+      description: 商品IDリスト
+      in: query
+      required: false
+      example: 1137261,1137262
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
+          example: 123
+      style: form
+      explode: false
+    components-parameters-ItemCodeList:
+      name: itemCodeList
+      description: 商品コードリスト
+      in: query
+      required: false
+      example: MUF19S232CF,AUMF19A096AA95
+      schema:
+        type: array
+        items:
+          description: 商品コード
+          type: string
+          maxLength: 18
+      style: form
+      explode: false
+    SalesCountryId:
+      name: salesCountryId
+      description: 販売国ID
+      in: query
+      required: false
+      example: 91000000001
+      schema:
+        type: integer
+        format: int64
+        example: 123
+    SalesCountryCode:
+      name: salesCountryCode
+      description: 販売国コード
+      in: query
+      required: false
+      example: US
+      schema:
+        type: string
+        maxLength: 2
+    frame-unique-attributes_components-parameters-SortKey:
+      name: sortKey
+      description: |
+        ソートキー
+        昇順降順はコロン区切り
+        複数の場合はカンマ区切り
+        スペースは挟まない
+      in: query
+      required: false
+      example: frameModelColorCode:ASC,frameModelColorId:DESC
+      schema:
+        type: string
+        default: itemCode:ASC
+    parameters-SalesDate:
+      name: salesDate
+      description: 販売日付
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date
+        example: '2024-01-01'
+    TargetTable:
+      name: targetTable
+      description: |
+        対象テーブル<br>
+        - 取得したいテーブルの区分値を指定してください。<br>
+          - **1: m_sales_color_name（販売用カラー名称マスタ）**<br>
+          - **2: m_sales_lens_spec（販売用レンズ仕様マスタ）**<br>
+          - **3: m_focus_category（焦点分類マスタ）**<br>
+          - **4: m_progressive_category（累進分類マスタ）**<br>
+          - **5: m_refractive_index_name（屈折率名称マスタ）**<br>
+      in: query
+      required: true
+      example: 1
+      schema:
+        type: integer
+        format: Int32
+        minimum: 1
+        maximum: 5
+        maxLength: 1
+  schemas:
+    Limit:
+      description: 取得制限数
+      type: integer
+      minimum: 1
+      maximum: 100000
+      example: 20
+      default: 100000
+    Offset:
+      description: 取得開始位置
+      type: integer
+      minimum: 0
+      example: 0
+      default: 0
+    Count:
+      description: 今回取得件数
+      type: integer
+      example: 20
+    TotalResults:
+      description: 総件数
+      type: integer
+      example: 10000
+    HasMore:
+      description: 次回データ存在有無
+      type: boolean
+      example: true
+    ItemGetResponse:
+      type: object
+      properties:
+        itemId:
+          description: 商品ID
+          type: integer
+          format: int64
+          example: 11000009860
+        itemCode:
+          description: 商品コード
+          type: string
+          maxLength: 18
+          example: MUF-20A-065-359
+        itemName:
+          description: 商品名
+          type: string
+          maxLength: 80
+          example: MUF-20A-065-359
+        itemNameKana:
+          description: 商品名カナ
+          type: string
+          maxLength: 80
+          nullable: true
+          example: MUF-20A-065-359
+        itemNameEnglish:
+          description: 商品名（英語）
+          type: string
+          maxLength: 80
+          example: MUF-20A-065-359
+        itemNameSimplified:
+          description: 商品名（簡体語）
+          type: string
+          maxLength: 80
+          example: MUF-20A-065-359
+        itemNameTraditional:
+          description: 商品名（繫体語）
+          type: string
+          maxLength: 80
+          example: MUF-20A-065-359
+        itemDivision:
+          description: 商品区分
+          type: string
+          maxLength: 4
+          nullable: true
+          example: 8869
+        standardPlanName:
+          description: 定番/企画名
+          type: string
+          maxLength: 80
+          nullable: true
+          example: plan
+        gtin:
+          description: GTIN
+          type: string
+          maxLength: 4
+          nullable: true
+          example: 9869
+        itemDeploymentStartDate:
+          description: 商品展開開始日
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+          nullable: true
+        itemDeploymentEndDate:
+          description: 商品展開終了日
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+          nullable: true
+        storeDisplayFlag:
+          description: 店舗表示フラグ
+          type: string
+          maxLength: 4
+          nullable: true
+          example: 0
+        price:
+          description: 上代
+          type: number
+          example: 17860.12
+        priceUS:
+          description: 上代（US）
+          type: number
+          example: 909860.12
+        singleItemSalesFlag:
+          description: 単品販売不可フラグ
+          type: integer
+          example: 0
+        ecSalesFlag:
+          description: EC販売フラグ
+          type: integer
+          example: 0
+        storeSalesFlag:
+          description: 店舗販売フラグ
+          type: integer
+          example: 0
+        salesItemName:
+          description: 販売用商品名
+          type: string
+          maxLength: 80
+          example: MUF-20A-065-359
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: int32
+          example: 0
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          maxLength: 256
+          example: USER123456
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+        itemSalesByCountries:
+          description: 国別販売商品情報
+          type: array
+          items:
+            type: object
+            properties:
+              countryId:
+                description: 国ID
+                type: integer
+                format: int64
+                example: 91000000001
+              countryCodeAlpha2:
+                description: 国コード(alpha-2)
+                type: string
+                maxLength: 2
+                example: US
+              countryCodeAlpha3:
+                description: 国コード(alpha-3)
+                type: string
+                maxLength: 3
+                example: USA
+              countryName:
+                description: 国名
+                type: string
+                maxLength: 100
+                example: UnitedStates
+    ItemsGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemGetResponse'
+    CommonErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+      required:
+        - code
+        - message
+    FrameTraceGetResponse:
+      type: object
+      properties:
+        itemCode:
+          description: 商品コード
+          type: string
+          maxLength: 18
+          example: AMMF14S196C96
+        itemId:
+          description: 商品ID
+          type: integer
+          format: int64
+          example: 11000009860
+        trace:
+          description: トレース情報
+          type: string
+          example:
+            \"fp\": \"F\"
+            \"l1\": \"26.38\"
+            \"l2\": \"26.40\"
+            \"l3\": \"26.42\"
+            \"l4\": \"26.45\"
+            \"l5\": \"26.47\"
+            \"l6\": \"26.50\"
+            \"l7\": \"26.52\"
+            \"l8\": \"26.55\"
+            \"l9\": \"26.57\"
+            \"r1\": \"26.21\"
+            \"r2\": \"26.25\"
+            \"r3\": \"26.28\"
+            \"r4\": \"26.31\"
+            \"r5\": \"26.34\"
+            \"r6\": \"26.38\"
+            \"r7\": \"26.41\"
+            \"r8\": \"26.44\"
+            \"r9\": \"26.48\"
+            \"dbl\": \"16.48\"
+            \"fpd\": \"69.80\"
+            \"l10\": \"26.60\"
+            \"l11\": \"26.62\"
+            \"l12\": \"26.65\"
+            \"l13\": \"26.68\"
+            \"l14\": \"26.70\"
+            \"l15\": \"26.73\"
+            \"l16\": \"26.75\"
+            \"l17\": \"26.78\"
+            \"l18\": \"26.81\"
+            \"l19\": \"26.83\"
+            \"l20\": \"26.86\"
+            \"l21\": \"26.89\"
+            \"l22\": \"26.91\"
+            \"l23\": \"26.94\"
+            \"l24\": \"26.96\"
+            \"l25\": \"26.99\"
+            \"l26\": \"27.01\"
+            \"l27\": \"27.04\"
+            \"l28\": \"27.06\"
+            \"l29\": \"27.09\"
+            \"l30\": \"27.12\"
+            \"l31\": \"27.14\"
+            \"l32\": \"27.17\"
+            \"l33\": \"27.20\"
+            \"l34\": \"27.22\"
+            \"l35\": \"27.25\"
+            \"l36\": \"27.27\"
+            \"l37\": \"27.29\"
+            \"l38\": \"27.31\"
+            \"l39\": \"27.33\"
+            \"l40\": \"27.35\"
+            \"l41\": \"27.37\"
+            \"l42\": \"27.38\"
+            \"l43\": \"27.40\"
+            \"l44\": \"27.42\"
+            \"l45\": \"27.43\"
+            \"l46\": \"27.45\"
+            \"l47\": \"27.45\"
+            \"l48\": \"27.46\"
+            \"l49\": \"27.47\"
+            \"l50\": \"27.48\"
+            \"l51\": \"27.48\"
+            \"l52\": \"27.49\"
+            \"l53\": \"27.50\"
+            \"l54\": \"27.50\"
+            \"l55\": \"27.50\"
+            \"l56\": \"27.49\"
+            \"l57\": \"27.49\"
+            \"l58\": \"27.48\"
+            \"l59\": \"27.48\"
+            \"l60\": \"27.47\"
+            \"l61\": \"27.47\"
+            \"l62\": \"27.46\"
+            \"l63\": \"27.44\"
+            \"l64\": \"27.42\"
+            \"l65\": \"27.40\"
+            \"l66\": \"27.39\"
+            \"l67\": \"27.37\"
+            \"l68\": \"27.36\"
+            \"l69\": \"27.33\"
+            \"l70\": \"27.31\"
+            \"l71\": \"27.28\"
+            \"l72\": \"27.26\"
+            \"l73\": \"27.23\"
+            \"l74\": \"27.21\"
+            \"l75\": \"27.18\"
+            \"l76\": \"27.15\"
+            \"l77\": \"27.11\"
+            \"l78\": \"27.08\"
+            \"l79\": \"27.04\"
+            \"l80\": \"27.00\"
+            \"l81\": \"26.96\"
+            \"l82\": \"26.92\"
+            \"l83\": \"26.87\"
+            \"l84\": \"26.82\"
+            \"l85\": \"26.76\"
+            \"l86\": \"26.71\"
+            \"l87\": \"26.66\"
+            \"l88\": \"26.60\"
+            \"l89\": \"26.54\"
+            \"l90\": \"26.48\"
+            \"l91\": \"26.42\"
+            \"l92\": \"26.36\"
+            \"l93\": \"26.29\"
+            \"l94\": \"26.23\"
+            \"l95\": \"26.16\"
+            \"l96\": \"26.09\"
+            \"l97\": \"26.02\"
+            \"l98\": \"25.95\"
+            \"l99\": \"25.89\"
+            \"r10\": \"26.51\"
+            \"r11\": \"26.55\"
+            \"r12\": \"26.58\"
+            \"r13\": \"26.61\"
+            \"r14\": \"26.64\"
+            \"r15\": \"26.66\"
+            \"r16\": \"26.69\"
+            \"r17\": \"26.72\"
+            \"r18\": \"26.75\"
+            \"r19\": \"26.77\"
+            \"r20\": \"26.80\"
+            \"r21\": \"26.83\"
+            \"r22\": \"26.86\"
+            \"r23\": \"26.89\"
+            \"r24\": \"26.92\"
+            \"r25\": \"26.94\"
+            \"r26\": \"26.96\"
+            \"r27\": \"26.98\"
+            \"r28\": \"27.01\"
+            \"r29\": \"27.03\"
+            \"r30\": \"27.06\"
+            \"r31\": \"27.08\"
+            \"r32\": \"27.10\"
+            \"r33\": \"27.12\"
+            \"r34\": \"27.15\"
+            \"r35\": \"27.16\"
+            \"r36\": \"27.18\"
+            \"r37\": \"27.20\"
+            \"r38\": \"27.21\"
+            \"r39\": \"27.23\"
+            \"r40\": \"27.24\"
+            \"r41\": \"27.26\"
+            \"r42\": \"27.27\"
+            \"r43\": \"27.28\"
+            \"r44\": \"27.29\"
+            \"r45\": \"27.29\"
+            \"r46\": \"27.29\"
+            \"r47\": \"27.29\"
+            \"r48\": \"27.29\"
+            \"r49\": \"27.29\"
+            \"r50\": \"27.29\"
+            \"r51\": \"27.28\"
+            \"r52\": \"27.28\"
+            \"r53\": \"27.26\"
+            \"r54\": \"27.25\"
+            \"r55\": \"27.24\"
+            \"r56\": \"27.23\"
+            \"r57\": \"27.22\"
+            \"r58\": \"27.20\"
+            \"r59\": \"27.19\"
+            \"r60\": \"27.17\"
+            \"r61\": \"27.15\"
+            \"r62\": \"27.13\"
+            \"r63\": \"27.11\"
+            \"r64\": \"27.08\"
+            \"r65\": \"27.06\"
+            \"r66\": \"27.03\"
+            \"r67\": \"27.01\"
+            \"r68\": \"26.98\"
+            \"r69\": \"26.94\"
+            \"r70\": \"26.91\"
+            \"r71\": \"26.88\"
+            \"r72\": \"26.84\"
+            \"r73\": \"26.81\"
+            \"r74\": \"26.77\"
+            \"r75\": \"26.72\"
+            \"r76\": \"26.68\"
+            \"r77\": \"26.63\"
+            \"r78\": \"26.59\"
+            \"r79\": \"26.54\"
+            \"r80\": \"26.49\"
+            \"r81\": \"26.43\"
+            \"r82\": \"26.38\"
+            \"r83\": \"26.32\"
+            \"r84\": \"26.26\"
+            \"r85\": \"26.20\"
+            \"r86\": \"26.14\"
+            \"r87\": \"26.08\"
+            \"r88\": \"26.02\"
+            \"r89\": \"25.95\"
+            \"r90\": \"25.89\"
+            \"r91\": \"25.82\"
+            \"r92\": \"25.76\"
+            \"r93\": \"25.69\"
+            \"r94\": \"25.62\"
+            \"r95\": \"25.55\"
+            \"r96\": \"25.48\"
+            \"r97\": \"25.41\"
+            \"r98\": \"25.33\"
+            \"r99\": \"25.26\"
+            \"sfb\": \"0\"
+            \"ax_l\": \"0\"
+            \"ax_r\": \"0\"
+            \"coat\": \"\"
+            \"edge\": \"0\"
+            \"fcrv\": \"2.6\"
+            \"ftyp\": \"16\"
+            \"l100\": \"25.82\"
+            \"l101\": \"25.74\"
+            \"l102\": \"25.67\"
+            \"l103\": \"25.59\"
+            \"l104\": \"25.52\"
+            \"l105\": \"25.44\"
+            \"l106\": \"25.36\"
+            \"l107\": \"25.28\"
+            \"l108\": \"25.20\"
+            \"l109\": \"25.12\"
+            \"l110\": \"25.04\"
+            \"l111\": \"24.96\"
+            \"l112\": \"24.88\"
+            \"l113\": \"24.80\"
+            \"l114\": \"24.72\"
+            \"l115\": \"24.64\"
+            \"l116\": \"24.56\"
+            \"l117\": \"24.48\"
+            \"l118\": \"24.40\"
+            \"l119\": \"24.32\"
+            \"l120\": \"24.24\"
+            \"l121\": \"24.16\"
+            \"l122\": \"24.07\"
+            \"l123\": \"23.99\"
+            \"l124\": \"23.91\"
+            \"l125\": \"23.83\"
+            \"l126\": \"23.75\"
+            \"l127\": \"23.67\"
+            \"l128\": \"23.58\"
+            \"l129\": \"23.51\"
+            \"l130\": \"23.43\"
+            \"l131\": \"23.35\"
+            \"l132\": \"23.27\"
+            \"l133\": \"23.19\"
+            \"l134\": \"23.11\"
+            \"l135\": \"23.03\"
+            \"l136\": \"22.95\"
+            \"l137\": \"22.86\"
+            \"l138\": \"22.79\"
+            \"l139\": \"22.71\"
+            \"l140\": \"22.63\"
+            \"l141\": \"22.55\"
+            \"l142\": \"22.47\"
+            \"l143\": \"22.39\"
+            \"l144\": \"22.32\"
+            \"l145\": \"22.24\"
+            \"l146\": \"22.17\"
+            \"l147\": \"22.10\"
+            \"l148\": \"22.02\"
+            \"l149\": \"21.95\"
+            \"l150\": \"21.88\"
+            \"l151\": \"21.80\"
+            \"l152\": \"21.73\"
+            \"l153\": \"21.66\"
+            \"l154\": \"21.59\"
+            \"l155\": \"21.52\"
+            \"l156\": \"21.45\"
+            \"l157\": \"21.38\"
+            \"l158\": \"21.32\"
+            \"l159\": \"21.25\"
+            \"l160\": \"21.18\"
+            \"l161\": \"21.12\"
+            \"l162\": \"21.06\"
+            \"l163\": \"20.99\"
+            \"l164\": \"20.93\"
+            \"l165\": \"20.87\"
+            \"l166\": \"20.81\"
+            \"l167\": \"20.75\"
+            \"l168\": \"20.69\"
+            \"l169\": \"20.63\"
+            \"l170\": \"20.57\"
+            \"l171\": \"20.51\"
+            \"l172\": \"20.46\"
+            \"l173\": \"20.40\"
+            \"l174\": \"20.34\"
+            \"l175\": \"20.29\"
+            \"l176\": \"20.24\"
+            \"l177\": \"20.19\"
+            \"l178\": \"20.13\"
+            \"l179\": \"20.08\"
+            \"l180\": \"20.03\"
+            \"l181\": \"19.98\"
+            \"l182\": \"19.93\"
+            \"l183\": \"19.89\"
+            \"l184\": \"19.84\"
+            \"l185\": \"19.79\"
+            \"l186\": \"19.75\"
+            \"l187\": \"19.70\"
+            \"l188\": \"19.66\"
+            \"l189\": \"19.62\"
+            \"l190\": \"19.58\"
+            \"l191\": \"19.54\"
+            \"l192\": \"19.50\"
+            \"l193\": \"19.45\"
+            \"l194\": \"19.41\"
+            \"l195\": \"19.38\"
+            \"l196\": \"19.34\"
+            \"l197\": \"19.30\"
+            \"l198\": \"19.27\"
+            \"l199\": \"19.23\"
+            \"l200\": \"19.20\"
+            \"l201\": \"19.16\"
+            \"l202\": \"19.13\"
+            \"l203\": \"19.10\"
+            \"l204\": \"19.06\"
+            \"l205\": \"19.03\"
+            \"l206\": \"19.00\"
+            \"l207\": \"18.97\"
+            \"l208\": \"18.94\"
+            \"l209\": \"18.91\"
+            \"l210\": \"18.88\"
+            \"l211\": \"18.86\"
+            \"l212\": \"18.83\"
+            \"l213\": \"18.80\"
+            \"l214\": \"18.78\"
+            \"l215\": \"18.75\"
+            \"l216\": \"18.73\"
+            \"l217\": \"18.70\"
+            \"l218\": \"18.68\"
+            \"l219\": \"18.66\"
+            \"l220\": \"18.64\"
+            \"l221\": \"18.62\"
+            \"l222\": \"18.60\"
+            \"l223\": \"18.58\"
+            \"l224\": \"18.56\"
+            \"l225\": \"18.54\"
+            \"l226\": \"18.52\"
+            \"l227\": \"18.50\"
+            \"l228\": \"18.49\"
+            \"l229\": \"18.47\"
+            \"l230\": \"18.45\"
+            \"l231\": \"18.44\"
+            \"l232\": \"18.42\"
+            \"l233\": \"18.41\"
+            \"l234\": \"18.40\"
+            \"l235\": \"18.38\"
+            \"l236\": \"18.37\"
+            \"l237\": \"18.36\"
+            \"l238\": \"18.35\"
+            \"l239\": \"18.34\"
+            \"l240\": \"18.33\"
+            \"l241\": \"18.32\"
+            \"l242\": \"18.31\"
+            \"l243\": \"18.31\"
+            \"l244\": \"18.30\"
+            \"l245\": \"18.29\"
+            \"l246\": \"18.29\"
+            \"l247\": \"18.28\"
+            \"l248\": \"18.28\"
+            \"l249\": \"18.27\"
+            \"l250\": \"18.27\"
+            \"l251\": \"18.27\"
+            \"l252\": \"18.27\"
+            \"l253\": \"18.27\"
+            \"l254\": \"18.26\"
+            \"l255\": \"18.26\"
+            \"l256\": \"18.26\"
+            \"l257\": \"18.26\"
+            \"l258\": \"18.27\"
+            \"l259\": \"18.27\"
+            \"l260\": \"18.27\"
+            \"l261\": \"18.27\"
+            \"l262\": \"18.28\"
+            \"l263\": \"18.28\"
+            \"l264\": \"18.29\"
+            \"l265\": \"18.30\"
+            \"l266\": \"18.30\"
+            \"l267\": \"18.31\"
+            \"l268\": \"18.32\"
+            \"l269\": \"18.32\"
+            \"l270\": \"18.33\"
+            \"l271\": \"18.34\"
+            \"l272\": \"18.35\"
+            \"l273\": \"18.36\"
+            \"l274\": \"18.37\"
+            \"l275\": \"18.38\"
+            \"l276\": \"18.39\"
+            \"l277\": \"18.40\"
+            \"l278\": \"18.41\"
+            \"l279\": \"18.43\"
+            \"l280\": \"18.44\"
+            \"l281\": \"18.46\"
+            \"l282\": \"18.47\"
+            \"l283\": \"18.49\"
+            \"l284\": \"18.51\"
+            \"l285\": \"18.52\"
+            \"l286\": \"18.54\"
+            \"l287\": \"18.56\"
+            \"l288\": \"18.58\"
+            \"l289\": \"18.60\"
+            \"l290\": \"18.62\"
+            \"l291\": \"18.64\"
+            \"l292\": \"18.66\"
+            \"l293\": \"18.69\"
+            \"l294\": \"18.71\"
+            \"l295\": \"18.74\"
+            \"l296\": \"18.76\"
+            \"l297\": \"18.79\"
+            \"l298\": \"18.81\"
+            \"l299\": \"18.84\"
+            \"l300\": \"18.87\"
+            \"l301\": \"18.89\"
+            \"l302\": \"18.92\"
+            \"l303\": \"18.95\"
+            \"l304\": \"18.98\"
+            \"l305\": \"19.01\"
+            \"l306\": \"19.05\"
+            \"l307\": \"19.08\"
+            \"l308\": \"19.11\"
+            \"l309\": \"19.15\"
+            \"l310\": \"19.18\"
+            \"l311\": \"19.22\"
+            \"l312\": \"19.25\"
+            \"l313\": \"19.28\"
+            \"l314\": \"19.32\"
+            \"l315\": \"19.36\"
+            \"l316\": \"19.39\"
+            \"l317\": \"19.43\"
+            \"l318\": \"19.47\"
+            \"l319\": \"19.51\"
+            \"l320\": \"19.55\"
+            \"l321\": \"19.60\"
+            \"l322\": \"19.64\"
+            \"l323\": \"19.68\"
+            \"l324\": \"19.72\"
+            \"l325\": \"19.77\"
+            \"l326\": \"19.82\"
+            \"l327\": \"19.86\"
+            \"l328\": \"19.91\"
+            \"l329\": \"19.96\"
+            \"l330\": \"20.01\"
+            \"l331\": \"20.06\"
+            \"l332\": \"20.11\"
+            \"l333\": \"20.16\"
+            \"l334\": \"20.21\"
+            \"l335\": \"20.27\"
+            \"l336\": \"20.32\"
+            \"l337\": \"20.38\"
+            \"l338\": \"20.43\"
+            \"l339\": \"20.49\"
+            \"l340\": \"20.54\"
+            \"l341\": \"20.60\"
+            \"l342\": \"20.66\"
+            \"l343\": \"20.72\"
+            \"l344\": \"20.78\"
+            \"l345\": \"20.84\"
+            \"l346\": \"20.90\"
+            \"l347\": \"20.96\"
+            \"l348\": \"21.02\"
+            \"l349\": \"21.09\"
+            \"l350\": \"21.15\"
+            \"l351\": \"21.22\"
+            \"l352\": \"21.28\"
+            \"l353\": \"21.35\"
+            \"l354\": \"21.41\"
+            \"l355\": \"21.48\"
+            \"l356\": \"21.55\"
+            \"l357\": \"21.62\"
+            \"l358\": \"21.68\"
+            \"l359\": \"21.76\"
+            \"l360\": \"21.82\"
+            \"l361\": \"21.90\"
+            \"l362\": \"21.97\"
+            \"l363\": \"22.04\"
+            \"l364\": \"22.11\"
+            \"l365\": \"22.18\"
+            \"l366\": \"22.26\"
+            \"l367\": \"22.33\"
+            \"l368\": \"22.41\"
+            \"l369\": \"22.48\"
+            \"l370\": \"22.56\"
+            \"l371\": \"22.63\"
+            \"l372\": \"22.70\"
+            \"l373\": \"22.78\"
+            \"l374\": \"22.85\"
+            \"l375\": \"22.93\"
+            \"l376\": \"23.01\"
+            \"l377\": \"23.08\"
+            \"l378\": \"23.16\"
+            \"l379\": \"23.24\"
+            \"l380\": \"23.32\"
+            \"l381\": \"23.40\"
+            \"l382\": \"23.47\"
+            \"l383\": \"23.55\"
+            \"l384\": \"23.63\"
+            \"l385\": \"23.71\"
+            \"l386\": \"23.79\"
+            \"l387\": \"23.86\"
+            \"l388\": \"23.94\"
+            \"l389\": \"24.02\"
+            \"l390\": \"24.10\"
+            \"l391\": \"24.18\"
+            \"l392\": \"24.25\"
+            \"l393\": \"24.33\"
+            \"l394\": \"24.41\"
+            \"l395\": \"24.49\"
+            \"l396\": \"24.57\"
+            \"l397\": \"24.65\"
+            \"l398\": \"24.72\"
+            \"l399\": \"24.80\"
+            \"l400\": \"24.88\"
+            \"l401\": \"24.95\"
+            \"l402\": \"25.03\"
+            \"l403\": \"25.10\"
+            \"l404\": \"25.17\"
+            \"l405\": \"25.25\"
+            \"l406\": \"25.32\"
+            \"l407\": \"25.39\"
+            \"l408\": \"25.46\"
+            \"l409\": \"25.53\"
+            \"l410\": \"25.60\"
+            \"l411\": \"25.67\"
+            \"l412\": \"25.74\"
+            \"l413\": \"25.80\"
+            \"l414\": \"25.86\"
+            \"l415\": \"25.93\"
+            \"l416\": \"26.00\"
+            \"l417\": \"26.06\"
+            \"l418\": \"26.12\"
+            \"l419\": \"26.18\"
+            \"l420\": \"26.23\"
+            \"l421\": \"26.28\"
+            \"l422\": \"26.34\"
+            \"l423\": \"26.39\"
+            \"l424\": \"26.43\"
+            \"l425\": \"26.48\"
+            \"l426\": \"26.52\"
+            \"l427\": \"26.56\"
+            \"l428\": \"26.61\"
+            \"l429\": \"26.64\"
+            \"l430\": \"26.68\"
+            \"l431\": \"26.72\"
+            \"l432\": \"26.76\"
+            \"l433\": \"26.79\"
+            \"l434\": \"26.83\"
+            \"l435\": \"26.87\"
+            \"l436\": \"26.91\"
+            \"l437\": \"26.94\"
+            \"l438\": \"26.97\"
+            \"l439\": \"27.00\"
+            \"l440\": \"27.03\"
+            \"l441\": \"27.06\"
+            \"l442\": \"27.09\"
+            \"l443\": \"27.12\"
+            \"l444\": \"27.14\"
+            \"l445\": \"27.16\"
+            \"l446\": \"27.18\"
+            \"l447\": \"27.20\"
+            \"l448\": \"27.21\"
+            \"l449\": \"27.23\"
+            \"l450\": \"27.24\"
+            \"l451\": \"27.25\"
+            \"l452\": \"27.26\"
+            \"l453\": \"27.27\"
+            \"l454\": \"27.28\"
+            \"l455\": \"27.30\"
+            \"l456\": \"27.30\"
+            \"l457\": \"27.30\"
+            \"l458\": \"27.29\"
+            \"l459\": \"27.28\"
+            \"l460\": \"27.26\"
+            \"l461\": \"27.25\"
+            \"l462\": \"27.24\"
+            \"l463\": \"27.24\"
+            \"l464\": \"27.23\"
+            \"l465\": \"27.21\"
+            \"l466\": \"27.20\"
+            \"l467\": \"27.18\"
+            \"l468\": \"27.17\"
+            \"l469\": \"27.15\"
+            \"l470\": \"27.13\"
+            \"l471\": \"27.11\"
+            \"l472\": \"27.09\"
+            \"l473\": \"27.07\"
+            \"l474\": \"27.05\"
+            \"l475\": \"27.03\"
+            \"l476\": \"27.01\"
+            \"l477\": \"26.99\"
+            \"l478\": \"26.96\"
+            \"l479\": \"26.94\"
+            \"l480\": \"26.91\"
+            \"l481\": \"26.89\"
+            \"l482\": \"26.86\"
+            \"l483\": \"26.83\"
+            \"l484\": \"26.80\"
+            \"l485\": \"26.77\"
+            \"l486\": \"26.74\"
+            \"l487\": \"26.72\"
+            \"l488\": \"26.69\"
+            \"l489\": \"26.66\"
+            \"l490\": \"26.63\"
+            \"l491\": \"26.60\"
+            \"l492\": \"26.57\"
+            \"l493\": \"26.54\"
+            \"l494\": \"26.50\"
+            \"l495\": \"26.47\"
+            \"l496\": \"26.44\"
+            \"l497\": \"26.40\"
+            \"l498\": \"26.37\"
+            \"l499\": \"26.34\"
+            \"l500\": \"26.31\"
+            \"l501\": \"26.28\"
+            \"l502\": \"26.25\"
+            \"l503\": \"26.22\"
+            \"l504\": \"26.19\"
+            \"l505\": \"26.15\"
+            \"l506\": \"26.12\"
+            \"l507\": \"26.10\"
+            \"l508\": \"26.07\"
+            \"l509\": \"26.04\"
+            \"l510\": \"26.02\"
+            \"l511\": \"25.99\"
+            \"l512\": \"25.96\"
+            \"l513\": \"25.94\"
+            \"l514\": \"25.91\"
+            \"l515\": \"25.88\"
+            \"l516\": \"25.86\"
+            \"l517\": \"25.84\"
+            \"l518\": \"25.81\"
+            \"l519\": \"25.79\"
+            \"l520\": \"25.76\"
+            \"l521\": \"25.74\"
+            \"l522\": \"25.72\"
+            \"l523\": \"25.70\"
+            \"l524\": \"25.68\"
+            \"l525\": \"25.66\"
+            \"l526\": \"25.64\"
+            \"l527\": \"25.62\"
+            \"l528\": \"25.60\"
+            \"l529\": \"25.58\"
+            \"l530\": \"25.56\"
+            \"l531\": \"25.55\"
+            \"l532\": \"25.53\"
+            \"l533\": \"25.51\"
+            \"l534\": \"25.49\"
+            \"l535\": \"25.48\"
+            \"l536\": \"25.46\"
+            \"l537\": \"25.44\"
+            \"l538\": \"25.42\"
+            \"l539\": \"25.40\"
+            \"l540\": \"25.39\"
+            \"l541\": \"25.37\"
+            \"l542\": \"25.35\"
+            \"l543\": \"25.33\"
+            \"l544\": \"25.32\"
+            \"l545\": \"25.30\"
+            \"l546\": \"25.28\"
+            \"l547\": \"25.26\"
+            \"l548\": \"25.25\"
+            \"l549\": \"25.23\"
+            \"l550\": \"25.21\"
+            \"l551\": \"25.19\"
+            \"l552\": \"25.17\"
+            \"l553\": \"25.15\"
+            \"l554\": \"25.14\"
+            \"l555\": \"25.12\"
+            \"l556\": \"25.10\"
+            \"l557\": \"25.08\"
+            \"l558\": \"25.06\"
+            \"l559\": \"25.04\"
+            \"l560\": \"25.02\"
+            \"l561\": \"25.00\"
+            \"l562\": \"24.97\"
+            \"l563\": \"24.95\"
+            \"l564\": \"24.93\"
+            \"l565\": \"24.91\"
+            \"l566\": \"24.89\"
+            \"l567\": \"24.86\"
+            \"l568\": \"24.84\"
+            \"l569\": \"24.81\"
+            \"l570\": \"24.79\"
+            \"l571\": \"24.76\"
+            \"l572\": \"24.74\"
+            \"l573\": \"24.71\"
+            \"l574\": \"24.68\"
+            \"l575\": \"24.66\"
+            \"l576\": \"24.63\"
+            \"l577\": \"24.60\"
+            \"l578\": \"24.57\"
+            \"l579\": \"24.54\"
+            \"l580\": \"24.51\"
+            \"l581\": \"24.48\"
+            \"l582\": \"24.44\"
+            \"l583\": \"24.41\"
+            \"l584\": \"24.38\"
+            \"l585\": \"24.34\"
+            \"l586\": \"24.31\"
+            \"l587\": \"24.28\"
+            \"l588\": \"24.24\"
+            \"l589\": \"24.20\"
+            \"l590\": \"24.16\"
+            \"l591\": \"24.12\"
+            \"l592\": \"24.08\"
+            \"l593\": \"24.04\"
+            \"l594\": \"24.01\"
+            \"l595\": \"23.96\"
+            \"l596\": \"23.92\"
+            \"l597\": \"23.88\"
+            \"l598\": \"23.84\"
+            \"l599\": \"23.80\"
+            \"l600\": \"23.76\"
+            \"l601\": \"23.71\"
+            \"l602\": \"23.67\"
+            \"l603\": \"23.62\"
+            \"l604\": \"23.58\"
+            \"l605\": \"23.54\"
+            \"l606\": \"23.50\"
+            \"l607\": \"23.45\"
+            \"l608\": \"23.41\"
+            \"l609\": \"23.37\"
+            \"l610\": \"23.32\"
+            \"l611\": \"23.27\"
+            \"l612\": \"23.22\"
+            \"l613\": \"23.17\"
+            \"l614\": \"23.12\"
+            \"l615\": \"23.07\"
+            \"l616\": \"23.02\"
+            \"l617\": \"22.97\"
+            \"l618\": \"22.92\"
+            \"l619\": \"22.87\"
+            \"l620\": \"22.82\"
+            \"l621\": \"22.77\"
+            \"l622\": \"22.72\"
+            \"l623\": \"22.66\"
+            \"l624\": \"22.61\"
+            \"l625\": \"22.56\"
+            \"l626\": \"22.50\"
+            \"l627\": \"22.45\"
+            \"l628\": \"22.40\"
+            \"l629\": \"22.34\"
+            \"l630\": \"22.29\"
+            \"l631\": \"22.24\"
+            \"l632\": \"22.18\"
+            \"l633\": \"22.13\"
+            \"l634\": \"22.08\"
+            \"l635\": \"22.02\"
+            \"l636\": \"21.97\"
+            \"l637\": \"21.91\"
+            \"l638\": \"21.85\"
+            \"l639\": \"21.80\"
+            \"l640\": \"21.75\"
+            \"l641\": \"21.69\"
+            \"l642\": \"21.64\"
+            \"l643\": \"21.59\"
+            \"l644\": \"21.53\"
+            \"l645\": \"21.48\"
+            \"l646\": \"21.43\"
+            \"l647\": \"21.37\"
+            \"l648\": \"21.32\"
+            \"l649\": \"21.26\"
+            \"l650\": \"21.21\"
+            \"l651\": \"21.16\"
+            \"l652\": \"21.11\"
+            \"l653\": \"21.06\"
+            \"l654\": \"21.00\"
+            \"l655\": \"20.95\"
+            \"l656\": \"20.90\"
+            \"l657\": \"20.84\"
+            \"l658\": \"20.79\"
+            \"l659\": \"20.74\"
+            \"l660\": \"20.69\"
+            \"l661\": \"20.64\"
+            \"l662\": \"20.59\"
+            \"l663\": \"20.54\"
+            \"l664\": \"20.49\"
+            \"l665\": \"20.44\"
+            \"l666\": \"20.39\"
+            \"l667\": \"20.34\"
+            \"l668\": \"20.29\"
+            \"l669\": \"20.25\"
+            \"l670\": \"20.20\"
+            \"l671\": \"20.15\"
+            \"l672\": \"20.10\"
+            \"l673\": \"20.06\"
+            \"l674\": \"20.02\"
+            \"l675\": \"19.97\"
+            \"l676\": \"19.93\"
+            \"l677\": \"19.89\"
+            \"l678\": \"19.84\"
+            \"l679\": \"19.80\"
+            \"l680\": \"19.76\"
+            \"l681\": \"19.72\"
+            \"l682\": \"19.68\"
+            \"l683\": \"19.64\"
+            \"l684\": \"19.60\"
+            \"l685\": \"19.56\"
+            \"l686\": \"19.52\"
+            \"l687\": \"19.48\"
+            \"l688\": \"19.44\"
+            \"l689\": \"19.41\"
+            \"l690\": \"19.37\"
+            \"l691\": \"19.33\"
+            \"l692\": \"19.30\"
+            \"l693\": \"19.26\"
+            \"l694\": \"19.23\"
+            \"l695\": \"19.20\"
+            \"l696\": \"19.16\"
+            \"l697\": \"19.13\"
+            \"l698\": \"19.10\"
+            \"l699\": \"19.07\"
+            \"l700\": \"19.04\"
+            \"l701\": \"19.01\"
+            \"l702\": \"18.98\"
+            \"l703\": \"18.95\"
+            \"l704\": \"18.92\"
+            \"l705\": \"18.89\"
+            \"l706\": \"18.87\"
+            \"l707\": \"18.84\"
+            \"l708\": \"18.82\"
+            \"l709\": \"18.79\"
+            \"l710\": \"18.77\"
+            \"l711\": \"18.74\"
+            \"l712\": \"18.72\"
+            \"l713\": \"18.70\"
+            \"l714\": \"18.67\"
+            \"l715\": \"18.65\"
+            \"l716\": \"18.63\"
+            \"l717\": \"18.61\"
+            \"l718\": \"18.60\"
+            \"l719\": \"18.58\"
+            \"l720\": \"18.56\"
+            \"l721\": \"18.54\"
+            \"l722\": \"18.53\"
+            \"l723\": \"18.51\"
+            \"l724\": \"18.49\"
+            \"l725\": \"18.48\"
+            \"l726\": \"18.46\"
+            \"l727\": \"18.45\"
+            \"l728\": \"18.43\"
+            \"l729\": \"18.42\"
+            \"l730\": \"18.41\"
+            \"l731\": \"18.40\"
+            \"l732\": \"18.38\"
+            \"l733\": \"18.37\"
+            \"l734\": \"18.36\"
+            \"l735\": \"18.35\"
+            \"l736\": \"18.34\"
+            \"l737\": \"18.33\"
+            \"l738\": \"18.33\"
+            \"l739\": \"18.32\"
+            \"l740\": \"18.31\"
+            \"l741\": \"18.31\"
+            \"l742\": \"18.30\"
+            \"l743\": \"18.30\"
+            \"l744\": \"18.30\"
+            \"l745\": \"18.30\"
+            \"l746\": \"18.30\"
+            \"l747\": \"18.29\"
+            \"l748\": \"18.29\"
+            \"l749\": \"18.29\"
+            \"l750\": \"18.29\"
+            \"l751\": \"18.29\"
+            \"l752\": \"18.29\"
+            \"l753\": \"18.29\"
+            \"l754\": \"18.29\"
+            \"l755\": \"18.30\"
+            \"l756\": \"18.30\"
+            \"l757\": \"18.31\"
+            \"l758\": \"18.31\"
+            \"l759\": \"18.32\"
+            \"l760\": \"18.32\"
+            \"l761\": \"18.33\"
+            \"l762\": \"18.34\"
+            \"l763\": \"18.34\"
+            \"l764\": \"18.35\"
+            \"l765\": \"18.36\"
+            \"l766\": \"18.36\"
+            \"l767\": \"18.37\"
+            \"l768\": \"18.38\"
+            \"l769\": \"18.39\"
+            \"l770\": \"18.40\"
+            \"l771\": \"18.42\"
+            \"l772\": \"18.43\"
+            \"l773\": \"18.45\"
+            \"l774\": \"18.46\"
+            \"l775\": \"18.47\"
+            \"l776\": \"18.49\"
+            \"l777\": \"18.50\"
+            \"l778\": \"18.52\"
+            \"l779\": \"18.53\"
+            \"l780\": \"18.55\"
+            \"l781\": \"18.57\"
+            \"l782\": \"18.59\"
+            \"l783\": \"18.61\"
+            \"l784\": \"18.63\"
+            \"l785\": \"18.65\"
+            \"l786\": \"18.67\"
+            \"l787\": \"18.69\"
+            \"l788\": \"18.72\"
+            \"l789\": \"18.74\"
+            \"l790\": \"18.76\"
+            \"l791\": \"18.78\"
+            \"l792\": \"18.80\"
+            \"l793\": \"18.83\"
+            \"l794\": \"18.85\"
+            \"l795\": \"18.88\"
+            \"l796\": \"18.90\"
+            \"l797\": \"18.93\"
+            \"l798\": \"18.96\"
+            \"l799\": \"18.99\"
+            \"l800\": \"19.02\"
+            \"l801\": \"19.05\"
+            \"l802\": \"19.08\"
+            \"l803\": \"19.11\"
+            \"l804\": \"19.14\"
+            \"l805\": \"19.17\"
+            \"l806\": \"19.20\"
+            \"l807\": \"19.24\"
+            \"l808\": \"19.27\"
+            \"l809\": \"19.30\"
+            \"l810\": \"19.34\"
+            \"l811\": \"19.37\"
+            \"l812\": \"19.41\"
+            \"l813\": \"19.45\"
+            \"l814\": \"19.48\"
+            \"l815\": \"19.52\"
+            \"l816\": \"19.56\"
+            \"l817\": \"19.60\"
+            \"l818\": \"19.64\"
+            \"l819\": \"19.68\"
+            \"l820\": \"19.72\"
+            \"l821\": \"19.76\"
+            \"l822\": \"19.80\"
+            \"l823\": \"19.84\"
+            \"l824\": \"19.89\"
+            \"l825\": \"19.93\"
+            \"l826\": \"19.98\"
+            \"l827\": \"20.02\"
+            \"l828\": \"20.07\"
+            \"l829\": \"20.11\"
+            \"l830\": \"20.16\"
+            \"l831\": \"20.20\"
+            \"l832\": \"20.25\"
+            \"l833\": \"20.30\"
+            \"l834\": \"20.35\"
+            \"l835\": \"20.40\"
+            \"l836\": \"20.45\"
+            \"l837\": \"20.50\"
+            \"l838\": \"20.55\"
+            \"l839\": \"20.60\"
+            \"l840\": \"20.66\"
+            \"l841\": \"20.71\"
+            \"l842\": \"20.76\"
+            \"l843\": \"20.82\"
+            \"l844\": \"20.88\"
+            \"l845\": \"20.93\"
+            \"l846\": \"20.99\"
+            \"l847\": \"21.04\"
+            \"l848\": \"21.10\"
+            \"l849\": \"21.16\"
+            \"l850\": \"21.21\"
+            \"l851\": \"21.27\"
+            \"l852\": \"21.33\"
+            \"l853\": \"21.39\"
+            \"l854\": \"21.45\"
+            \"l855\": \"21.51\"
+            \"l856\": \"21.58\"
+            \"l857\": \"21.64\"
+            \"l858\": \"21.70\"
+            \"l859\": \"21.76\"
+            \"l860\": \"21.83\"
+            \"l861\": \"21.89\"
+            \"l862\": \"21.95\"
+            \"l863\": \"22.02\"
+            \"l864\": \"22.08\"
+            \"l865\": \"22.14\"
+            \"l866\": \"22.20\"
+            \"l867\": \"22.27\"
+            \"l868\": \"22.34\"
+            \"l869\": \"22.40\"
+            \"l870\": \"22.47\"
+            \"l871\": \"22.54\"
+            \"l872\": \"22.60\"
+            \"l873\": \"22.67\"
+            \"l874\": \"22.74\"
+            \"l875\": \"22.80\"
+            \"l876\": \"22.87\"
+            \"l877\": \"22.93\"
+            \"l878\": \"23.00\"
+            \"l879\": \"23.07\"
+            \"l880\": \"23.14\"
+            \"l881\": \"23.21\"
+            \"l882\": \"23.27\"
+            \"l883\": \"23.34\"
+            \"l884\": \"23.40\"
+            \"l885\": \"23.46\"
+            \"l886\": \"23.53\"
+            \"l887\": \"23.59\"
+            \"l888\": \"23.66\"
+            \"l889\": \"23.72\"
+            \"l890\": \"23.79\"
+            \"l891\": \"23.86\"
+            \"l892\": \"23.92\"
+            \"l893\": \"23.98\"
+            \"l894\": \"24.04\"
+            \"l895\": \"24.10\"
+            \"l896\": \"24.16\"
+            \"l897\": \"24.22\"
+            \"l898\": \"24.29\"
+            \"l899\": \"24.34\"
+            \"l900\": \"24.40\"
+            \"l901\": \"24.46\"
+            \"l902\": \"24.52\"
+            \"l903\": \"24.57\"
+            \"l904\": \"24.63\"
+            \"l905\": \"24.68\"
+            \"l906\": \"24.74\"
+            \"l907\": \"24.79\"
+            \"l908\": \"24.84\"
+            \"l909\": \"24.89\"
+            \"l910\": \"24.94\"
+            \"l911\": \"24.98\"
+            \"l912\": \"25.03\"
+            \"l913\": \"25.08\"
+            \"l914\": \"25.12\"
+            \"l915\": \"25.16\"
+            \"l916\": \"25.20\"
+            \"l917\": \"25.24\"
+            \"l918\": \"25.28\"
+            \"l919\": \"25.32\"
+            \"l920\": \"25.36\"
+            \"l921\": \"25.40\"
+            \"l922\": \"25.43\"
+            \"l923\": \"25.46\"
+            \"l924\": \"25.50\"
+            \"l925\": \"25.53\"
+            \"l926\": \"25.56\"
+            \"l927\": \"25.58\"
+            \"l928\": \"25.61\"
+            \"l929\": \"25.64\"
+            \"l930\": \"25.66\"
+            \"l931\": \"25.68\"
+            \"l932\": \"25.70\"
+            \"l933\": \"25.73\"
+            \"l934\": \"25.75\"
+            \"l935\": \"25.77\"
+            \"l936\": \"25.79\"
+            \"l937\": \"25.81\"
+            \"l938\": \"25.83\"
+            \"l939\": \"25.84\"
+            \"l940\": \"25.86\"
+            \"l941\": \"25.86\"
+            \"l942\": \"25.88\"
+            \"l943\": \"25.89\"
+            \"l944\": \"25.90\"
+            \"l945\": \"25.90\"
+            \"l946\": \"25.91\"
+            \"l947\": \"25.92\"
+            \"l948\": \"25.92\"
+            \"l949\": \"25.93\"
+            \"l950\": \"25.94\"
+            \"l951\": \"25.95\"
+            \"l952\": \"25.96\"
+            \"l953\": \"25.96\"
+            \"l954\": \"25.97\"
+            \"l955\": \"25.97\"
+            \"l956\": \"25.98\"
+            \"l957\": \"25.98\"
+            \"l958\": \"25.98\"
+            \"l959\": \"25.99\"
+            \"l960\": \"25.99\"
+            \"l961\": \"25.99\"
+            \"l962\": \"25.99\"
+            \"l963\": \"25.99\"
+            \"l964\": \"25.99\"
+            \"l965\": \"25.99\"
+            \"l966\": \"26.00\"
+            \"l967\": \"26.00\"
+            \"l968\": \"26.00\"
+            \"l969\": \"26.00\"
+            \"l970\": \"26.00\"
+            \"l971\": \"26.01\"
+            \"l972\": \"26.01\"
+            \"l973\": \"26.02\"
+            \"l974\": \"26.02\"
+            \"l975\": \"26.02\"
+            \"l976\": \"26.02\"
+            \"l977\": \"26.03\"
+            \"l978\": \"26.03\"
+            \"l979\": \"26.04\"
+            \"l980\": \"26.05\"
+            \"l981\": \"26.06\"
+            \"l982\": \"26.07\"
+            \"l983\": \"26.08\"
+            \"l984\": \"26.09\"
+            \"l985\": \"26.10\"
+            \"l986\": \"26.11\"
+            \"l987\": \"26.12\"
+            \"l988\": \"26.14\"
+            \"l989\": \"26.15\"
+            \"l990\": \"26.16\"
+            \"l991\": \"26.18\"
+            \"l992\": \"26.20\"
+            \"l993\": \"26.21\"
+            \"l994\": \"26.23\"
+            \"l995\": \"26.25\"
+            \"l996\": \"26.27\"
+            \"l997\": \"26.29\"
+            \"l998\": \"26.31\"
+            \"l999\": \"26.33\"
+            \"lnum\": \"\"
+            \"ltyp\": \"0\"
+            \"memo\": \"\"
+            \"mfpd\": \"69.80\"
+            \"pd_l\": \"34.90\"
+            \"pd_r\": \"34.90\"
+            \"px_l\": \"\"
+            \"px_r\": \"\"
+            \"py_l\": \"\"
+            \"py_r\": \"\"
+            \"r100\": \"25.19\"
+            \"r101\": \"25.12\"
+            \"r102\": \"25.04\"
+            \"r103\": \"24.97\"
+            \"r104\": \"24.89\"
+            \"r105\": \"24.81\"
+            \"r106\": \"24.74\"
+            \"r107\": \"24.66\"
+            \"r108\": \"24.58\"
+            \"r109\": \"24.51\"
+            \"r110\": \"24.43\"
+            \"r111\": \"24.35\"
+            \"r112\": \"24.27\"
+            \"r113\": \"24.20\"
+            \"r114\": \"24.12\"
+            \"r115\": \"24.04\"
+            \"r116\": \"23.96\"
+            \"r117\": \"23.88\"
+            \"r118\": \"23.80\"
+            \"r119\": \"23.72\"
+            \"r120\": \"23.64\"
+            \"r121\": \"23.56\"
+            \"r122\": \"23.48\"
+            \"r123\": \"23.40\"
+            \"r124\": \"23.33\"
+            \"r125\": \"23.25\"
+            \"r126\": \"23.18\"
+            \"r127\": \"23.10\"
+            \"r128\": \"23.02\"
+            \"r129\": \"22.94\"
+            \"r130\": \"22.87\"
+            \"r131\": \"22.80\"
+            \"r132\": \"22.72\"
+            \"r133\": \"22.65\"
+            \"r134\": \"22.58\"
+            \"r135\": \"22.50\"
+            \"r136\": \"22.43\"
+            \"r137\": \"22.36\"
+            \"r138\": \"22.29\"
+            \"r139\": \"22.22\"
+            \"r140\": \"22.15\"
+            \"r141\": \"22.08\"
+            \"r142\": \"22.01\"
+            \"r143\": \"21.95\"
+            \"r144\": \"21.88\"
+            \"r145\": \"21.81\"
+            \"r146\": \"21.74\"
+            \"r147\": \"21.67\"
+            \"r148\": \"21.60\"
+            \"r149\": \"21.54\"
+            \"r150\": \"21.48\"
+            \"r151\": \"21.42\"
+            \"r152\": \"21.35\"
+            \"r153\": \"21.29\"
+            \"r154\": \"21.22\"
+            \"r155\": \"21.16\"
+            \"r156\": \"21.10\"
+            \"r157\": \"21.04\"
+            \"r158\": \"20.98\"
+            \"r159\": \"20.92\"
+            \"r160\": \"20.86\"
+            \"r161\": \"20.81\"
+            \"r162\": \"20.75\"
+            \"r163\": \"20.70\"
+            \"r164\": \"20.64\"
+            \"r165\": \"20.59\"
+            \"r166\": \"20.53\"
+            \"r167\": \"20.48\"
+            \"r168\": \"20.42\"
+            \"r169\": \"20.37\"
+            \"r170\": \"20.32\"
+            \"r171\": \"20.27\"
+            \"r172\": \"20.22\"
+            \"r173\": \"20.18\"
+            \"r174\": \"20.13\"
+            \"r175\": \"20.08\"
+            \"r176\": \"20.03\"
+            \"r177\": \"19.99\"
+            \"r178\": \"19.94\"
+            \"r179\": \"19.90\"
+            \"r180\": \"19.86\"
+            \"r181\": \"19.81\"
+            \"r182\": \"19.77\"
+            \"r183\": \"19.73\"
+            \"r184\": \"19.69\"
+            \"r185\": \"19.64\"
+            \"r186\": \"19.61\"
+            \"r187\": \"19.57\"
+            \"r188\": \"19.53\"
+            \"r189\": \"19.49\"
+            \"r190\": \"19.45\"
+            \"r191\": \"19.42\"
+            \"r192\": \"19.38\"
+            \"r193\": \"19.35\"
+            \"r194\": \"19.31\"
+            \"r195\": \"19.28\"
+            \"r196\": \"19.24\"
+            \"r197\": \"19.21\"
+            \"r198\": \"19.18\"
+            \"r199\": \"19.15\"
+            \"r200\": \"19.12\"
+            \"r201\": \"19.09\"
+            \"r202\": \"19.06\"
+            \"r203\": \"19.03\"
+            \"r204\": \"19.00\"
+            \"r205\": \"18.98\"
+            \"r206\": \"18.95\"
+            \"r207\": \"18.93\"
+            \"r208\": \"18.91\"
+            \"r209\": \"18.88\"
+            \"r210\": \"18.86\"
+            \"r211\": \"18.83\"
+            \"r212\": \"18.81\"
+            \"r213\": \"18.79\"
+            \"r214\": \"18.76\"
+            \"r215\": \"18.74\"
+            \"r216\": \"18.72\"
+            \"r217\": \"18.70\"
+            \"r218\": \"18.68\"
+            \"r219\": \"18.67\"
+            \"r220\": \"18.65\"
+            \"r221\": \"18.63\"
+            \"r222\": \"18.62\"
+            \"r223\": \"18.60\"
+            \"r224\": \"18.59\"
+            \"r225\": \"18.58\"
+            \"r226\": \"18.56\"
+            \"r227\": \"18.55\"
+            \"r228\": \"18.54\"
+            \"r229\": \"18.52\"
+            \"r230\": \"18.51\"
+            \"r231\": \"18.50\"
+            \"r232\": \"18.49\"
+            \"r233\": \"18.48\"
+            \"r234\": \"18.47\"
+            \"r235\": \"18.46\"
+            \"r236\": \"18.46\"
+            \"r237\": \"18.45\"
+            \"r238\": \"18.44\"
+            \"r239\": \"18.44\"
+            \"r240\": \"18.43\"
+            \"r241\": \"18.43\"
+            \"r242\": \"18.42\"
+            \"r243\": \"18.42\"
+            \"r244\": \"18.42\"
+            \"r245\": \"18.41\"
+            \"r246\": \"18.41\"
+            \"r247\": \"18.41\"
+            \"r248\": \"18.41\"
+            \"r249\": \"18.41\"
+            \"r250\": \"18.41\"
+            \"r251\": \"18.41\"
+            \"r252\": \"18.41\"
+            \"r253\": \"18.41\"
+            \"r254\": \"18.41\"
+            \"r255\": \"18.42\"
+            \"r256\": \"18.42\"
+            \"r257\": \"18.42\"
+            \"r258\": \"18.42\"
+            \"r259\": \"18.43\"
+            \"r260\": \"18.44\"
+            \"r261\": \"18.44\"
+            \"r262\": \"18.45\"
+            \"r263\": \"18.46\"
+            \"r264\": \"18.47\"
+            \"r265\": \"18.47\"
+            \"r266\": \"18.48\"
+            \"r267\": \"18.49\"
+            \"r268\": \"18.50\"
+            \"r269\": \"18.52\"
+            \"r270\": \"18.53\"
+            \"r271\": \"18.54\"
+            \"r272\": \"18.55\"
+            \"r273\": \"18.56\"
+            \"r274\": \"18.57\"
+            \"r275\": \"18.59\"
+            \"r276\": \"18.60\"
+            \"r277\": \"18.62\"
+            \"r278\": \"18.64\"
+            \"r279\": \"18.65\"
+            \"r280\": \"18.67\"
+            \"r281\": \"18.69\"
+            \"r282\": \"18.71\"
+            \"r283\": \"18.73\"
+            \"r284\": \"18.75\"
+            \"r285\": \"18.77\"
+            \"r286\": \"18.79\"
+            \"r287\": \"18.81\"
+            \"r288\": \"18.83\"
+            \"r289\": \"18.86\"
+            \"r290\": \"18.88\"
+            \"r291\": \"18.90\"
+            \"r292\": \"18.93\"
+            \"r293\": \"18.96\"
+            \"r294\": \"18.99\"
+            \"r295\": \"19.01\"
+            \"r296\": \"19.04\"
+            \"r297\": \"19.07\"
+            \"r298\": \"19.10\"
+            \"r299\": \"19.13\"
+            \"r300\": \"19.16\"
+            \"r301\": \"19.19\"
+            \"r302\": \"19.22\"
+            \"r303\": \"19.25\"
+            \"r304\": \"19.29\"
+            \"r305\": \"19.32\"
+            \"r306\": \"19.36\"
+            \"r307\": \"19.39\"
+            \"r308\": \"19.43\"
+            \"r309\": \"19.46\"
+            \"r310\": \"19.50\"
+            \"r311\": \"19.54\"
+            \"r312\": \"19.58\"
+            \"r313\": \"19.62\"
+            \"r314\": \"19.66\"
+            \"r315\": \"19.70\"
+            \"r316\": \"19.74\"
+            \"r317\": \"19.79\"
+            \"r318\": \"19.83\"
+            \"r319\": \"19.88\"
+            \"r320\": \"19.92\"
+            \"r321\": \"19.97\"
+            \"r322\": \"20.02\"
+            \"r323\": \"20.06\"
+            \"r324\": \"20.11\"
+            \"r325\": \"20.16\"
+            \"r326\": \"20.21\"
+            \"r327\": \"20.26\"
+            \"r328\": \"20.31\"
+            \"r329\": \"20.36\"
+            \"r330\": \"20.42\"
+            \"r331\": \"20.47\"
+            \"r332\": \"20.52\"
+            \"r333\": \"20.58\"
+            \"r334\": \"20.64\"
+            \"r335\": \"20.69\"
+            \"r336\": \"20.75\"
+            \"r337\": \"20.81\"
+            \"r338\": \"20.87\"
+            \"r339\": \"20.93\"
+            \"r340\": \"20.99\"
+            \"r341\": \"21.05\"
+            \"r342\": \"21.11\"
+            \"r343\": \"21.17\"
+            \"r344\": \"21.24\"
+            \"r345\": \"21.30\"
+            \"r346\": \"21.36\"
+            \"r347\": \"21.43\"
+            \"r348\": \"21.50\"
+            \"r349\": \"21.57\"
+            \"r350\": \"21.64\"
+            \"r351\": \"21.70\"
+            \"r352\": \"21.78\"
+            \"r353\": \"21.84\"
+            \"r354\": \"21.91\"
+            \"r355\": \"21.98\"
+            \"r356\": \"22.05\"
+            \"r357\": \"22.13\"
+            \"r358\": \"22.20\"
+            \"r359\": \"22.28\"
+            \"r360\": \"22.35\"
+            \"r361\": \"22.42\"
+            \"r362\": \"22.50\"
+            \"r363\": \"22.57\"
+            \"r364\": \"22.65\"
+            \"r365\": \"22.73\"
+            \"r366\": \"22.81\"
+            \"r367\": \"22.88\"
+            \"r368\": \"22.96\"
+            \"r369\": \"23.04\"
+            \"r370\": \"23.12\"
+            \"r371\": \"23.20\"
+            \"r372\": \"23.28\"
+            \"r373\": \"23.36\"
+            \"r374\": \"23.43\"
+            \"r375\": \"23.51\"
+            \"r376\": \"23.59\"
+            \"r377\": \"23.67\"
+            \"r378\": \"23.75\"
+            \"r379\": \"23.84\"
+            \"r380\": \"23.92\"
+            \"r381\": \"24.00\"
+            \"r382\": \"24.08\"
+            \"r383\": \"24.16\"
+            \"r384\": \"24.24\"
+            \"r385\": \"24.32\"
+            \"r386\": \"24.40\"
+            \"r387\": \"24.49\"
+            \"r388\": \"24.57\"
+            \"r389\": \"24.65\"
+            \"r390\": \"24.73\"
+            \"r391\": \"24.82\"
+            \"r392\": \"24.90\"
+            \"r393\": \"24.98\"
+            \"r394\": \"25.05\"
+            \"r395\": \"25.13\"
+            \"r396\": \"25.21\"
+            \"r397\": \"25.28\"
+            \"r398\": \"25.36\"
+            \"r399\": \"25.43\"
+            \"r400\": \"25.51\"
+            \"r401\": \"25.58\"
+            \"r402\": \"25.66\"
+            \"r403\": \"25.73\"
+            \"r404\": \"25.80\"
+            \"r405\": \"25.87\"
+            \"r406\": \"25.94\"
+            \"r407\": \"26.01\"
+            \"r408\": \"26.08\"
+            \"r409\": \"26.14\"
+            \"r410\": \"26.20\"
+            \"r411\": \"26.27\"
+            \"r412\": \"26.33\"
+            \"r413\": \"26.39\"
+            \"r414\": \"26.45\"
+            \"r415\": \"26.51\"
+            \"r416\": \"26.56\"
+            \"r417\": \"26.61\"
+            \"r418\": \"26.66\"
+            \"r419\": \"26.71\"
+            \"r420\": \"26.76\"
+            \"r421\": \"26.80\"
+            \"r422\": \"26.85\"
+            \"r423\": \"26.89\"
+            \"r424\": \"26.93\"
+            \"r425\": \"26.97\"
+            \"r426\": \"27.01\"
+            \"r427\": \"27.04\"
+            \"r428\": \"27.08\"
+            \"r429\": \"27.11\"
+            \"r430\": \"27.14\"
+            \"r431\": \"27.17\"
+            \"r432\": \"27.20\"
+            \"r433\": \"27.21\"
+            \"r434\": \"27.24\"
+            \"r435\": \"27.26\"
+            \"r436\": \"27.28\"
+            \"r437\": \"27.30\"
+            \"r438\": \"27.32\"
+            \"r439\": \"27.34\"
+            \"r440\": \"27.35\"
+            \"r441\": \"27.36\"
+            \"r442\": \"27.38\"
+            \"r443\": \"27.39\"
+            \"r444\": \"27.40\"
+            \"r445\": \"27.41\"
+            \"r446\": \"27.42\"
+            \"r447\": \"27.42\"
+            \"r448\": \"27.42\"
+            \"r449\": \"27.42\"
+            \"r450\": \"27.42\"
+            \"r451\": \"27.41\"
+            \"r452\": \"27.41\"
+            \"r453\": \"27.40\"
+            \"r454\": \"27.39\"
+            \"r455\": \"27.37\"
+            \"r456\": \"27.36\"
+            \"r457\": \"27.35\"
+            \"r458\": \"27.33\"
+            \"r459\": \"27.32\"
+            \"r460\": \"27.30\"
+            \"r461\": \"27.29\"
+            \"r462\": \"27.27\"
+            \"r463\": \"27.25\"
+            \"r464\": \"27.23\"
+            \"r465\": \"27.21\"
+            \"r466\": \"27.19\"
+            \"r467\": \"27.17\"
+            \"r468\": \"27.14\"
+            \"r469\": \"27.12\"
+            \"r470\": \"27.10\"
+            \"r471\": \"27.08\"
+            \"r472\": \"27.06\"
+            \"r473\": \"27.03\"
+            \"r474\": \"27.01\"
+            \"r475\": \"26.99\"
+            \"r476\": \"26.97\"
+            \"r477\": \"26.94\"
+            \"r478\": \"26.91\"
+            \"r479\": \"26.89\"
+            \"r480\": \"26.86\"
+            \"r481\": \"26.84\"
+            \"r482\": \"26.81\"
+            \"r483\": \"26.78\"
+            \"r484\": \"26.76\"
+            \"r485\": \"26.73\"
+            \"r486\": \"26.71\"
+            \"r487\": \"26.68\"
+            \"r488\": \"26.66\"
+            \"r489\": \"26.63\"
+            \"r490\": \"26.61\"
+            \"r491\": \"26.58\"
+            \"r492\": \"26.56\"
+            \"r493\": \"26.54\"
+            \"r494\": \"26.51\"
+            \"r495\": \"26.48\"
+            \"r496\": \"26.46\"
+            \"r497\": \"26.44\"
+            \"r498\": \"26.41\"
+            \"r499\": \"26.39\"
+            \"r500\": \"26.37\"
+            \"r501\": \"26.35\"
+            \"r502\": \"26.32\"
+            \"r503\": \"26.30\"
+            \"r504\": \"26.28\"
+            \"r505\": \"26.26\"
+            \"r506\": \"26.24\"
+            \"r507\": \"26.22\"
+            \"r508\": \"26.20\"
+            \"r509\": \"26.18\"
+            \"r510\": \"26.16\"
+            \"r511\": \"26.14\"
+            \"r512\": \"26.13\"
+            \"r513\": \"26.11\"
+            \"r514\": \"26.10\"
+            \"r515\": \"26.08\"
+            \"r516\": \"26.07\"
+            \"r517\": \"26.06\"
+            \"r518\": \"26.04\"
+            \"r519\": \"26.03\"
+            \"r520\": \"26.02\"
+            \"r521\": \"26.02\"
+            \"r522\": \"26.01\"
+            \"r523\": \"26.00\"
+            \"r524\": \"25.99\"
+            \"r525\": \"25.98\"
+            \"r526\": \"25.98\"
+            \"r527\": \"25.97\"
+            \"r528\": \"25.96\"
+            \"r529\": \"25.96\"
+            \"r530\": \"25.96\"
+            \"r531\": \"25.95\"
+            \"r532\": \"25.95\"
+            \"r533\": \"25.95\"
+            \"r534\": \"25.94\"
+            \"r535\": \"25.94\"
+            \"r536\": \"25.94\"
+            \"r537\": \"25.94\"
+            \"r538\": \"25.94\"
+            \"r539\": \"25.93\"
+            \"r540\": \"25.93\"
+            \"r541\": \"25.93\"
+            \"r542\": \"25.93\"
+            \"r543\": \"25.93\"
+            \"r544\": \"25.93\"
+            \"r545\": \"25.93\"
+            \"r546\": \"25.92\"
+            \"r547\": \"25.92\"
+            \"r548\": \"25.92\"
+            \"r549\": \"25.92\"
+            \"r550\": \"25.92\"
+            \"r551\": \"25.91\"
+            \"r552\": \"25.91\"
+            \"r553\": \"25.90\"
+            \"r554\": \"25.90\"
+            \"r555\": \"25.90\"
+            \"r556\": \"25.89\"
+            \"r557\": \"25.88\"
+            \"r558\": \"25.87\"
+            \"r559\": \"25.86\"
+            \"r560\": \"25.86\"
+            \"r561\": \"25.84\"
+            \"r562\": \"25.83\"
+            \"r563\": \"25.81\"
+            \"r564\": \"25.80\"
+            \"r565\": \"25.78\"
+            \"r566\": \"25.77\"
+            \"r567\": \"25.75\"
+            \"r568\": \"25.74\"
+            \"r569\": \"25.72\"
+            \"r570\": \"25.70\"
+            \"r571\": \"25.68\"
+            \"r572\": \"25.66\"
+            \"r573\": \"25.63\"
+            \"r574\": \"25.60\"
+            \"r575\": \"25.57\"
+            \"r576\": \"25.54\"
+            \"r577\": \"25.52\"
+            \"r578\": \"25.49\"
+            \"r579\": \"25.46\"
+            \"r580\": \"25.43\"
+            \"r581\": \"25.40\"
+            \"r582\": \"25.37\"
+            \"r583\": \"25.34\"
+            \"r584\": \"25.30\"
+            \"r585\": \"25.26\"
+            \"r586\": \"25.22\"
+            \"r587\": \"25.18\"
+            \"r588\": \"25.14\"
+            \"r589\": \"25.10\"
+            \"r590\": \"25.05\"
+            \"r591\": \"25.00\"
+            \"r592\": \"24.96\"
+            \"r593\": \"24.91\"
+            \"r594\": \"24.86\"
+            \"r595\": \"24.81\"
+            \"r596\": \"24.76\"
+            \"r597\": \"24.71\"
+            \"r598\": \"24.66\"
+            \"r599\": \"24.61\"
+            \"r600\": \"24.55\"
+            \"r601\": \"24.50\"
+            \"r602\": \"24.44\"
+            \"r603\": \"24.39\"
+            \"r604\": \"24.33\"
+            \"r605\": \"24.27\"
+            \"r606\": \"24.21\"
+            \"r607\": \"24.14\"
+            \"r608\": \"24.09\"
+            \"r609\": \"24.03\"
+            \"r610\": \"23.97\"
+            \"r611\": \"23.91\"
+            \"r612\": \"23.85\"
+            \"r613\": \"23.79\"
+            \"r614\": \"23.72\"
+            \"r615\": \"23.66\"
+            \"r616\": \"23.59\"
+            \"r617\": \"23.53\"
+            \"r618\": \"23.46\"
+            \"r619\": \"23.40\"
+            \"r620\": \"23.34\"
+            \"r621\": \"23.27\"
+            \"r622\": \"23.21\"
+            \"r623\": \"23.14\"
+            \"r624\": \"23.08\"
+            \"r625\": \"23.01\"
+            \"r626\": \"22.95\"
+            \"r627\": \"22.88\"
+            \"r628\": \"22.81\"
+            \"r629\": \"22.75\"
+            \"r630\": \"22.69\"
+            \"r631\": \"22.62\"
+            \"r632\": \"22.56\"
+            \"r633\": \"22.50\"
+            \"r634\": \"22.44\"
+            \"r635\": \"22.38\"
+            \"r636\": \"22.32\"
+            \"r637\": \"22.25\"
+            \"r638\": \"22.18\"
+            \"r639\": \"22.12\"
+            \"r640\": \"22.05\"
+            \"r641\": \"21.99\"
+            \"r642\": \"21.93\"
+            \"r643\": \"21.86\"
+            \"r644\": \"21.80\"
+            \"r645\": \"21.74\"
+            \"r646\": \"21.68\"
+            \"r647\": \"21.62\"
+            \"r648\": \"21.56\"
+            \"r649\": \"21.50\"
+            \"r650\": \"21.44\"
+            \"r651\": \"21.38\"
+            \"r652\": \"21.33\"
+            \"r653\": \"21.27\"
+            \"r654\": \"21.22\"
+            \"r655\": \"21.16\"
+            \"r656\": \"21.10\"
+            \"r657\": \"21.04\"
+            \"r658\": \"20.99\"
+            \"r659\": \"20.94\"
+            \"r660\": \"20.88\"
+            \"r661\": \"20.83\"
+            \"r662\": \"20.78\"
+            \"r663\": \"20.73\"
+            \"r664\": \"20.68\"
+            \"r665\": \"20.63\"
+            \"r666\": \"20.57\"
+            \"r667\": \"20.52\"
+            \"r668\": \"20.48\"
+            \"r669\": \"20.43\"
+            \"r670\": \"20.38\"
+            \"r671\": \"20.33\"
+            \"r672\": \"20.28\"
+            \"r673\": \"20.24\"
+            \"r674\": \"20.19\"
+            \"r675\": \"20.14\"
+            \"r676\": \"20.10\"
+            \"r677\": \"20.05\"
+            \"r678\": \"20.01\"
+            \"r679\": \"19.97\"
+            \"r680\": \"19.93\"
+            \"r681\": \"19.89\"
+            \"r682\": \"19.85\"
+            \"r683\": \"19.80\"
+            \"r684\": \"19.77\"
+            \"r685\": \"19.73\"
+            \"r686\": \"19.69\"
+            \"r687\": \"19.65\"
+            \"r688\": \"19.62\"
+            \"r689\": \"19.58\"
+            \"r690\": \"19.54\"
+            \"r691\": \"19.51\"
+            \"r692\": \"19.48\"
+            \"r693\": \"19.44\"
+            \"r694\": \"19.41\"
+            \"r695\": \"19.38\"
+            \"r696\": \"19.34\"
+            \"r697\": \"19.31\"
+            \"r698\": \"19.28\"
+            \"r699\": \"19.24\"
+            \"r700\": \"19.21\"
+            \"r701\": \"19.18\"
+            \"r702\": \"19.15\"
+            \"r703\": \"19.12\"
+            \"r704\": \"19.10\"
+            \"r705\": \"19.07\"
+            \"r706\": \"19.04\"
+            \"r707\": \"19.01\"
+            \"r708\": \"18.99\"
+            \"r709\": \"18.96\"
+            \"r710\": \"18.94\"
+            \"r711\": \"18.91\"
+            \"r712\": \"18.89\"
+            \"r713\": \"18.87\"
+            \"r714\": \"18.84\"
+            \"r715\": \"18.82\"
+            \"r716\": \"18.80\"
+            \"r717\": \"18.78\"
+            \"r718\": \"18.76\"
+            \"r719\": \"18.74\"
+            \"r720\": \"18.72\"
+            \"r721\": \"18.70\"
+            \"r722\": \"18.68\"
+            \"r723\": \"18.66\"
+            \"r724\": \"18.65\"
+            \"r725\": \"18.63\"
+            \"r726\": \"18.62\"
+            \"r727\": \"18.60\"
+            \"r728\": \"18.59\"
+            \"r729\": \"18.57\"
+            \"r730\": \"18.56\"
+            \"r731\": \"18.54\"
+            \"r732\": \"18.53\"
+            \"r733\": \"18.52\"
+            \"r734\": \"18.51\"
+            \"r735\": \"18.50\"
+            \"r736\": \"18.49\"
+            \"r737\": \"18.48\"
+            \"r738\": \"18.47\"
+            \"r739\": \"18.46\"
+            \"r740\": \"18.45\"
+            \"r741\": \"18.45\"
+            \"r742\": \"18.44\"
+            \"r743\": \"18.43\"
+            \"r744\": \"18.43\"
+            \"r745\": \"18.42\"
+            \"r746\": \"18.42\"
+            \"r747\": \"18.41\"
+            \"r748\": \"18.41\"
+            \"r749\": \"18.41\"
+            \"r750\": \"18.41\"
+            \"r751\": \"18.40\"
+            \"r752\": \"18.40\"
+            \"r753\": \"18.40\"
+            \"r754\": \"18.40\"
+            \"r755\": \"18.40\"
+            \"r756\": \"18.40\"
+            \"r757\": \"18.40\"
+            \"r758\": \"18.41\"
+            \"r759\": \"18.41\"
+            \"r760\": \"18.41\"
+            \"r761\": \"18.42\"
+            \"r762\": \"18.42\"
+            \"r763\": \"18.43\"
+            \"r764\": \"18.43\"
+            \"r765\": \"18.44\"
+            \"r766\": \"18.45\"
+            \"r767\": \"18.45\"
+            \"r768\": \"18.46\"
+            \"r769\": \"18.47\"
+            \"r770\": \"18.48\"
+            \"r771\": \"18.49\"
+            \"r772\": \"18.50\"
+            \"r773\": \"18.51\"
+            \"r774\": \"18.52\"
+            \"r775\": \"18.53\"
+            \"r776\": \"18.54\"
+            \"r777\": \"18.56\"
+            \"r778\": \"18.57\"
+            \"r779\": \"18.58\"
+            \"r780\": \"18.60\"
+            \"r781\": \"18.61\"
+            \"r782\": \"18.63\"
+            \"r783\": \"18.64\"
+            \"r784\": \"18.66\"
+            \"r785\": \"18.68\"
+            \"r786\": \"18.70\"
+            \"r787\": \"18.72\"
+            \"r788\": \"18.74\"
+            \"r789\": \"18.75\"
+            \"r790\": \"18.77\"
+            \"r791\": \"18.79\"
+            \"r792\": \"18.82\"
+            \"r793\": \"18.84\"
+            \"r794\": \"18.87\"
+            \"r795\": \"18.89\"
+            \"r796\": \"18.92\"
+            \"r797\": \"18.94\"
+            \"r798\": \"18.97\"
+            \"r799\": \"18.99\"
+            \"r800\": \"19.02\"
+            \"r801\": \"19.04\"
+            \"r802\": \"19.07\"
+            \"r803\": \"19.10\"
+            \"r804\": \"19.13\"
+            \"r805\": \"19.16\"
+            \"r806\": \"19.19\"
+            \"r807\": \"19.22\"
+            \"r808\": \"19.26\"
+            \"r809\": \"19.29\"
+            \"r810\": \"19.32\"
+            \"r811\": \"19.35\"
+            \"r812\": \"19.38\"
+            \"r813\": \"19.42\"
+            \"r814\": \"19.45\"
+            \"r815\": \"19.49\"
+            \"r816\": \"19.53\"
+            \"r817\": \"19.56\"
+            \"r818\": \"19.60\"
+            \"r819\": \"19.64\"
+            \"r820\": \"19.68\"
+            \"r821\": \"19.71\"
+            \"r822\": \"19.75\"
+            \"r823\": \"19.79\"
+            \"r824\": \"19.83\"
+            \"r825\": \"19.87\"
+            \"r826\": \"19.91\"
+            \"r827\": \"19.95\"
+            \"r828\": \"19.99\"
+            \"r829\": \"20.04\"
+            \"r830\": \"20.08\"
+            \"r831\": \"20.12\"
+            \"r832\": \"20.17\"
+            \"r833\": \"20.21\"
+            \"r834\": \"20.26\"
+            \"r835\": \"20.30\"
+            \"r836\": \"20.35\"
+            \"r837\": \"20.39\"
+            \"r838\": \"20.44\"
+            \"r839\": \"20.48\"
+            \"r840\": \"20.53\"
+            \"r841\": \"20.58\"
+            \"r842\": \"20.62\"
+            \"r843\": \"20.67\"
+            \"r844\": \"20.72\"
+            \"r845\": \"20.76\"
+            \"r846\": \"20.81\"
+            \"r847\": \"20.86\"
+            \"r848\": \"20.91\"
+            \"r849\": \"20.96\"
+            \"r850\": \"21.01\"
+            \"r851\": \"21.06\"
+            \"r852\": \"21.11\"
+            \"r853\": \"21.16\"
+            \"r854\": \"21.21\"
+            \"r855\": \"21.26\"
+            \"r856\": \"21.32\"
+            \"r857\": \"21.36\"
+            \"r858\": \"21.42\"
+            \"r859\": \"21.47\"
+            \"r860\": \"21.52\"
+            \"r861\": \"21.57\"
+            \"r862\": \"21.62\"
+            \"r863\": \"21.67\"
+            \"r864\": \"21.72\"
+            \"r865\": \"21.78\"
+            \"r866\": \"21.83\"
+            \"r867\": \"21.88\"
+            \"r868\": \"21.93\"
+            \"r869\": \"21.98\"
+            \"r870\": \"22.04\"
+            \"r871\": \"22.09\"
+            \"r872\": \"22.15\"
+            \"r873\": \"22.20\"
+            \"r874\": \"22.25\"
+            \"r875\": \"22.30\"
+            \"r876\": \"22.36\"
+            \"r877\": \"22.41\"
+            \"r878\": \"22.46\"
+            \"r879\": \"22.52\"
+            \"r880\": \"22.57\"
+            \"r881\": \"22.62\"
+            \"r882\": \"22.67\"
+            \"r883\": \"22.72\"
+            \"r884\": \"22.76\"
+            \"r885\": \"22.82\"
+            \"r886\": \"22.86\"
+            \"r887\": \"22.91\"
+            \"r888\": \"22.96\"
+            \"r889\": \"23.01\"
+            \"r890\": \"23.06\"
+            \"r891\": \"23.10\"
+            \"r892\": \"23.15\"
+            \"r893\": \"23.20\"
+            \"r894\": \"23.24\"
+            \"r895\": \"23.28\"
+            \"r896\": \"23.32\"
+            \"r897\": \"23.36\"
+            \"r898\": \"23.40\"
+            \"r899\": \"23.44\"
+            \"r900\": \"23.48\"
+            \"r901\": \"23.53\"
+            \"r902\": \"23.57\"
+            \"r903\": \"23.61\"
+            \"r904\": \"23.65\"
+            \"r905\": \"23.69\"
+            \"r906\": \"23.72\"
+            \"r907\": \"23.76\"
+            \"r908\": \"23.80\"
+            \"r909\": \"23.84\"
+            \"r910\": \"23.88\"
+            \"r911\": \"23.92\"
+            \"r912\": \"23.96\"
+            \"r913\": \"24.00\"
+            \"r914\": \"24.04\"
+            \"r915\": \"24.07\"
+            \"r916\": \"24.10\"
+            \"r917\": \"24.14\"
+            \"r918\": \"24.17\"
+            \"r919\": \"24.21\"
+            \"r920\": \"24.24\"
+            \"r921\": \"24.28\"
+            \"r922\": \"24.31\"
+            \"r923\": \"24.34\"
+            \"r924\": \"24.37\"
+            \"r925\": \"24.40\"
+            \"r": null
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: int32
+          example: 0
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          maxLength: 256
+          example: Usa0001
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+    FrameTracesGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          items:
+            $ref: '#/components/schemas/FrameTraceGetResponse'
+    LensSpecMajorClassGetResponse:
+      type: object
+      properties:
+        lensSpecMajorClassId:
+          description: レンズ仕様大分類ID
+          type: integer
+          format: int64
+          maxLength: 19
+          example: 123
+        lensSpecMajorClassCode:
+          description: レンズ仕様大分類コード
+          type: string
+          maxLength: 2
+          example: A1
+        lensSpecMajorClassName:
+          description: レンズ仕様大分類名
+          type: string
+          maxLength: 40
+          example: LAB1
+        displayOrder:
+          description: 表示順
+          type: integer
+          format: int32
+          maxLength: 3
+          example: 1
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: int32
+          maxLength: 1
+          example: 0
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          maxLength: 256
+          example: Usa0001
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+    LensSpecMajorClassesGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/LensSpecMajorClassGetResponse'
+    LensSpecMinorClassGetResponse:
+      type: object
+      properties:
+        lensSpecMinorClassCode:
+          description: レンズ仕様小分類コード
+          type: string
+          maxLength: 18
+          example: AA123
+        lensSpecMinorClassId:
+          description: レンズ仕様小分類ID
+          type: integer
+          format: int64
+          maxLength: 19
+          example: 1
+        lensSpecName:
+          description: レンズ仕様名
+          type: string
+          maxLength: 40
+          example: Single Vision Lenses
+        displayOrder:
+          description: 表示順
+          type: integer
+          maxLength: 3
+          example: 1
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: int32
+          maxLength: 1
+          example: 0
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          maxLength: 256
+          example: Usa0001
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+        lensSpecMajorClass:
+          type: array
+          items:
+            type: object
+            properties:
+              lensSpecMajorClassId:
+                description: レンズ仕様大分類ID
+                type: integer
+                format: int64
+                maxLength: 19
+                example: 2
+              lensSpecMajorClassCode:
+                description: レンズ仕様大分類コード
+                type: string
+                maxLength: 18
+                example: AA123
+              lensSpecMajorClassName:
+                description: レンズ仕様大分類名
+                type: string
+                maxLength: 40
+                example: LAB2
+              displayOrder:
+                description: 表示順
+                type: integer
+                maxLength: 3
+                example: 1
+    LensSpecMinorClassesGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/LensSpecMinorClassGetResponse'
+    LensColorGetResponse:
+      type: object
+      properties:
+        lensColorId:
+          description: レンズカラーID
+          type: integer
+          format: int64
+          maxLength: 19
+          example: 12345
+        lensColorCode:
+          description: レンズカラーコード
+          type: string
+          maxLength: 18
+          example: AA123
+        lensColorName:
+          description: レンズカラー名
+          type: string
+          maxLength: 40
+          example: blue
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: int32
+          maxLength: 1
+          example: 0
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          maxLength: 256
+          example: Usa0001
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+    LensColorsGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/LensColorGetResponse'
+    LensColorTypeGetResponse:
+      type: object
+      properties:
+        lensColorTypeId:
+          description: レンズカラータイプID
+          type: integer
+          format: int64
+          maxLength: 19
+          example: 12345
+        lensColorTypeCode:
+          description: レンズカラータイプコード
+          type: string
+          maxLength: 18
+          example: AA123
+        lensColorTypeName:
+          description: レンズカラータイプ名
+          type: string
+          maxLength: 40
+          example: gradation
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: int32
+          maxLength: 1
+          example: 0
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          maxLength: 256
+          example: Usa0001
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+    LensColorTypesGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/LensColorTypeGetResponse'
+    MaterialGetResponse:
+      type: object
+      properties:
+        materialId:
+          description: 素材ID
+          type: integer
+          format: int64
+          maxLength: 19
+          example: 123
+        materialCode:
+          description: 素材コード
+          type: string
+          example: A123
+        materialName:
+          description: 素材名称
+          type: string
+          example: A123
+        displayOrder:
+          description: 表示順
+          type: integer
+          format: int32
+          maxLength: 3
+          example: 1
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: int32
+          maxLength: 1
+          example: 0
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          maxLength: 256
+          example: Usa0001
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+        parts:
+          type: array
+          items:
+            type: object
+            properties:
+              partId:
+                description: 部位ID
+                type: integer
+                format: int64
+                maxLength: 19
+                example: 123
+              partCode:
+                description: 部位コード
+                type: string
+                example: 1
+              partName:
+                description: 部位名称
+                type: string
+                example: A123
+              displayOrder:
+                description: 表示順
+                type: integer
+                format: int32
+                maxLength: 3
+                example: 1
+    MaterialsGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/MaterialGetResponse'
+    SellingPriceGetResponse:
+      type: object
+      properties:
+        sellingPriceId:
+          description: 売価ID
+          type: integer
+          format: int64
+          example: 6100000000000009
+        salesTargetId:
+          description: 販売対象ID
+          type: integer
+          format: int64
+          example: 6100000000000009
+        applicationStartDate:
+          description: 適用開始年月日
+          type: string
+          format: date
+          example: '2024-01-01'
+        sellingPriceExcludingTax:
+          description: 売価（税抜き）
+          type: number
+          example: 198.12
+          nullable: true
+        currencyCode:
+          description: 通貨コード
+          type: string
+          maxLength: 3
+          example: USD
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: int32
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          example: USER123456
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+        sellingPriceCategory:
+          type: object
+          properties:
+            sellingPriceCategoryId:
+              description: 売価分類ID
+              type: integer
+              format: int64
+              example: 10000012
+            sellingPriceCategoryCode:
+              description: 売価分類コード
+              type: string
+              maxLength: 2
+              example: '01'
+            sellingPriceCategoryName:
+              description: 売価分類名
+              type: string
+              maxLength: 40
+              example: lens option
+        country:
+          type: object
+          properties:
+            countryId:
+              description: 国ID
+              type: integer
+              format: int64
+              example: 91000000001
+            countryCodeAlpha2:
+              description: 国コード（alpha-2)
+              type: string
+              maxLength: 2
+              example: US
+            countryCodeAlpha3:
+              description: 国コード（alpha-3)
+              type: string
+              maxLength: 3
+              example: USA
+            countryName:
+              description: 国名
+              type: string
+              maxLength: 100
+              example: America
+    SellingPricesGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/SellingPriceGetResponse'
+    LensColorVariationGetResponse:
+      type: object
+      properties:
+        lensColorPatternId:
+          description: レンズカラーパターンID
+          type: integer
+          format: int64
+          maxLength: 19
+          example: 12345
+        lensColorPatternCode:
+          description: レンズカラーパターンコード
+          type: string
+          maxLength: 18
+          example: AA123,BB123
+        lensColorPatternName:
+          description: レンズカラーパターン名
+          type: string
+          maxLength: 40
+          example: blue mirror
+        concentrationDivision:
+          description: 濃度区分
+          type: string
+          maxLength: 40
+          example: 0
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: int32
+          maxLength: 1
+          example: 0
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          maxLength: 256
+          example: Usa0001
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+        lensColors:
+          type: array
+          items:
+            type: object
+            properties:
+              lensColorId:
+                description: レンズカラーID
+                type: integer
+                format: int64
+                maxLength: 19
+                example: 12345
+              lensColorCode:
+                description: レンズカラーコード
+                type: string
+                maxLength: 18
+                example: AA123
+              lensColorName:
+                description: レンズカラー名
+                type: string
+                maxLength: 40
+                example: blue
+        lensColorTypes:
+          type: array
+          items:
+            type: object
+            properties:
+              lensColorTypeId:
+                description: レンズカラータイプID
+                type: integer
+                format: int64
+                maxLength: 19
+                example: 12345
+              lensColorTypeCode:
+                description: レンズカラータイプコード
+                type: string
+                maxLength: 18
+                example: AA123
+              lensColorTypeName:
+                description: レンズカラータイプ名
+                type: string
+                maxLength: 40
+                example: gradation
+        lensColorLevels:
+          type: array
+          items:
+            type: object
+            properties:
+              lensColorLevelId:
+                description: レンズカラー階層ID
+                type: integer
+                format: int64
+                maxLength: 19
+                example: 12345
+              lensColorLevelParentId:
+                description: レンズカラー階層親ID
+                type: integer
+                format: int64
+                maxLength: 19
+                example: 12345
+              lensColorLevelName:
+                description: レンズカラー階層名
+                type: string
+                maxLength: 40
+                example: category
+              displayOrder:
+                description: 表示順
+                type: integer
+                maxLength: 3
+                example: 1
+    LensColorVariationsGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/LensColorVariationGetResponse'
+    LensSpecMgmtForSaleGetResponse:
+      type: object
+      properties:
+        LensSpecMgmtForSalesId:
+          description: 販売向けレンズ仕様管理ID
+          type: integer
+          format: int64
+          maxLength: 19
+          example: 123
+        LensSpecMgmtForSalesName:
+          description: 販売向けレンズ仕様管理名称
+          type: string
+          example: aaa
+        Condition:
+          description: 条件
+          type: string
+        displayOrder:
+          description: 表示順
+          type: integer
+          maxLength: 3
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: int32
+          maxLength: 1
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          maxLength: 256
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+    LensSpecMgmtForSalesGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/LensSpecMgmtForSaleGetResponse'
+    LensUniqueAttributeGetResponse:
+      type: object
+      properties:
+        itemId:
+          description: 商品ID
+          type: integer
+          format: int64
+          example: 123
+        itemCode:
+          description: 商品コード
+          type: string
+          maxLength: 18
+          example: A123
+        itemName:
+          description: 商品名
+          type: string
+          maxLength: 80
+          example: A12-34
+        itemNameKana:
+          description: 商品名カナ
+          type: string
+          maxLength: 80
+          example: A123
+          nullable: true
+        itemNameEnglish:
+          description: 商品名（英語）
+          type: string
+          maxLength: 80
+          example: A123
+        itemNameSimplified:
+          description: 商品名（簡体語）
+          type: string
+          maxLength: 80
+          example: A123
+        itemNameTraditional:
+          description: 商品名（繁体語）
+          type: string
+          maxLength: 80
+          example: A123
+        itemDivision:
+          description: 商品区分
+          type: string
+          maxLength: 4
+          example: 1
+          nullable: true
+        standardPlanName:
+          description: 定番/企画名
+          type: string
+          maxLength: 80
+          example: A123
+          nullable: true
+        gtin:
+          description: GTIN
+          type: string
+          maxLength: 14
+          example: A123
+          nullable: true
+        itemDeploymentStartDate:
+          description: 商品展開開始日
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+          nullable: true
+        itemDeploymentEndDate:
+          description: 商品展開終了日
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+          nullable: true
+        storeDisplayFlag:
+          description: 店舗表示フラグ
+          type: string
+          maxLength: 4
+          example: 0
+        price:
+          description: 上代
+          type: number
+          example: 1234567890.12
+        priceUs:
+          description: 上代（US）
+          type: number
+          example: 1234567890.12
+        singleItemSalesFlag:
+          description: 単品販売不可フラグ
+          type: integer
+          format: int32
+          example: 0
+        ecSalesFlag:
+          description: EC販売フラグ
+          type: integer
+          format: int32
+          example: 0
+        storeSalesFlag:
+          description: 店舗販売フラグ
+          type: integer
+          format: int32
+          example: 0
+        salesItemName:
+          description: 販売用商品名
+          type: string
+          maxLength: 80
+          example: A12-34
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: int32
+          example: 0
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          maxLength: 256
+          example: Usa0001
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+        lenses:
+          type: object
+          properties:
+            lensId:
+              description: レンズID
+              type: integer
+              format: int64
+              example: 123
+            lensCode:
+              description: レンズコード
+              type: string
+              maxLength: 18
+              example: A12
+            sphericalPower:
+              description: 球面度数
+              type: number
+              example: 123.12
+            astigmatismPrescription:
+              description: 乱視度数
+              type: number
+              example: 123.12
+            astigmatismAxis:
+              description: 乱視軸
+              type: integer
+              format: int64
+              example: 123
+            addPower:
+              description: 加入度数
+              type: number
+              example: 1234.12
+            leftRightDivision:
+              description: 左右区分
+              type: string
+              maxLength: 1
+              example: L
+            priority:
+              description: 優先順位
+              type: integer
+              format: int64
+              example: 1
+            inStoreCode:
+              description: インストアコード
+              type: string
+              maxLength: 13
+              example: A123
+            opcCode:
+              description: OPCコード
+              type: string
+              maxLength: 13
+              example: A123
+            standardDiameter:
+              description: 基準径
+              type: integer
+              format: int64
+              example: 123
+            diameterMin:
+              description: 最小径
+              type: integer
+              format: int64
+              example: 123
+            diameterMax:
+              description: 最大径
+              type: integer
+              format: int64
+              example: 123
+            diameterStep:
+              description: 径ステップ
+              type: integer
+              format: int64
+              example: 1234
+            leadTimeFrom:
+              description: リードタイムFrom
+              type: integer
+              format: int64
+              example: 123
+            leadTimeTo:
+              description: リードタイムTo
+              type: integer
+              format: int64
+              example: 123
+            makerInventoryRange:
+              description: メーカー在庫範囲
+              type: string
+              maxLength: 2
+              example: A1
+            prescriptionCorrectionFlag:
+              description: 度数補正フラグ
+              type: integer
+              format: int32
+              example: 0
+            prismFrom:
+              description: プリズムFrom
+              type: number
+              example: 1234.12
+            prismTo:
+              description: プリズムTo
+              type: number
+              example: 1234.12
+        lensNames:
+          type: object
+          properties:
+            lensNameId:
+              description: レンズ名称ID
+              type: integer
+              format: int64
+              example: 123
+            lensNameCode:
+              description: レンズ名称コード
+              type: string
+              maxLength: 18
+              example: A123
+            lensName:
+              description: レンズ名称
+              type: string
+              maxLength: 80
+              example: A123
+            lensAbbreviation:
+              description: レンズ略称
+              type: string
+              maxLength: 40
+              example: A123
+            lensMakerCode:
+              description: レンズメーカーコード
+              type: string
+              maxLength: 10
+              example: A123
+            supplierLensNameCode:
+              description: 発注先レンズ名称コード
+              type: string
+              maxLength: 14
+              example: A123
+            refractiveIndex:
+              description: 屈折率
+              type: string
+              maxLength: 6
+              example: 1234.12
+            color:
+              description: カラー（PC/CL）
+              type: string
+              maxLength: 1
+              example: A
+            lensStyleCode:
+              description: レンズスタイルコード
+              type: string
+              maxLength: 4
+              example: A123
+            baseCurve:
+              description: ベースカーブ
+              type: integer
+              format: int32
+              example: 1
+            coatingRequiredFlag:
+              description: コート必須フラグ
+              type: integer
+              format: int32
+              example: 0
+            eyePointExamReqFlag:
+              description: アイポイント測定必須フラグ
+              type: integer
+              format: int32
+              example: 0
+            addFrom:
+              description: ADD_From
+              type: number
+              example: 1234.12
+            addTo:
+              description: ADD_To
+              type: number
+              example: 1234.12
+            wholesalePrice:
+              description: 仕入単価
+              type: number
+              example: 1234567890.12
+            currencyCodeWholesalePrice:
+              description: 通貨コード（仕入単価）
+              type: string
+              maxLength: 3
+              example: ABC
+            lensOptionFlag:
+              description: レンズオプションフラグ
+              type: integer
+              format: int32
+              example: 0
+        itemSalesByCountries:
+          type: array
+          items:
+            type: object
+            properties:
+              countryId:
+                description: 国ID
+                type: integer
+                format: int64
+                example: 91000000001
+              countryCodeAlpha2:
+                description: 国コード(alpha-2)
+                type: string
+                maxLength: 2
+                example: US
+              countryCodeAlpha3:
+                description: 国コード(alpha-3)
+                type: string
+                maxLength: 3
+                example: USA
+                nullable: true
+              countryName:
+                description: 国名
+                type: string
+                maxLength: 100
+                example: UnitedStates
+        materials:
+          type: array
+          items:
+            type: object
+            properties:
+              materialId:
+                description: 素材ID
+                type: integer
+                format: int64
+                example: 123
+              materialCode:
+                description: 素材コード
+                type: string
+                maxLength: 4
+                example: A123
+              materialName:
+                description: 素材名称
+                type: string
+                maxLength: 40
+                example: A123
+        inventoryCategoryByCountryAndLenses:
+          type: object
+          properties:
+            invCatByCountryAndLensId:
+              description: 国別レンズ別在庫種別ID
+              type: integer
+              format: int64
+              example: 123
+            lensManagementCategoryId:
+              description: レンズ管理種別ID
+              type: integer
+              format: int64
+              example: 123
+            inventoryMgmtCategoryCode:
+              description: 在庫管理種別コード
+              type: string
+              maxLength: 2
+              example: A1
+            inventoryMgmtCategoryName:
+              description: 在庫管理種別名
+              type: string
+              maxLength: 40
+              example: A123
+    LensUniqueAttributesGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/LensUniqueAttributeGetResponse'
+    FrameUniqueAttributeGetResponse:
+      type: object
+      properties:
+        itemId:
+          description: 商品ID
+          type: integer
+          format: int64
+          example: 1137261
+        itemCode:
+          description: 商品コード
+          type: string
+          maxLength: 18
+          example: MUF-20A-065-359
+        itemName:
+          description: 商品名
+          type: string
+          maxLength: 80
+          example: MUF-20A-065-359
+        itemNameKana:
+          description: 商品名カナ
+          type: string
+          maxLength: 80
+          nullable: true
+          example: MUF-20A-065-359
+        itemNameEnglish:
+          description: 商品名（英語）
+          type: string
+          maxLength: 80
+          example: MUF-20A-065-359
+        itemNameSimplified:
+          description: 商品名（簡体字）
+          type: string
+          maxLength: 80
+          example: MUF-20A-065-359
+        itemNameTraditional:
+          description: 商品名（繫体字）
+          type: string
+          maxLength: 80
+          example: MUF-20A-065-359
+        itemDivision:
+          description: 商品区分
+          type: string
+          maxLength: 4
+          nullable: true
+          example: 1
+        standardPlanName:
+          description: 定番/企画名
+          type: string
+          maxLength: 80
+          nullable: true
+          example: plan
+        gtin:
+          description: GTIN
+          type: string
+          maxLength: 4
+          nullable: true
+          example: 9
+        itemDeploymentStartDate:
+          description: 商品展開開始日
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+          nullable: true
+        itemDeploymentEndDate:
+          description: 商品展開終了日
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+          nullable: true
+        storeDisplayFlag:
+          description: 店舗表示フラグ
+          type: string
+          maxLength: 4
+          nullable: true
+          example: 0
+        price:
+          description: 上代
+          type: number
+          example: 5000.12
+        priceUS:
+          description: 上代（US）
+          type: number
+          example: 60.12
+        singleItemSalesFlag:
+          description: 単品販売不可フラグ
+          type: integer
+          format: int32
+          example: 0
+        ecSalesFlag:
+          description: EC販売フラグ
+          type: integer
+          format: int32
+          example: 0
+        storeSalesFlag:
+          description: 店舗販売フラグ
+          type: integer
+          format: int32
+          example: 0
+        salesItemName:
+          description: 販売用商品名
+          type: string
+          example: MUF-20A-065-359
+        deletedFlag:
+          description: 削除フラグ
+          type: integer
+          format: int32
+        updatedUserId:
+          description: 更新者ID
+          type: string
+          example: USER123456
+        updatedDatetime:
+          description: 更新日時
+          type: string
+          format: date-time
+          example: '2024-01-01T11:11:00'
+        frameModelColor:
+          type: object
+          properties:
+            frameModelColorId:
+              description: フレーム型色ID
+              type: integer
+              format: int64
+              example: 669654
+            frameModelColorCode:
+              description: フレーム型色コード
+              type: string
+              maxLength: 18
+              example: FMP15MWK1624IPXBK
+            frameModelColorName:
+              description: フレーム型色名
+              type: string
+              maxLength: 40
+              example: MCF-23A-014-086-03
+            frameColorId:
+              description: フレーム色ID
+              type: integer
+              format: int64
+              example: 1434
+            frameColorCode:
+              description: フレーム色コード
+              type: string
+              maxLength: 18
+              example: BLK
+            frameColorName:
+              description: フレーム色名称
+              type: string
+              maxLength: 40
+              example: BLK
+        frameModel:
+          type: object
+          properties:
+            frameModelId:
+              description: フレーム型ID
+              type: integer
+              format: int64
+              example: 410000000000001
+            frameModelCode:
+              description: フレーム型コード
+              type: string
+              maxLength: 80
+              example: '05'
+            lensModelId:
+              description: 玉型ID
+              type: integer
+              format: int64
+              example: 123
+            lensModelCode:
+              description: 玉型コード
+              type: string
+              maxLength: 2
+              example: '01'
+            lensModelName:
+              description: 玉型名
+              type: string
+              maxLength: 40
+              example: lens model
+            frameSizeNameId:
+              description: フレームサイズ名称ID
+              type: integer
+              format: int64
+              example: 2000131
+            frameSizeNameCode:
+              description: フレームサイズ名称コード
+              type: string
+              maxLength: 2
+              example: '01'
+            frameSizeName:
+              description: フレームサイズ名称
+              type: string
+              maxLength: 40
+              example: S
+            templeMaterialId:
+              description: テンプル素材ID
+              type: integer
+              format: int64
+              example: 123
+            templeMaterialCode:
+              description: テンプル素材コード
+              type: string
+              maxLength: 4
+              example: '01'
+            templeMaterialName:
+              description: テンプル素材名称
+              type: string
+              maxLength: 40
+              example: acetate
+            frontMaterialId:
+              description: フロント素材ID
+              type: integer
+              format: int64
+              example: 456
+            frontMaterialCode:
+              description: フロント素材コード
+              type: string
+              maxLength: 4
+              example: '02'
+            frontMaterialName:
+              description: フロント素材名称
+              type: string
+              maxLength: 40
+              example: metal
+            nosePadMaterialId:
+              description: 鼻パッド素材ID
+              type: integer
+              format: int64
+              example: 789
+            nosePadMaterialCode:
+              description: 鼻パッド素材コード
+              type: string
+              maxLength: 2
+              example: '03'
+            nosePadMaterialName:
+              description: 鼻パッド素材名称
+              type: string
+              maxLength: 50
+              example: resin
+            nosePadShapeId:
+              description: 鼻パッド形状ID
+              type: integer
+              format: int64
+              example: 789
+            nosePadShapeCode:
+              description: 鼻パッド形状コード
+              type: string
+              maxLength: 2
+              example: '02'
+            nosePadShapeName:
+              description: 鼻パッド形状名称
+              type: string
+              maxLength: 40
+              example: frame integrated type
+            weight:
+              description: 重量
+              type: number
+              example: 19
+            frontWidth:
+              description: フロント幅
+              type: number
+              example: 46.01
+            bridgeWidth:
+              description: ブリッジ幅
+              type: number
+              example: 9
+            lensWidth:
+              description: レンズ幅
+              type: number
+              example: 12.34
+            verticalWidth:
+              description: 天地幅
+              type: number
+              example: 5.67
+            templeLength:
+              description: テンプル長
+              type: number
+              example: 8.91
+            rimShapeId:
+              description: リム形状ID
+              type: integer
+              format: int64
+              example: 100000123
+            rimShapeCode:
+              description: リム形状コード
+              type: string
+              maxLength: 2
+              example: '02'
+            rimShapeName:
+              description: リム形状名称
+              type: string
+              maxLength: 40
+              example: frame integrated type
+            checkMarginByRimShapeId:
+              description: リム形状別径不足チェックマージンID
+              type: integer
+              format: int64
+              example: 100000123
+            diameterShortageCheckMargin:
+              description: 径不足チェックマージン
+              type: number
+              example: 2
+        frameName:
+          type: object
+          properties:
+            frameNameId:
+              description: フレーム名称ID
+              type: integer
+              format: int64
+              example: 10000001
+            frameNameCode:
+              description: フレーム名称コード
+              type: string
+              maxLength: 2
+              example: '01'
+            frameName:
+              description: フレーム名称
+              type: string
+              maxLength: 40
+              example: frame
+            targetGenderId:
+              description: ターゲット性別ID
+              type: integer
+              format: int64
+              example: 123
+            targetGenderCode:
+              description: ターゲット性別コード
+              type: string
+              maxLength: 2
+              example: '01'
+            targetGenderName:
+              description: ターゲット性別名
+              type: string
+              maxLength: 40
+              example: Mens
+            targetAgeId:
+              description: ターゲット年代ID
+              type: integer
+              format: int64
+              example: 123
+            targetAgeCode:
+              description: ターゲット年代コード
+              type: string
+              maxLength: 2
+              example: '01'
+            targetAgeName:
+              description: ターゲット年代名
+              type: string
+              maxLength: 40
+              example: Kids
+            planYear:
+              description: 企画年度
+              type: integer
+              format: int64
+              example: 24
+            season:
+              description: シーズン
+              type: string
+              maxLength: 2
+              example: AW
+        itemSalesByCountry:
+          type: object
+          properties:
+            countryId:
+              description: 国ID
+              type: integer
+              format: int64
+              example: 91000000001
+            countryCodeAlpha2:
+              description: 国コード（alpha-2)
+              type: string
+              maxLength: 2
+              example: US
+            countryCodeAlpha3:
+              description: 国コード（alpha-3)
+              type: string
+              maxLength: 3
+              example: USA
+            countryName:
+              description: 国名
+              type: string
+              maxLength: 100
+              example: America
+    FrameUniqueAttributesGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/FrameUniqueAttributeGetResponse'
+    SalesLensSearchGetResponse:
+      type: object
+      properties:
+        countryId:
+          description: 国ID
+          type: integer
+          format: int64
+          example: 91000000001
+        countryCodeAlpha2:
+          description: 国コード(alpha-2)
+          type: string
+          example: US
+        applicationStartDate:
+          description: 適用開始年月日
+          type: string
+          format: date
+          example: '2024-01-01'
+        salesColorMajorClass:
+          type: array
+          items:
+            type: object
+            properties:
+              salesColorMajorClassId:
+                description: 販売用カラー名称大分類ID
+                type: integer
+                format: int64
+                example: 2000
+                nullable: true
+              salesColorMajorClassCode:
+                description: 販売用カラー名称大分類コード
+                type: string
+                maxLength: 14
+                example: LOP-CMJ110001
+                nullable: true
+              salesColorMajorClassName:
+                description: 販売用カラー大分類名称
+                type: string
+                maxLength: 40
+                example: AA
+                nullable: true
+              displayOrder:
+                description: 表示順
+                type: integer
+                format: int32
+                example: 1
+                nullable: true
+              salesColorMinorClass:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    salesColorMinorClassId:
+                      description: 販売用カラー小分類ID
+                      type: integer
+                      format: int64
+                      example: 1000
+                      nullable: true
+                    salesColorMinorClassCode:
+                      description: 販売用カラー小分類コード
+                      type: string
+                      maxLength: 14
+                      example: LOP-CMI110001
+                      nullable: true
+                    salesColorMinorClassName:
+                      description: 販売用カラー小分類名称
+                      type: string
+                      maxLength: 40
+                      example: AA
+                      nullable: true
+                    displayOrder:
+                      description: 表示順
+                      type: integer
+                      format: int32
+                      example: 1
+                      nullable: true
+                    salesColorName:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          salesColorNameId:
+                            description: 販売用カラー名称ID
+                            type: integer
+                            format: int64
+                            example: 10000012
+                            nullable: true
+                          salesColorNameCode:
+                            description: 販売用カラー名称コード
+                            type: string
+                            maxLength: 14
+                            example: LOP-C110001
+                            nullable: true
+                          salesColorName:
+                            description: 販売用カラー名称
+                            type: string
+                            maxLength: 40
+                            example: AA
+                            nullable: true
+                          lensSpecMinorClassId:
+                            description: レンズ仕様小分類ID
+                            type: integer
+                            format: int64
+                            example: 1
+                            nullable: true
+                          displayOrder:
+                            description: 表示順
+                            type: integer
+                            format: int32
+                            example: 1
+                            nullable: true
+                          isSelectable:
+                            description: 選択可能フラグ
+                            type: boolean
+                            example: true
+                            nullable: true
+                          sellingPrice:
+                            type: object
+                            properties:
+                              sellingPriceExcludingTax:
+                                description: 売価（税抜き）
+                                type: number
+                                example: 198
+                                nullable: true
+                              currencyCode:
+                                description: 通貨コード
+                                type: string
+                                maxLength: 3
+                                example: USD
+                                nullable: true
+        salesLensSpec:
+          type: array
+          items:
+            type: object
+            properties:
+              salesLensSpecId:
+                description: 販売用レンズ仕様ID
+                type: integer
+                format: int64
+                example: 10000012
+                nullable: true
+              salesLensSpecCode:
+                description: 販売用レンズ仕様コード
+                type: string
+                maxLength: 14
+                example: LOP-L110001
+                nullable: true
+              salesLensSpecName:
+                description: 販売用レンズ仕様名
+                type: string
+                maxLength: 40
+                example: AA
+                nullable: true
+              lensSpecMinorClassId:
+                description: レンズ仕様小分類ID
+                type: integer
+                format: int64
+                example: 1
+                nullable: true
+              displayOrder:
+                description: 表示順
+                type: integer
+                format: int32
+                example: 1
+                nullable: true
+              isSelectable:
+                description: 選択可能フラグ
+                type: boolean
+                example: true
+                nullable: true
+              sellingPrice:
+                type: object
+                properties:
+                  sellingPriceExcludingTax:
+                    description: 売価（税抜き）
+                    type: number
+                    example: 198
+                    nullable: true
+                  currencyCode:
+                    description: 通貨コード
+                    type: string
+                    maxLength: 3
+                    example: USD
+                    nullable: true
+        focusCategory:
+          type: array
+          items:
+            type: object
+            properties:
+              focusCategoryId:
+                description: 焦点分類ID
+                type: integer
+                format: int64
+                example: 10000012
+                nullable: true
+              focusCategoryCode:
+                description: 焦点分類コード
+                type: string
+                maxLength: 14
+                example: LOP-F110001
+                nullable: true
+              focusCategoryName:
+                description: 焦点分類名
+                type: string
+                maxLength: 40
+                example: AA
+                nullable: true
+              lensSpecMinorClassId:
+                description: レンズ仕様小分類ID
+                type: integer
+                format: int64
+                example: 1
+                nullable: true
+              displayOrder:
+                description: 表示順
+                type: integer
+                format: int32
+                example: 1
+                nullable: true
+              isSelectable:
+                description: 選択可能フラグ
+                type: boolean
+                example: true
+                nullable: true
+              sellingPrice:
+                type: object
+                properties:
+                  sellingPriceExcludingTax:
+                    description: 売価（税抜き）
+                    type: number
+                    example: 198
+                    nullable: true
+                  currencyCode:
+                    description: 通貨コード
+                    type: string
+                    maxLength: 3
+                    example: USD
+                    nullable: true
+        progressiveCategory:
+          type: array
+          items:
+            type: object
+            properties:
+              progressiveCategoryId:
+                description: 累進分類ID
+                type: integer
+                format: int64
+                example: 10000012
+                nullable: true
+              progressiveCategoryCode:
+                description: 累進分類コード
+                type: string
+                maxLength: 14
+                example: LOP-P110001
+                nullable: true
+              progressiveCategoryName:
+                description: 累進分類名
+                type: string
+                maxLength: 40
+                example: AA
+                nullable: true
+              lensSpecMinorClassId:
+                description: レンズ仕様小分類ID
+                type: integer
+                format: int64
+                example: 1
+                nullable: true
+              displayOrder:
+                description: 表示順
+                type: integer
+                format: int32
+                example: 1
+                nullable: true
+              isSelectable:
+                description: 選択可能フラグ
+                type: boolean
+                example: true
+                nullable: true
+              sellingPrice:
+                type: object
+                properties:
+                  sellingPriceExcludingTax:
+                    description: 売価（税抜き）
+                    type: number
+                    example: 198
+                    nullable: true
+                  currencyCode:
+                    description: 通貨コード
+                    type: string
+                    maxLength: 3
+                    example: USD
+                    nullable: true
+        refractiveIndexName:
+          type: array
+          items:
+            type: object
+            properties:
+              refractiveIndexNameId:
+                description: 屈折率名称ID
+                type: integer
+                format: int64
+                example: 10000012
+                nullable: true
+              refractiveIndexNameCode:
+                description: 屈折率名称コード
+                type: string
+                maxLength: 14
+                example: LOP-R110001
+                nullable: true
+              refractiveIndexName:
+                description: 屈折率名称
+                type: string
+                maxLength: 40
+                example: AA
+                nullable: true
+              lensSpecMinorClassId:
+                description: レンズ仕様小分類ID
+                type: integer
+                format: int64
+                example: 1
+                nullable: true
+              displayOrder:
+                description: 表示順
+                type: integer
+                format: int32
+                example: 1
+                nullable: true
+              isSelectable:
+                description: 選択可能フラグ
+                type: boolean
+                example: true
+                nullable: true
+              sellingPrice:
+                type: object
+                properties:
+                  sellingPriceExcludingTax:
+                    description: 売価（税抜き）
+                    type: number
+                    example: 198
+                    nullable: true
+                  currencyCode:
+                    description: 通貨コード
+                    type: string
+                    maxLength: 3
+                    example: USD
+                    nullable: true
+    SalesLensSearchesGetResponse:
+      type: object
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesLensSearchGetResponse'
+  examples:
+    COM_0001:
+      value:
+        code: COM_0001
+        message: Validation error occurred.
+    DPFM_CATALOG_0001:
+      value:
+        code: DPFM_CATALOG_0001
+        message: At least item Code or item category Code or country code alpha2 or item ID or country ID is required.
+    DPFM_CATALOG_0002:
+      value:
+        code: DPFM_CATALOG_0002
+        message: At least item id or item code is required.
+    DPFM_CATALOG_0003:
+      value:
+        code: DPFM_CATALOG_0003
+        message: At least country ID or country Code alpha2 is required.
+    salesColorNameRecords:
+      value:
+        offset: 0
+        count: 20
+        limit: 20
+        totalResults: 10000
+        hasMore: true
+        records:
+          - countryId: 91000000001
+            countryCodeAlpha2: US
+            applicationStartDate: '2024-01-01'
+            salesColorMajorClass:
+              - salesColorMajorClassId: 2000
+                salesColorMajorClassCode: LOP-CMJ110001
+                salesColorMajorClassName: AA
+                displayOrder: 1
+                salesColorMinorClass:
+                  - salesColorMinorClassId: 1000
+                    salesColorMinorClassCode: 1
+                    salesColorMinorClassName: AA
+                    displayOrder: 1
+                    salesColorName:
+                      - salesColorNameId: 10000012
+                        salesColorNameCode: LOP-C110001
+                        salesColorName: AA
+                        lensSpecMinorClassId: 1
+                        displayOrder: 1
+                        isSelectable: true
+                        sellingPrice:
+                          sellingPriceExcludingTax: 198
+                          currencyCode: USD
+            salesLensSpec: []
+            focusCategory: []
+            progressiveCategory: []
+            refractiveIndexName: []
+    salesLensSpecRecords:
+      value:
+        offset: 0
+        count: 20
+        limit: 20
+        totalResults: 10000
+        hasMore: true
+        records:
+          - countryId: 91000000001
+            countryCodeAlpha2: US
+            applicationStartDate: '2024-01-01'
+            salesColorMajorClass: []
+            salesLensSpec:
+              - salesLensSpecId: 10000012
+                salesLensSpecCode: LOP-L110001
+                salesLensSpecName: AA
+                lensSpecMinorClassId: 1
+                displayOrder: 1
+                isSelectable: true
+                sellingPrice:
+                  sellingPriceExcludingTax: 198
+                  currencyCode: USD
+            focusCategory: []
+            progressiveCategory: []
+            refractiveIndexName: []
+    focusCategoryRecords:
+      value:
+        offset: 0
+        count: 20
+        limit: 20
+        totalResults: 10000
+        hasMore: true
+        records:
+          - countryId: 91000000001
+            countryCodeAlpha2: US
+            applicationStartDate: '2024-01-01'
+            salesColorMajorClass: []
+            salesLensSpec: []
+            focusCategory:
+              - focusCategoryId: 10000012
+                focusCategoryCode: LOP-F110001
+                focusCategoryName: AA
+                lensSpecMinorClassId: 1
+                displayOrder: 1
+                isSelectable: true
+                sellingPrice:
+                  sellingPriceExcludingTax: 198
+                  currencyCode: USD
+            progressiveCategory: []
+            refractiveIndexName: []
+    progressiveCategoryRecords:
+      value:
+        offset: 0
+        count: 20
+        limit: 20
+        totalResults: 10000
+        hasMore: true
+        records:
+          - countryId: 91000000001
+            countryCodeAlpha2: US
+            applicationStartDate: '2024-01-01'
+            salesColorMajorClass: []
+            salesLensSpec: []
+            focusCategory: []
+            progressiveCategory:
+              - progressiveCategoryId: 10000012
+                progressiveCategoryCode: LOP-P110001
+                progressiveCategoryName: AA
+                lensSpecMinorClassId: 1
+                displayOrder: 1
+                isSelectable: true
+                sellingPrice:
+                  sellingPriceExcludingTax: 198
+                  currencyCode: USD
+            refractiveIndexName: []
+    refractiveIndexNameRecords:
+      value:
+        offset: 0
+        count: 20
+        limit: 20
+        totalResults: 10000
+        hasMore: true
+        records:
+          - countryId: 91000000001
+            countryCodeAlpha2: US
+            applicationStartDate: '2024-01-01'
+            salesColorMajorClass: []
+            salesLensSpec: []
+            focusCategory: []
+            progressiveCategory: []
+            refractiveIndexName:
+              - refractiveIndexNameId: 10000012
+                refractiveIndexNameCode: LOP-R110001
+                refractiveIndexName: AA
+                lensSpecMinorClassId: 1
+                displayOrder: 1
+                isSelectable: true
+                sellingPrice:
+                  sellingPriceExcludingTax: 198
+                  currencyCode: USD
+  responses:
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0002
+            message: Specified data not found.
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0003
+            message: Transaction failed due to optimisitic lock failure.
+    TooManyRequests:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0004
+            message: Duplicate api invocation detected.
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0000
+            message: Unexpected error occurred.

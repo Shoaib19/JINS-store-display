@@ -1,0 +1,83 @@
+{
+    "version": "0.2",
+    // 英語、日本語対応
+    "language": "en,ja",
+    // 標準辞書にはないが、プロジェクトで正しい単語として認識させたい単語
+    // 日本語→英語になっている単語をここに追加してテストを通るように設定する
+    "words": [
+        // root.yaml(項目名・exampleなど)
+        "prescriptionRegistCode",   // 項目名処方箋登録コード
+        "prescriptionRegistDate",   // 処方箋登録日
+        "iVBOR",     // base64 png prefix
+        "ABAQEAAAAAAAD", // base64 example
+        "Browline", // example
+        "USSTORESTAFF", // メッセージCODE
+        "salescolor",   // 商品情報取得API（ケース）
+        "saleslensspec", // 商品情報取得API（レンズオプション|販売用カラー）
+        "saleslensattributes",  // 商品情報取得API（レンズオプション|販売用レンズ仕様）
+        "lensreplacement", // 商品情報取得API（レンズ交換）
+        "lensoption",   // 商品グループ情報項目名
+        // root.yaml(オブジェクト名)
+        "RcptEventCstmrGetResponse",    // 顧客情報・受付履歴取得APIレスポンス、オブジェクト名
+        "CstmrRcptEventHistoryList",    // 顧客情報・受付履歴取得APIレスポンス、オブジェクト名
+        "CstmrRcptEventItemGroup",    // 顧客情報・受付履歴取得APIレスポンス、オブジェクト名
+        // BFF定義
+        "Dpfm", // DPFM
+        "DPFM", // DPFM
+        "SALESORDER",   // SalesOrder
+        "COLLAB",   // collab
+        "STORESTAFF", // メッセージCODE
+        // デジタル基盤IF(項目名・exampleなど)
+        "Lineitem", // cart
+        "Lineitems", // cart
+        "Glasslines", // oms, salesOrder
+        "eyepointmeasure",  // bffValidator
+        "salesItemCategoryMgmtCode",    // item,(oms,salesOrder)
+        "EyesightCombi",    // bffValidator
+        // SMS
+        "smsnotifier",  // エンドポイント
+        "JINSUSTEST",  // エンドポイント
+        "JINSUS",   // エンドポイント
+    ],
+    // // 複合語を許可するかどうか
+    // "allowCompoundWords": true,
+    // // スペルとしては正しいが、プロジェクトの規約や方針として使用を避けたい単語を設定
+    // "flagWords": [
+    // ],
+    "dictionaryDefinitions": [],
+    // スペルチェックをスキップするパスを指定
+    "ignorePaths": [
+        "node_modules/**",
+        "dist/**",
+        "build/**",
+        "docs/**",
+        "*.json",
+        "*.md",
+        "compose.yaml",
+        "app/__tests__/**",
+        "app/openapi/clients/**",
+        "app/src/interfaces/clients/**"
+    ],
+    "dictionaries": [
+        "companies",
+        "softwareTerms",
+        "typescript",
+        "node",
+        "html",
+        "css",
+        "json",
+        "markdown",
+        "en_us",
+        "en-gb"
+    ],
+    // スペルチェックの対象となるファイル
+    "files": [
+        "**/*.js",
+        "**/*.ts",
+        "**/*.json",
+        "**/*.md",
+        "**/*.yml",
+        "**/*.yaml",
+        "**/*.xml"
+    ]
+}

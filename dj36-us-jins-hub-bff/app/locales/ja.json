@@ -1,0 +1,9 @@
+
+{
+	"validation.field_error": "フィールド '{{field}}' にエラーがあります。",
+	"validation.max_length": "フィールド '{{field}}' は {{limit}} 文字を超えてはいけません。",
+	"validation.required": "必須フィールドが不足しています: '{{field}}'",
+	"storeCode": "店舗コード",
+	"visitingPurposeCode": "来店目的"
+}
+

@@ -1,0 +1,5 @@
+{
+	"validation.field_error": "There is an error in the field '{{field}}'.",
+	"validation.max_length": "The field '{{field}}' must not exceed {{limit}} characters.",
+	"validation.required": "Missing required field: '{{field}}'"
+}

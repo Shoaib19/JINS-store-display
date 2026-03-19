@@ -1,0 +1,2910 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: ${api.version}
+tags:
+  - description: update-order-status-payment-completed-by-reception
+    name: update-order-status-payment-completed-by-reception
+  - description: update-order-status-payment-completed
+    name: update-order-status-payment-completed
+  - description: update-glass-lines-status-delivery-completed
+    name: update-glass-lines-status-delivery-completed
+  - description: 返品処理
+    name: return
+  - description: update-glass-lines-status-ready-for-delivery
+    name: update-glass-lines-status-ready-for-delivery
+  - description: 注文処理
+    name: order
+  - description: calculate-amount
+    name: calculate-amount
+paths:
+  /oms/_calculate-amount:
+    post:
+      description: 価格・税計算のAPI です。
+      operationId: calculateAmount
+      parameters:
+        - content:
+            text/plain:
+              schema:
+                type: string
+                description: 言語-国
+                example: en-US
+                pattern: ^[a-z]{2}-[A-Z]{2}$
+          description: Accept-Language ヘッダー
+          in: header
+          name: Accept-Language
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID ヘッダー
+          in: header
+          name: jins-trace-id
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID-Branch-No ヘッダー
+          in: header
+          name: jins-trace-id-branch-no
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-User-ID ヘッダー
+          in: header
+          name: jins-user-id
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: コンテンツタイプ。application/json を指定してください。
+          in: header
+          name: Content-Type
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalculateAmountWriteDto'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalculateAmountReadDto'
+          description: 成功
+        '400':
+          content:
+            application/json:
+              examples:
+                COM_0001:
+                  description: COM_0001
+                  value:
+                    code: COM_0001
+                    message: Validation error occurred.
+                DPFM_OMS_0101:
+                  description: DPFM_OMS_0101
+                  value:
+                    code: DPFM_OMS_0101
+                    message: Specified item's selling prices not found.
+                DPFM_OMS_0102:
+                  description: DPFM_OMS_0102
+                  value:
+                    code: DPFM_OMS_0102
+                    message: GlassLines and feeLines and discountLines are null or empty. Specify at least one.
+                DPFM_OMS_0103:
+                  description: DPFM_OMS_0103
+                  value:
+                    code: DPFM_OMS_0103
+                    message: Specify itemId at least one in glassLine.
+                DPFM_OMS_0104:
+                  description: DPFM_OMS_0104
+                  value:
+                    code: DPFM_OMS_0104
+                    message: Item info not found.
+                DPFM_OMS_0105:
+                  description: DPFM_OMS_0105
+                  value:
+                    code: DPFM_OMS_0105
+                    message: StoreTaxGroup not found.
+                DPFM_OMS_0106:
+                  description: DPFM_OMS_0106
+                  value:
+                    code: DPFM_OMS_0106
+                    message: Not stackable with other discounts.
+                DPFM_OMS_0107:
+                  description: DPFM_OMS_0107
+                  value:
+                    code: DPFM_OMS_0107
+                    message: Invalid currency code or country code.
+          description: 400系エラー
+      summary: 価格・税計算のAPIです。
+      tags:
+        - calculate-amount
+  /oms/glass-lines/_delivery-completed-by-item-group-code/{itemGroupCode}:
+    post:
+      description: 商品グループコードで注文メガネ行ステータスをお渡し完了に更新するAPIです。
+      operationId: updateGlassLinesStatusReadyForDelivery_1
+      parameters:
+        - in: path
+          name: itemGroupCode
+          required: true
+          schema:
+            type: string
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID ヘッダー
+          in: header
+          name: jins-trace-id
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID-Branch-No ヘッダー
+          in: header
+          name: jins-trace-id-branch-no
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-User-ID ヘッダー
+          in: header
+          name: jins-user-id
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: コンテンツタイプ。application/json を指定してください。
+          in: header
+          name: Content-Type
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGlassLinesStatusWriteDto'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateOrderStatusReadDto'
+          description: 成功
+        '400':
+          content:
+            application/json:
+              examples:
+                COM_0001:
+                  description: COM_0001
+                  value:
+                    code: COM_0001
+                    message: Validation error occurred.
+                DPFM_OMS_0701:
+                  description: DPFM_OMS_0701
+                  value:
+                    code: DPFM_OMS_0701
+                    message: deliveryStatus of the specified data is not READY_FOR_DELIVERY or DELIVERED.
+                DPFM_OMS_0702:
+                  description: DPFM_OMS_0702
+                  value:
+                    code: DPFM_OMS_0702
+                    message: orderStatus of the specified data is not ORDER_DELIVERY_PROCESSING or ORDER_COMPLETED.
+                DPFM_OMS_0703:
+                  description: DPFM_OMS_0703
+                  value:
+                    code: DPFM_OMS_0703
+                    message: Update delivery failed.
+                DPFM_OMS_0704:
+                  description: DPFM_OMS_0704
+                  value:
+                    code: DPFM_OMS_0704
+                    message: Update order failed.
+          description: 400(Bad Request)
+        '404':
+          content:
+            application/json:
+              examples:
+                COM_0002:
+                  description: COM_0002
+                  value:
+                    code: COM_0002
+                    message: Specified data not found.
+          description: 404(Not Found)
+        '409':
+          content:
+            application/json:
+              examples:
+                COM_0003:
+                  description: COM_0003
+                  value:
+                    code: COM_0003
+                    message: Transaction failed due to optimistic lock failure.
+          description: 409(Conflict)
+      summary: 注文メガネ行ステータス更新のAPIです。
+      tags:
+        - update-glass-lines-status-delivery-completed
+  /oms/glass-lines/_ready-for-delivery-by-item-group-code/{itemGroupCode}:
+    post:
+      description: 商品グループコードで注文メガネ行ステータスをお渡し準備完了に更新するAPIです。
+      operationId: updateGlassLinesStatusReadyForDelivery
+      parameters:
+        - in: path
+          name: itemGroupCode
+          required: true
+          schema:
+            type: string
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID ヘッダー
+          in: header
+          name: jins-trace-id
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID-Branch-No ヘッダー
+          in: header
+          name: jins-trace-id-branch-no
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-User-ID ヘッダー
+          in: header
+          name: jins-user-id
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: コンテンツタイプ。application/json を指定してください。
+          in: header
+          name: Content-Type
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGlassLinesStatusWriteDto'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateOrderStatusReadDto'
+          description: 成功
+        '400':
+          content:
+            application/json:
+              examples:
+                COM_0001:
+                  description: COM_0001
+                  value:
+                    code: COM_0001
+                    message: Validation error occurred.
+                DPFM_OMS_0601:
+                  description: DPFM_OMS_0601
+                  value:
+                    code: DPFM_OMS_0601
+                    message: deliveryStatus of the specified data is not DELIVERY_PREPARING or READY_FOR_DELIVERY.
+                DPFM_OMS_0602:
+                  description: DPFM_OMS_0602
+                  value:
+                    code: DPFM_OMS_0602
+                    message: Update delivery failed.
+          description: 400(Bad Request)
+        '404':
+          content:
+            application/json:
+              examples:
+                COM_0002:
+                  description: COM_0002
+                  value:
+                    code: COM_0002
+                    message: Specified data not found.
+          description: 404(Not Found)
+        '409':
+          content:
+            application/json:
+              examples:
+                COM_0003:
+                  description: COM_0003
+                  value:
+                    code: COM_0003
+                    message: Transaction failed due to optimistic lock failure.
+          description: 409(Conflict)
+      summary: 注文メガネ行ステータス更新のAPIです。
+      tags:
+        - update-glass-lines-status-ready-for-delivery
+  /oms/orders/_payment-completed-by-reception/{receptionNumber}:
+    post:
+      description: 受付番号で注文ステータスを支払い完了に更新するAPIです。
+      operationId: updateOrderStatusPaymentCompletedByReception
+      parameters:
+        - in: path
+          name: receptionNumber
+          required: true
+          schema:
+            type: string
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID ヘッダー
+          in: header
+          name: jins-trace-id
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID-Branch-No ヘッダー
+          in: header
+          name: jins-trace-id-branch-no
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-User-ID ヘッダー
+          in: header
+          name: jins-user-id
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: コンテンツタイプ。application/json を指定してください。
+          in: header
+          name: Content-Type
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderStatusWriteDto'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateOrderStatusReadDto'
+          description: 成功
+        '400':
+          content:
+            application/json:
+              examples:
+                COM_0001:
+                  description: COM_0001
+                  value:
+                    code: COM_0001
+                    message: Validation error occurred.
+                DPFM_OMS_0501:
+                  description: DPFM_OMS_0501
+                  value:
+                    code: DPFM_OMS_0501
+                    message: orderStatus of the specified data is not ORDER_PAYMENT_PROCESSING or ORDER_DELIVERY_PROCESSING.
+                DPFM_OMS_0502:
+                  description: DPFM_OMS_0502
+                  value:
+                    code: DPFM_OMS_0502
+                    message: paymentStatus of the specified data is not PAYMENT_AWAITING or PAID.
+                DPFM_OMS_0503:
+                  description: DPFM_OMS_0503
+                  value:
+                    code: DPFM_OMS_0503
+                    message: deliveryStatus of the specified data is not BEFORE_PREPARING or DELIVERY_PREPARING.
+                DPFM_OMS_0504:
+                  description: DPFM_OMS_0504
+                  value:
+                    code: DPFM_OMS_0504
+                    message: Update order failed.
+                DPFM_OMS_0505:
+                  description: DPFM_OMS_0505
+                  value:
+                    code: DPFM_OMS_0505
+                    message: Update payments failed.
+                DPFM_OMS_0506:
+                  description: DPFM_OMS_0506
+                  value:
+                    code: DPFM_OMS_0506
+                    message: Update deliveries failed.
+          description: 400(Bad Request)
+        '404':
+          content:
+            application/json:
+              examples:
+                COM_0002:
+                  description: COM_0002
+                  value:
+                    code: COM_0002
+                    message: Specified data not found.
+          description: 404(Not Found)
+        '409':
+          content:
+            application/json:
+              examples:
+                COM_0003:
+                  description: COM_0003
+                  value:
+                    code: COM_0003
+                    message: Transaction failed due to optimistic lock failure.
+          description: 409(Conflict)
+      summary: 注文ステータス更新のAPIです。
+      tags:
+        - update-order-status-payment-completed-by-reception
+  /oms/orders/_place-order-by-cart/{cartId}:
+    post:
+      description: カート内の商品の注文確定を行うAPIです。
+      operationId: placeOrderByCart
+      parameters:
+        - in: path
+          name: cartId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID ヘッダー
+          in: header
+          name: jins-trace-id
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID-Branch-No ヘッダー
+          in: header
+          name: jins-trace-id-branch-no
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-User-ID ヘッダー
+          in: header
+          name: jins-user-id
+        - content:
+            text/plain:
+              schema:
+                type: string
+                description: 言語-国
+                example: en-US
+                pattern: ^[a-z]{2}-[A-Z]{2}$
+          description: Accept-Language ヘッダー
+          in: header
+          name: Accept-Language
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceOrderByCartWriteDto'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaceOrderByCartReadDto'
+          description: 成功
+        '400':
+          content:
+            application/json:
+              examples:
+                COM_0001:
+                  description: COM_0001
+                  value:
+                    code: COM_0001
+                    message: Validation error occurred.
+                DPFM_OMS_0010:
+                  description: DPFM_OMS_0010
+                  value:
+                    code: DPFM_OMS_0010
+                    message: Get order failed.
+                DPFM_OMS_0201:
+                  description: DPFM_OMS_0201
+                  value:
+                    code: DPFM_OMS_0201
+                    message: Glass or Package line is empty.
+                DPFM_OMS_0202:
+                  description: DPFM_OMS_0202
+                  value:
+                    code: DPFM_OMS_0202
+                    message: Order already confirmed.
+                DPFM_OMS_0203:
+                  description: DPFM_OMS_0203
+                  value:
+                    code: DPFM_OMS_0203
+                    message: No lens candidates found in insufficient diameter check.
+                DPFM_OMS_0204:
+                  description: DPFM_OMS_0204
+                  value:
+                    code: DPFM_OMS_0204
+                    message: Frame inventory not found.
+                DPFM_OMS_0205:
+                  description: DPFM_OMS_0205
+                  value:
+                    code: DPFM_OMS_0205
+                    message: Case inventory not found.
+                DPFM_OMS_0206:
+                  description: DPFM_OMS_0206
+                  value:
+                    code: DPFM_OMS_0206
+                    message: Package item inventory not found.
+                DPFM_OMS_0207:
+                  description: DPFM_OMS_0207
+                  value:
+                    code: DPFM_OMS_0207
+                    message: Price calculation result is different between cart registration and latest price.
+                DPFM_OMS_0208:
+                  description: DPFM_OMS_0208
+                  value:
+                    code: DPFM_OMS_0208
+                    message: Cart not found.
+                DPFM_OMS_0209:
+                  description: DPFM_OMS_0209
+                  value:
+                    code: DPFM_OMS_0209
+                    message: Failed to issue order number.
+                DPFM_OMS_0210:
+                  description: DPFM_OMS_0210
+                  value:
+                    code: DPFM_OMS_0210
+                    message: Failed to delete cart.
+                DPFM_OMS_0211:
+                  description: DPFM_OMS_0211
+                  value:
+                    code: DPFM_OMS_0211
+                    message: Failed to register reception information.
+                DPFM_OMS_0212:
+                  description: DPFM_OMS_0212
+                  value:
+                    code: DPFM_OMS_0212
+                    message: Location not found.
+                DPFM_OMS_0213:
+                  description: DPFM_OMS_0213
+                  value:
+                    code: DPFM_OMS_0213
+                    message: Failed to register warranty.
+                DPFM_OMS_0214:
+                  description: DPFM_OMS_0214
+                  value:
+                    code: DPFM_OMS_0214
+                    message: Update Inventories failed.
+                DPFM_OMS_0215:
+                  description: DPFM_OMS_0215
+                  value:
+                    code: DPFM_OMS_0215
+                    message: Create order failed.
+                DPFM_OMS_0216:
+                  description: DPFM_OMS_0216
+                  value:
+                    code: DPFM_OMS_0216
+                    message: Failed to register payment.
+                DPFM_OMS_0217:
+                  description: DPFM_OMS_0217
+                  value:
+                    code: DPFM_OMS_0217
+                    message: Failed to register glass line delivery.
+                DPFM_OMS_0219:
+                  description: DPFM_OMS_0219
+                  value:
+                    code: DPFM_OMS_0219
+                    message: Failed to register powers.
+                DPFM_OMS_0220:
+                  description: DPFM_OMS_0220
+                  value:
+                    code: DPFM_OMS_0220
+                    message: Warranty exchange conditions are not specified even though WARRANTY_EXCHANGE is specified as the order type.
+                DPFM_OMS_0221:
+                  description: DPFM_OMS_0221
+                  value:
+                    code: DPFM_OMS_0221
+                    message: Duplicate warranty exchange conditions are specified.
+                DPFM_OMS_0222:
+                  description: DPFM_OMS_0222
+                  value:
+                    code: DPFM_OMS_0222
+                    message: Detected an itemGroupCode in warranty exchange conditions that is not specified as WARRANTY_EXCHANGE in the order type.
+                DPFM_OMS_0223:
+                  description: DPFM_OMS_0223
+                  value:
+                    code: DPFM_OMS_0223
+                    message: The specified exchange item in warranty exchange conditions is invalid (must be FRAME or LENS or ALL).
+                DPFM_OMS_0224:
+                  description: DPFM_OMS_0224
+                  value:
+                    code: DPFM_OMS_0224
+                    message: No special order lens found.
+                DPFM_OMS_0225:
+                  description: DPFM_OMS_0225
+                  value:
+                    code: DPFM_OMS_0225
+                    message: Inventory not managed for special order lens.
+                DPFM_OMS_0226:
+                  description: DPFM_OMS_0226
+                  value:
+                    code: DPFM_OMS_0226
+                    message: Invalid currency code or country code.
+                DPFM_OMS_0227:
+                  description: DPFM_OMS_0227
+                  value:
+                    code: DPFM_OMS_0227
+                    message: Failed to update warranty histories.
+                DPFM_OMS_0228:
+                  description: DPFM_OMS_0228
+                  value:
+                    code: DPFM_OMS_0228
+                    message: Frame item not found in master data.
+          description: 400系エラー
+      summary: 注文確定API
+      tags:
+        - order
+  /oms/orders/{orderCode}/_cancel:
+    post:
+      description: 注文のキャンセルを行うAPIです。
+      operationId: cancelOrder
+      parameters:
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: キャンセル対象の注文番号
+          in: path
+          name: orderCode
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID ヘッダー
+          in: header
+          name: jins-trace-id
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID-Branch-No ヘッダー
+          in: header
+          name: jins-trace-id-branch-no
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-User-ID ヘッダー
+          in: header
+          name: jins-user-id
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelOrderRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelOrderReadDto'
+          description: 成功
+        '400':
+          content:
+            application/json:
+              examples:
+                COM_0001:
+                  description: COM_0001
+                  value:
+                    code: COM_0001
+                    message: Validation error occurred.
+                DPFM_OMS_0009:
+                  description: DPFM_OMS_0009
+                  value:
+                    code: DPFM_OMS_0009
+                    message: Invalid DateTime format.
+                DPFM_OMS_0010:
+                  description: DPFM_OMS_0010
+                  value:
+                    code: DPFM_OMS_0010
+                    message: Get order failed.
+                DPFM_OMS_0011:
+                  description: DPFM_OMS_0011
+                  value:
+                    code: DPFM_OMS_0011
+                    message: Update warranties failed.
+                DPFM_OMS_0012:
+                  description: DPFM_OMS_0012
+                  value:
+                    code: DPFM_OMS_0012
+                    message: Update powers failed.
+                DPFM_OMS_0301:
+                  description: DPFM_OMS_0301
+                  value:
+                    code: DPFM_OMS_0301
+                    message: The order has already been delivered.
+                DPFM_OMS_0303:
+                  description: DPFM_OMS_0303
+                  value:
+                    code: DPFM_OMS_0303
+                    message: Update reception event failed.
+                DPFM_OMS_0305:
+                  description: DPFM_OMS_0305
+                  value:
+                    code: DPFM_OMS_0305
+                    message: Update Inventories failed.
+                DPFM_OMS_0306:
+                  description: DPFM_OMS_0306
+                  value:
+                    code: DPFM_OMS_0306
+                    message: Update glass line failed.
+                DPFM_OMS_0307:
+                  description: DPFM_OMS_0307
+                  value:
+                    code: DPFM_OMS_0307
+                    message: Update payment failed.
+                DPFM_OMS_0308:
+                  description: DPFM_OMS_0308
+                  value:
+                    code: DPFM_OMS_0308
+                    message: Update glass line delivery failed.
+                DPFM_OMS_0309:
+                  description: DPFM_OMS_0309
+                  value:
+                    code: DPFM_OMS_0309
+                    message: Update orders failed.
+                DPFM_OMS_0311:
+                  description: DPFM_OMS_0311
+                  value:
+                    code: DPFM_OMS_0311
+                    message: Error order status.
+                DPFM_OMS_0312:
+                  description: DPFM_OMS_0312
+                  value:
+                    code: DPFM_OMS_0312
+                    message: Calculate amount failed.
+                DPFM_OMS_0313:
+                  description: DPFM_OMS_0313
+                  value:
+                    code: DPFM_OMS_0313
+                    message: Frame item not found in master data for cancel operation.
+                DPFM_OMS_0314:
+                  description: DPFM_OMS_0314
+                  value:
+                    code: DPFM_OMS_0314
+                    message: Lens item not found in master data for cancel operation.
+          description: 400(Bad Request)
+        '404':
+          content:
+            application/json:
+              examples:
+                COM_0002:
+                  description: COM_0002
+                  value:
+                    code: COM_0002
+                    message: Specified data not found.
+          description: 404(Not Found)
+        '409':
+          content:
+            application/json:
+              examples:
+                COM_0003:
+                  description: COM_0003
+                  value:
+                    code: COM_0003
+                    message: Transaction failed due to optimistic lock failure.
+          description: 409(Conflict)
+      summary: 注文キャンセルAPI
+      tags:
+        - order
+  /oms/orders/{orderCode}/_payment-completed:
+    post:
+      description: 注文番号で注文ステータスを支払い完了に更新するAPIです。
+      operationId: updateOrderStatusPaymentCompleted
+      parameters:
+        - in: path
+          name: orderCode
+          required: true
+          schema:
+            type: string
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID ヘッダー
+          in: header
+          name: jins-trace-id
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID-Branch-No ヘッダー
+          in: header
+          name: jins-trace-id-branch-no
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-User-ID ヘッダー
+          in: header
+          name: jins-user-id
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: コンテンツタイプ。application/json を指定してください。
+          in: header
+          name: Content-Type
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderStatusWriteDto'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateOrderStatusReadDto'
+          description: 成功
+        '400':
+          content:
+            application/json:
+              examples:
+                COM_0001:
+                  description: COM_0001
+                  value:
+                    code: COM_0001
+                    message: Validation error occurred.
+                DPFM_OMS_0501:
+                  description: DPFM_OMS_0501
+                  value:
+                    code: DPFM_OMS_0501
+                    message: orderStatus of the specified data is not ORDER_PAYMENT_PROCESSING or ORDER_DELIVERY_PROCESSING.
+                DPFM_OMS_0502:
+                  description: DPFM_OMS_0502
+                  value:
+                    code: DPFM_OMS_0502
+                    message: paymentStatus of the specified data is not PAYMENT_AWAITING or PAID.
+                DPFM_OMS_0503:
+                  description: DPFM_OMS_0503
+                  value:
+                    code: DPFM_OMS_0503
+                    message: deliveryStatus of the specified data is not BEFORE_PREPARING or DELIVERY_PREPARING.
+                DPFM_OMS_0504:
+                  description: DPFM_OMS_0504
+                  value:
+                    code: DPFM_OMS_0504
+                    message: Update order failed.
+                DPFM_OMS_0505:
+                  description: DPFM_OMS_0505
+                  value:
+                    code: DPFM_OMS_0505
+                    message: Update payments failed.
+                DPFM_OMS_0506:
+                  description: DPFM_OMS_0506
+                  value:
+                    code: DPFM_OMS_0506
+                    message: Update deliveries failed.
+          description: 400(Bad Request)
+        '404':
+          content:
+            application/json:
+              examples:
+                COM_0002:
+                  description: COM_0002
+                  value:
+                    code: COM_0002
+                    message: Specified data not found.
+          description: 404(Not Found)
+        '409':
+          content:
+            application/json:
+              examples:
+                COM_0003:
+                  description: COM_0003
+                  value:
+                    code: COM_0003
+                    message: Transaction failed due to optimistic lock failure.
+          description: 409(Conflict)
+      summary: 注文ステータス更新のAPIです。
+      tags:
+        - update-order-status-payment-completed
+  /oms/orders/{orderCode}/glass-lines/{glassLineCode}/_cancel:
+    post:
+      description: 注文の部分キャンセルを行うAPIです。
+      operationId: cancelGlassLine
+      parameters:
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: キャンセル対象の注文番号
+          in: path
+          name: orderCode
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: キャンセル対象の注文メガネ行コード
+          in: path
+          name: glassLineCode
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID ヘッダー
+          in: header
+          name: jins-trace-id
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID-Branch-No ヘッダー
+          in: header
+          name: jins-trace-id-branch-no
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-User-ID ヘッダー
+          in: header
+          name: jins-user-id
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelOrderRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelGlassLineReadDto'
+          description: 成功
+        '400':
+          content:
+            application/json:
+              examples:
+                COM_0001:
+                  description: COM_0001
+                  value:
+                    code: COM_0001
+                    message: Validation error occurred.
+                DPFM_OMS_0009:
+                  description: DPFM_OMS_0009
+                  value:
+                    code: DPFM_OMS_0009
+                    message: Invalid DateTime format.
+                DPFM_OMS_0010:
+                  description: DPFM_OMS_0010
+                  value:
+                    code: DPFM_OMS_0010
+                    message: Get order failed.
+                DPFM_OMS_0011:
+                  description: DPFM_OMS_0011
+                  value:
+                    code: DPFM_OMS_0011
+                    message: Update warranties failed.
+                DPFM_OMS_0012:
+                  description: DPFM_OMS_0012
+                  value:
+                    code: DPFM_OMS_0012
+                    message: Update powers failed.
+                DPFM_OMS_0301:
+                  description: DPFM_OMS_0301
+                  value:
+                    code: DPFM_OMS_0301
+                    message: The order has already been delivered.
+                DPFM_OMS_0303:
+                  description: DPFM_OMS_0303
+                  value:
+                    code: DPFM_OMS_0303
+                    message: Update reception event failed.
+                DPFM_OMS_0305:
+                  description: DPFM_OMS_0305
+                  value:
+                    code: DPFM_OMS_0305
+                    message: Update Inventories failed.
+                DPFM_OMS_0306:
+                  description: DPFM_OMS_0306
+                  value:
+                    code: DPFM_OMS_0306
+                    message: Update glass line failed.
+                DPFM_OMS_0307:
+                  description: DPFM_OMS_0307
+                  value:
+                    code: DPFM_OMS_0307
+                    message: Update payment failed.
+                DPFM_OMS_0308:
+                  description: DPFM_OMS_0308
+                  value:
+                    code: DPFM_OMS_0308
+                    message: Update glass line delivery failed.
+                DPFM_OMS_0309:
+                  description: DPFM_OMS_0309
+                  value:
+                    code: DPFM_OMS_0309
+                    message: Update orders failed.
+                DPFM_OMS_0311:
+                  description: DPFM_OMS_0311
+                  value:
+                    code: DPFM_OMS_0311
+                    message: Error order status.
+                DPFM_OMS_0312:
+                  description: DPFM_OMS_0312
+                  value:
+                    code: DPFM_OMS_0312
+                    message: Calculate amount failed.
+                DPFM_OMS_0313:
+                  description: DPFM_OMS_0313
+                  value:
+                    code: DPFM_OMS_0313
+                    message: Frame item not found in master data for cancel operation.
+                DPFM_OMS_0314:
+                  description: DPFM_OMS_0314
+                  value:
+                    code: DPFM_OMS_0314
+                    message: Lens item not found in master data for cancel operation.
+          description: 400(Bad Request)
+        '404':
+          content:
+            application/json:
+              examples:
+                COM_0002:
+                  description: COM_0002
+                  value:
+                    code: COM_0002
+                    message: Specified data not found.
+          description: 404(Not Found)
+        '409':
+          content:
+            application/json:
+              examples:
+                COM_0003:
+                  description: COM_0003
+                  value:
+                    code: COM_0003
+                    message: Transaction failed due to optimistic lock failure.
+          description: 409(Conflict)
+      summary: 注文部分キャンセルAPI
+      tags:
+        - order
+  /oms/returns:
+    post:
+      description: 返品情報を登録します。
+      operationId: returnOrder
+      parameters:
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID ヘッダー
+          in: header
+          name: jins-trace-id
+          required: true
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-Trace-ID-Branch-No ヘッダー
+          in: header
+          name: jins-trace-id-branch-no
+        - content:
+            text/plain:
+              schema:
+                type: string
+          description: Jins-User-ID ヘッダー
+          in: header
+          name: jins-user-id
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReturnOrderRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnOrderResponse'
+          description: 成功
+        '400':
+          content:
+            application/json:
+              examples:
+                COM_0001:
+                  description: COM_0001
+                  value: Validation error occurred.
+                DPFM_OMS_0009:
+                  description: DPFM_OMS_0009
+                  value: Invalid DateTime format.
+                DPFM_OMS_0010:
+                  description: DPFM_OMS_0010
+                  value:
+                    code: DPFM_OMS_0010
+                    message: Get order failed.
+                DPFM_OMS_0011:
+                  description: DPFM_OMS_0011
+                  value:
+                    code: DPFM_OMS_0011
+                    message: Update warranties failed.
+                DPFM_OMS_0012:
+                  description: DPFM_OMS_0012
+                  value:
+                    code: DPFM_OMS_0012
+                    message: Update powers failed.
+                DPFM_OMS_0804:
+                  description: DPFM_OMS_0804
+                  value:
+                    code: DPFM_OMS_0804
+                    message: Create returns failed.
+          description: 400(Bad Request)
+        '404':
+          content:
+            application/json:
+              examples:
+                COM_0002:
+                  description: COM_0002
+                  value:
+                    code: COM_0002
+                    message: Specified data not found.
+          description: 404(Not Found)
+      summary: 注文返品API
+      tags:
+        - return
+components:
+  schemas:
+    CalculateAmountDiscountGlassLineReadDto:
+      type: object
+      description: 割引メガネ行商品
+      properties:
+        discountPrice:
+          type: number
+          description: 割引価格
+        discountablePrice:
+          type: number
+          description: 割引対象価格
+        glassLineCode:
+          type: string
+          description: メガネ行コード
+        itemCode:
+          type: string
+          description: 商品コード
+        itemId:
+          type: number
+          description: 商品ID
+        salesItemCategories:
+          type: array
+          description: 販売用商品種別リスト
+          items:
+            $ref: '#/components/schemas/CalculateAmountSalesItemCategoryReadDto'
+      required:
+        - discountPrice
+        - discountablePrice
+        - glassLineCode
+        - itemCode
+        - itemId
+    CalculateAmountDiscountLineReadDto:
+      type: object
+      description: 割引情報
+      properties:
+        discountAmount:
+          type: number
+          description: 割引額
+        discountCode:
+          type: string
+          description: 割引コード
+        discountGlassLineItems:
+          type: array
+          description: 割引メガネ行商品
+          items:
+            $ref: '#/components/schemas/CalculateAmountDiscountGlassLineReadDto'
+        discountRatePercentage:
+          type: number
+          description: 割引率(%)
+        discountType:
+          type: string
+          description: 割引タイプ
+        discountableAmount:
+          type: number
+          description: 割引対象金額
+      required:
+        - discountCode
+        - discountType
+    CalculateAmountDiscountLineWriteDto:
+      type: object
+      description: 割引情報
+      properties:
+        discountCode:
+          type: string
+          description: 割引コード
+        specifiedDiscountAmount:
+          type: number
+          description: 指定された割引額
+      required:
+        - discountCode
+    CalculateAmountFeeGlassLineReadDto:
+      type: object
+      description: 手数料メガネ行
+      properties:
+        glassLineCode:
+          type: string
+          description: メガネ行コード
+      required:
+        - glassLineCode
+    CalculateAmountFeeGlassLineWriteDto:
+      type: object
+      description: 手数料メガネ行
+      properties:
+        glassLineCode:
+          type: string
+          description: メガネ行コード
+      required:
+        - glassLineCode
+    CalculateAmountFeeLineReadDto:
+      type: object
+      description: 手数料情報
+      properties:
+        feeAmount:
+          type: number
+          description: 手数料金額
+        feeCode:
+          type: string
+          description: 手数料コード
+        feeGlassLines:
+          type: array
+          description: 手数料メガネ行
+          items:
+            $ref: '#/components/schemas/CalculateAmountFeeGlassLineReadDto'
+        taxGroupCode:
+          type: string
+          description: 税グループコード
+        taxable:
+          type: boolean
+          description: 手数料の課税対象
+      required:
+        - feeAmount
+        - feeCode
+        - taxGroupCode
+        - taxable
+    CalculateAmountFeeLineWriteDto:
+      type: object
+      description: 手数料情報
+      properties:
+        feeAmount:
+          type: number
+          description: 手数料金額
+        feeCode:
+          type: string
+          description: 手数料コード
+        feeGlassLines:
+          type: array
+          description: 手数料メガネ行
+          items:
+            $ref: '#/components/schemas/CalculateAmountFeeGlassLineWriteDto'
+        taxable:
+          type: boolean
+          description: 手数料の課税対象
+      required:
+        - feeAmount
+        - feeCode
+        - taxable
+    CalculateAmountGlassLinesReadDto:
+      type: object
+      description: メガネ行
+      properties:
+        caseItemId:
+          type: integer
+          format: int64
+          description: ケース商品ID
+        caseListPrice:
+          type: number
+          description: ケース定価
+          example: 123456789
+        caseSellingPrice:
+          type: number
+          description: ケース販売価格
+          example: 123456789
+        caseTaxGroupCode:
+          type: string
+          description: ケースに適用される税グループコード
+          example: TAX_GROUP_001
+        frameItemId:
+          type: integer
+          format: int64
+          description: フレーム商品ID
+          example: 123456789
+        frameListPrice:
+          type: number
+          description: フレーム定価
+          example: 123456789
+        frameSellingPrice:
+          type: number
+          description: フレーム販売価格
+          example: 123456789
+        frameTaxGroupCode:
+          type: string
+          description: フレームに適用される税グループコード
+          example: TAX_GROUP_001
+        glassLineCode:
+          type: string
+          description: メガネ行コード
+        lensReplacementTypeItemId:
+          type: integer
+          format: int64
+          description: レンズ交換分類商品ID
+        lensReplacementTypeListPrice:
+          type: number
+          description: レンズ交換分類定価
+        lensReplacementTypeSellingPrice:
+          type: number
+          description: レンズ交換分類販売価格
+        lensReplacementTypeTaxGroupCode:
+          type: string
+          description: レンズ交換分類税グループコード
+        lopFocusCategoryItemId:
+          type: integer
+          format: int64
+          description: 焦点分類商品ID
+        lopFocusCategoryListPrice:
+          type: number
+          description: 焦点分類定価
+        lopFocusCategorySellingPrice:
+          type: number
+          description: 焦点分類販売価格
+        lopFocusCategoryTaxGroupCode:
+          type: string
+          description: 焦点分類に適用される税グループコード
+        lopProgressiveCategoryItemId:
+          type: integer
+          format: int64
+          description: 累進分類商品ID
+        lopProgressiveCategoryListPrice:
+          type: number
+          description: 累進分類定価
+        lopProgressiveCategorySellingPrice:
+          type: number
+          description: 累進分類販売価格
+        lopProgressiveCategoryTaxGroupCode:
+          type: string
+          description: 累進分類に適用される税グループコード
+        lopRefractiveIndexNameItemId:
+          type: integer
+          format: int64
+          description: 屈折率商品ID
+        lopRefractiveIndexNameListPrice:
+          type: number
+          description: 屈折率定価
+        lopRefractiveIndexNameSellingPrice:
+          type: number
+          description: 屈折率販売価格
+        lopRefractiveIndexNameTaxGroupCode:
+          type: string
+          description: 屈折率に適用される税グループコード
+        lopRimlessFinishingCategoryItemId:
+          type: integer
+          format: int64
+          description: リムレス仕上げ分類商品ID
+        lopRimlessFinishingCategoryListPrice:
+          type: number
+          description: リムレス仕上げ分類定価
+        lopRimlessFinishingCategorySellingPrice:
+          type: number
+          description: リムレス仕上げ分類販売価格
+        lopRimlessFinishingCategoryTaxGroupCode:
+          type: string
+          description: リムレス仕上げ分類に適用される税グループコード
+        lopSalesColorNameItemId:
+          type: integer
+          format: int64
+          description: 販売用カラー名称商品ID
+        lopSalesColorNameListPrice:
+          type: number
+          description: 販売用カラー名称定価
+        lopSalesColorNameSellingPrice:
+          type: number
+          description: 販売用カラー名称販売価格
+        lopSalesColorNameTaxGroupCode:
+          type: string
+          description: 販売用カラー名称に適用される税グループコード
+        lopSalesLensSpecItemId:
+          type: integer
+          format: int64
+          description: 販売用レンズ仕様商品ID
+        lopSalesLensSpecListPrice:
+          type: number
+          description: 販売用レンズ仕様定価
+        lopSalesLensSpecSellingPrice:
+          type: number
+          description: 販売用レンズ仕様販売価格
+        lopSalesLensSpecTaxGroupCode:
+          type: string
+          description: 販売用レンズ仕様に適用される税グループコード
+        subtotalAmount:
+          type: number
+          description: メガネ行金額小計(小計販売価格 + 小計税額)
+        subtotalDiscountAmount:
+          type: number
+          description: メガネ行割引額小計
+        subtotalListAmount:
+          type: number
+          description: メガネ行定価小計
+        subtotalSellingAmount:
+          type: number
+          description: メガネ行販売価格小計
+        subtotalTaxAmount:
+          type: number
+          description: メガネ行税額小計
+        taxable:
+          type: boolean
+          description: 課税対象
+      required:
+        - glassLineCode
+        - subtotalAmount
+        - subtotalDiscountAmount
+        - subtotalListAmount
+        - subtotalSellingAmount
+        - subtotalTaxAmount
+        - taxable
+    CalculateAmountGlassLinesWriteDto:
+      type: object
+      description: メガネ行
+      properties:
+        caseItemId:
+          type: integer
+          format: int64
+          description: ケース商品ID
+        frameItemId:
+          type: integer
+          format: int64
+          description: フレーム商品ID
+          example: 123456789
+        glassLineCode:
+          type: string
+          description: メガネ行コード
+        lensReplacementTypeItemId:
+          type: integer
+          format: int64
+          description: レンズ交換分類商品ID
+        lopFocusCategoryItemId:
+          type: integer
+          format: int64
+          description: 焦点分類商品ID
+        lopProgressiveCategoryItemId:
+          type: integer
+          format: int64
+          description: 累進分類商品ID
+        lopRefractiveIndexNameItemId:
+          type: integer
+          format: int64
+          description: 屈折率商品ID
+        lopRimlessFinishingCategoryItemId:
+          type: integer
+          format: int64
+          description: リムレス仕上げ分類商品ID
+        lopSalesColorNameItemId:
+          type: integer
+          format: int64
+          description: 販売用カラー名称商品ID
+        lopSalesLensSpecItemId:
+          type: integer
+          format: int64
+          description: 販売用レンズ仕様商品ID
+        taxable:
+          type: boolean
+          description: 課税対象
+      required:
+        - glassLineCode
+        - taxable
+    CalculateAmountReadDto:
+      type: object
+      properties:
+        calculationBaseDate:
+          type: string
+          format: date
+          description: 価格計算基準日(ローカル日付)
+          example: '2024-11-08'
+        calculationPatternCode:
+          type: string
+          description: 価格計算パターンコード
+        countryCodeAlpha2:
+          type: string
+          description: 国名コード(ISO 3166-1 alpha-2)
+          example: US
+        currencyCode:
+          type: string
+          description: 通貨コード(ISO 4217)
+        discountLines:
+          type: array
+          description: 割引情報
+          items:
+            $ref: '#/components/schemas/CalculateAmountDiscountLineReadDto'
+        feeLines:
+          type: array
+          description: 手数料情報
+          items:
+            $ref: '#/components/schemas/CalculateAmountFeeLineReadDto'
+        glassLines:
+          type: array
+          description: メガネ行
+          items:
+            $ref: '#/components/schemas/CalculateAmountGlassLinesReadDto'
+        taxLines:
+          type: array
+          description: 税情報
+          items:
+            $ref: '#/components/schemas/CalculateAmountTaxLineReadDto'
+        totalAmount:
+          type: number
+          description: 税込金額合計(販売金額合計 + 手数料合計 + 税額合計)
+        totalDiscountAmount:
+          type: number
+          description: 割引額合計
+        totalFeeAmount:
+          type: number
+          description: 手数料合計
+        totalListAmount:
+          type: number
+          description: 定価合計
+        totalSellingAmount:
+          type: number
+          description: 販売価格合計
+        totalTaxAmount:
+          type: number
+          description: 税額合計
+      required:
+        - calculationBaseDate
+        - calculationPatternCode
+        - countryCodeAlpha2
+        - currencyCode
+        - totalAmount
+        - totalDiscountAmount
+        - totalFeeAmount
+        - totalListAmount
+        - totalSellingAmount
+        - totalTaxAmount
+    CalculateAmountSalesItemCategoryReadDto:
+      type: object
+      description: 販売用商品種別リスト
+      properties:
+        salesItemCategoryCode:
+          type: string
+          description: 販売用商品種別項目コード
+        salesItemCategoryMgmtCode:
+          type: string
+          description: 販売用商品種別管理コード
+      required:
+        - salesItemCategoryCode
+        - salesItemCategoryMgmtCode
+    CalculateAmountTaxFeeLineReadDto:
+      type: object
+      description: 手数料税リスト
+      properties:
+        feeLineCode:
+          type: string
+          description: 手数料行コード
+        taxAmount:
+          type: number
+          description: 税額
+        taxableAmount:
+          type: number
+          description: 課税対象価格
+      required:
+        - feeLineCode
+        - taxAmount
+        - taxableAmount
+    CalculateAmountTaxGlassLineItemReadDto:
+      type: object
+      description: メガネ行商品税リスト
+      properties:
+        glassLineCode:
+          type: string
+          description: メガネ行コード
+        itemId:
+          type: number
+          description: メガネ行商品ID
+        taxAmount:
+          type: number
+          description: 税額
+        taxablePrice:
+          type: number
+          description: 課税対象価格
+      required:
+        - glassLineCode
+        - itemId
+        - taxAmount
+        - taxablePrice
+    CalculateAmountTaxLineReadDto:
+      type: object
+      description: 税情報
+      properties:
+        taxAmount:
+          type: number
+          description: 税額
+        taxCode:
+          type: string
+          description: 税コード
+        taxFeeLines:
+          type: array
+          description: 手数料税リスト
+          items:
+            $ref: '#/components/schemas/CalculateAmountTaxFeeLineReadDto'
+        taxGlassLineItems:
+          type: array
+          description: メガネ行商品税リスト
+          items:
+            $ref: '#/components/schemas/CalculateAmountTaxGlassLineItemReadDto'
+        taxGroupCode:
+          type: string
+          description: 税グループコード
+        taxRateCode:
+          type: string
+          description: 税率コード
+        taxRatePercentage:
+          type: number
+          description: 税率%
+        taxableAmount:
+          type: number
+          description: 課税対象金額
+      required:
+        - taxAmount
+        - taxCode
+        - taxGroupCode
+        - taxRateCode
+        - taxRatePercentage
+        - taxableAmount
+    CalculateAmountWriteDto:
+      type: object
+      properties:
+        calculationBaseDate:
+          type: string
+          format: date
+          description: 価格計算基準日(ローカル日付)
+          example: '2024-11-01'
+          pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}
+        calculationPatternCode:
+          type: string
+          description: 価格計算パターンコード
+          example: US_L2-1
+        countryCodeAlpha2:
+          type: string
+          description: 国名コード(ISO 3166-1 alpha-2)
+          example: US
+        currencyCode:
+          type: string
+          description: 文字列
+          title: 通貨コード(ISO 4217)
+        discountLines:
+          type: array
+          description: 割引情報
+          items:
+            $ref: '#/components/schemas/CalculateAmountDiscountLineWriteDto'
+        feeLines:
+          type: array
+          description: 手数料情報
+          items:
+            $ref: '#/components/schemas/CalculateAmountFeeLineWriteDto'
+        glassLines:
+          type: array
+          description: メガネ行
+          items:
+            $ref: '#/components/schemas/CalculateAmountGlassLinesWriteDto'
+        storeCode:
+          type: string
+          description: 文字列
+          title: 店舗コード
+      required:
+        - calculationBaseDate
+        - countryCodeAlpha2
+        - currencyCode
+        - storeCode
+    CancelGlassLineReadDto:
+      type: object
+      properties:
+        order:
+          $ref: '#/components/schemas/OrderDetailReadDto'
+    CancelOrderReadDto:
+      type: object
+      properties:
+        order:
+          $ref: '#/components/schemas/OrderDetailReadDto'
+    CancelOrderRequest:
+      type: object
+      properties:
+        cancelDateTime:
+          type: string
+          description: 'キャンセル日時 (YYYY-MM-DDThh:mm:ss 形式) '
+          example: '2025-01-15T12:34:56'
+        cancelReasonCode:
+          type: string
+          description: キャンセル理由コード
+          example: '01'
+        useInventory:
+          type: boolean
+          description: 'デジタル基盤で在庫管理するか(true: 在庫管理する、 false: 在庫管理しない。 未指定時はtrue)'
+          example: true
+        version:
+          type: integer
+          format: int64
+          description: 楽観ロックのための項目
+          example: 1
+          title: 楽観ロック
+      required:
+        - cancelReasonCode
+        - version
+    DiscountGlassLineItemMixinReadDto:
+      type: object
+      properties:
+        discountAmount:
+          type: number
+        discountCode:
+          type: string
+        discountGlassLineItemCode:
+          type: string
+        discountablePrice:
+          type: number
+        glassLineCode:
+          type: string
+        glassLineItemCode:
+          type: string
+        itemCategoryCode:
+          type: string
+        itemCode:
+          type: string
+        itemId:
+          type: integer
+          format: int64
+        orderCode:
+          type: string
+        registerPrincipal:
+          type: string
+        registerTimestamp:
+          type: integer
+          format: int64
+        salesItemCategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscountGlassLineItemSalesItemCategoryMixinReadDto'
+        updatePrincipal:
+          type: string
+        updateTimestamp:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          format: int64
+    DiscountGlassLineItemSalesItemCategoryMixinReadDto:
+      type: object
+      properties:
+        discountCode:
+          type: string
+        discountGlassLineItemCode:
+          type: string
+        discountGlassLineItemSalesItemCategoryCode:
+          type: string
+        orderCode:
+          type: string
+        registerPrincipal:
+          type: string
+        registerTimestamp:
+          type: integer
+          format: int64
+        salesItemCategoryCode:
+          type: string
+        salesItemCategoryMgmtCode:
+          type: string
+        updatePrincipal:
+          type: string
+        updateTimestamp:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          format: int64
+    DiscountLineMixinReadDto:
+      type: object
+      properties:
+        discountAmount:
+          type: number
+        discountCode:
+          type: string
+        discountGlassLineItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscountGlassLineItemMixinReadDto'
+        discountRatePercentage:
+          type: number
+        discountReasonCode:
+          type: string
+        discountType:
+          type: string
+        discountableAmount:
+          type: number
+        orderCode:
+          type: string
+        registerPrincipal:
+          type: string
+        registerTimestamp:
+          type: integer
+          format: int64
+        updatePrincipal:
+          type: string
+        updateTimestamp:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          format: int64
+    FeeGlassLineMixinReadDto:
+      type: object
+      properties:
+        feeGlassLineCode:
+          type: string
+        feeLineCode:
+          type: string
+        glassLineCode:
+          type: string
+        orderCode:
+          type: string
+        registerPrincipal:
+          type: string
+        registerTimestamp:
+          type: integer
+          format: int64
+        updatePrincipal:
+          type: string
+        updateTimestamp:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          format: int64
+    FeeLineMixinReadDto:
+      type: object
+      properties:
+        feeAmount:
+          type: number
+        feeCode:
+          type: string
+        feeGlassLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeeGlassLineMixinReadDto'
+        feeLineCode:
+          type: string
+        orderCode:
+          type: string
+        registerPrincipal:
+          type: string
+        registerTimestamp:
+          type: integer
+          format: int64
+        taxAmount:
+          type: number
+        taxGroupCode:
+          type: string
+        taxable:
+          type: boolean
+        updatePrincipal:
+          type: string
+        updateTimestamp:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          format: int64
+    GlassLineDeliveryMixinReadDto:
+      type: object
+      properties:
+        customerName:
+          type: string
+        deliveryBoxNumber:
+          type: string
+        deliveryDateTime:
+          type: string
+          format: date-time
+          example: '2024-11-30T11:59:59'
+        deliveryMethodCode:
+          type: string
+        deliveryMethodName:
+          type: string
+        deliveryStatus:
+          type: string
+        deliveryStoreCode:
+          type: string
+        deliveryStoreId:
+          type: integer
+          format: int64
+        deliveryStoreName:
+          type: string
+        glassLineCode:
+          type: string
+        glassLineDeliveryCode:
+          type: string
+        orderCode:
+          type: string
+        phoneNumber:
+          type: string
+        registerPrincipal:
+          type: string
+        registerTimestamp:
+          type: integer
+          format: int64
+        shippingAddress1:
+          type: string
+        shippingAddress2:
+          type: string
+        shippingAddress3:
+          type: string
+        shippingAddress4:
+          type: string
+        shippingAddressZip:
+          type: string
+        updatePrincipal:
+          type: string
+        updateTimestamp:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          format: int64
+    GlassLineHorizontalMixinReadDto:
+      type: object
+      properties:
+        allocatedLocationCode:
+          type: string
+        callingNumber:
+          type: string
+        cancelDateTime:
+          type: string
+        cancelReasonCode:
+          type: string
+        caseItemCategoryCode:
+          type: string
+        caseItemCode:
+          type: string
+        caseItemId:
+          type: integer
+          format: int64
+        caseItemName:
+          type: string
+        caseItemNameEnglish:
+          type: string
+        caseItemNameKana:
+          type: string
+        caseItemNameSimplified:
+          type: string
+        caseItemNameTraditional:
+          type: string
+        caseLineItemId:
+          type: integer
+          format: int64
+        caseListPrice:
+          type: number
+        casePreparation1:
+          type: string
+        casePreparation2:
+          type: string
+        caseRegisterPrincipal:
+          type: string
+        caseRegisterTimestamp:
+          type: integer
+          format: int64
+        caseSellingPrice:
+          type: number
+        caseTaxGroupCode:
+          type: string
+        caseUpdatePrincipal:
+          type: string
+        caseUpdateTimestamp:
+          type: integer
+          format: int64
+        caseVersion:
+          type: integer
+          format: int64
+        cerritoItemCategoryCode:
+          type: string
+        cerritoItemCode:
+          type: string
+        cerritoItemId:
+          type: integer
+          format: int64
+        cerritoItemName:
+          type: string
+        cerritoItemNameEnglish:
+          type: string
+        cerritoItemNameKana:
+          type: string
+        cerritoItemNameSimplified:
+          type: string
+        cerritoItemNameTraditional:
+          type: string
+        cerritoLineItemId:
+          type: integer
+          format: int64
+        cerritoListPrice:
+          type: number
+        cerritoPreparation1:
+          type: string
+        cerritoPreparation2:
+          type: string
+        cerritoRegisterPrincipal:
+          type: string
+        cerritoRegisterTimestamp:
+          type: integer
+          format: int64
+        cerritoSellingPrice:
+          type: number
+        cerritoTaxGroupCode:
+          type: string
+        cerritoUpdatePrincipal:
+          type: string
+        cerritoUpdateTimestamp:
+          type: integer
+          format: int64
+        cerritoVersion:
+          type: integer
+          format: int64
+        delivery:
+          $ref: '#/components/schemas/GlassLineDeliveryMixinReadDto'
+        frameItemCategoryCode:
+          type: string
+        frameItemCode:
+          type: string
+        frameItemId:
+          type: integer
+          format: int64
+        frameItemName:
+          type: string
+        frameItemNameEnglish:
+          type: string
+        frameItemNameKana:
+          type: string
+        frameItemNameSimplified:
+          type: string
+        frameItemNameTraditional:
+          type: string
+        frameLineItemId:
+          type: integer
+          format: int64
+        frameListPrice:
+          type: number
+        framePreparation1:
+          type: string
+        framePreparation2:
+          type: string
+        frameRegisterPrincipal:
+          type: string
+        frameRegisterTimestamp:
+          type: integer
+          format: int64
+        frameSellingPrice:
+          type: number
+        frameTaxGroupCode:
+          type: string
+        frameUpdatePrincipal:
+          type: string
+        frameUpdateTimestamp:
+          type: integer
+          format: int64
+        frameVersion:
+          type: integer
+          format: int64
+        glassLineCode:
+          type: string
+        glassLineId:
+          type: string
+        itemGroupCode:
+          type: string
+        lensLeftItemCategoryCode:
+          type: string
+        lensLeftItemCode:
+          type: string
+        lensLeftItemId:
+          type: integer
+          format: int64
+        lensLeftItemName:
+          type: string
+        lensLeftItemNameEnglish:
+          type: string
+        lensLeftItemNameKana:
+          type: string
+        lensLeftItemNameSimplified:
+          type: string
+        lensLeftItemNameTraditional:
+          type: string
+        lensLeftLineItemId:
+          type: integer
+          format: int64
+        lensLeftPreparation1:
+          type: string
+        lensLeftPreparation2:
+          type: string
+        lensLeftRegisterPrincipal:
+          type: string
+        lensLeftRegisterTimestamp:
+          type: integer
+          format: int64
+        lensLeftUpdatePrincipal:
+          type: string
+        lensLeftUpdateTimestamp:
+          type: integer
+          format: int64
+        lensLeftVersion:
+          type: integer
+          format: int64
+        lensPurchased:
+          type: boolean
+        lensReplacementTypeItemCategoryCode:
+          type: string
+        lensReplacementTypeItemCode:
+          type: string
+        lensReplacementTypeItemId:
+          type: integer
+          format: int64
+        lensReplacementTypeItemName:
+          type: string
+        lensReplacementTypeLineItemId:
+          type: integer
+          format: int64
+        lensReplacementTypeListPrice:
+          type: number
+        lensReplacementTypePreparation1:
+          type: string
+        lensReplacementTypePreparation2:
+          type: string
+        lensReplacementTypeRegisterPrincipal:
+          type: string
+        lensReplacementTypeRegisterTimestamp:
+          type: integer
+          format: int64
+        lensReplacementTypeSellingPrice:
+          type: number
+        lensReplacementTypeTaxGroupCode:
+          type: string
+        lensReplacementTypeUpdatePrincipal:
+          type: string
+        lensReplacementTypeUpdateTimestamp:
+          type: integer
+          format: int64
+        lensReplacementTypeVersion:
+          type: integer
+          format: int64
+        lensRightItemCategoryCode:
+          type: string
+        lensRightItemCode:
+          type: string
+        lensRightItemId:
+          type: integer
+          format: int64
+        lensRightItemName:
+          type: string
+        lensRightItemNameEnglish:
+          type: string
+        lensRightItemNameKana:
+          type: string
+        lensRightItemNameSimplified:
+          type: string
+        lensRightItemNameTraditional:
+          type: string
+        lensRightLineItemId:
+          type: integer
+          format: int64
+        lensRightPreparation1:
+          type: string
+        lensRightPreparation2:
+          type: string
+        lensRightRegisterPrincipal:
+          type: string
+        lensRightRegisterTimestamp:
+          type: integer
+          format: int64
+        lensRightUpdatePrincipal:
+          type: string
+        lensRightUpdateTimestamp:
+          type: integer
+          format: int64
+        lensRightVersion:
+          type: integer
+          format: int64
+        lineItemGroupId:
+          type: integer
+          format: int64
+        lopFocusCategoryItemCategoryCode:
+          type: string
+        lopFocusCategoryItemCode:
+          type: string
+        lopFocusCategoryItemId:
+          type: integer
+          format: int64
+        lopFocusCategoryItemName:
+          type: string
+        lopFocusCategoryLineItemId:
+          type: integer
+          format: int64
+        lopFocusCategoryListPrice:
+          type: number
+        lopFocusCategoryPreparation1:
+          type: string
+        lopFocusCategoryPreparation2:
+          type: string
+        lopFocusCategoryRegisterPrincipal:
+          type: string
+        lopFocusCategoryRegisterTimestamp:
+          type: integer
+          format: int64
+        lopFocusCategorySellingPrice:
+          type: number
+        lopFocusCategoryTaxGroupCode:
+          type: string
+        lopFocusCategoryUpdatePrincipal:
+          type: string
+        lopFocusCategoryUpdateTimestamp:
+          type: integer
+          format: int64
+        lopFocusCategoryVersion:
+          type: integer
+          format: int64
+        lopProgressiveCategoryItemCategoryCode:
+          type: string
+        lopProgressiveCategoryItemCode:
+          type: string
+        lopProgressiveCategoryItemId:
+          type: integer
+          format: int64
+        lopProgressiveCategoryItemName:
+          type: string
+        lopProgressiveCategoryLineItemId:
+          type: integer
+          format: int64
+        lopProgressiveCategoryListPrice:
+          type: number
+        lopProgressiveCategoryPreparation1:
+          type: string
+        lopProgressiveCategoryPreparation2:
+          type: string
+        lopProgressiveCategoryRegisterPrincipal:
+          type: string
+        lopProgressiveCategoryRegisterTimestamp:
+          type: integer
+          format: int64
+        lopProgressiveCategorySellingPrice:
+          type: number
+        lopProgressiveCategoryTaxGroupCode:
+          type: string
+        lopProgressiveCategoryUpdatePrincipal:
+          type: string
+        lopProgressiveCategoryUpdateTimestamp:
+          type: integer
+          format: int64
+        lopProgressiveCategoryVersion:
+          type: integer
+          format: int64
+        lopRefractiveIndexNameItemCategoryCode:
+          type: string
+        lopRefractiveIndexNameItemCode:
+          type: string
+        lopRefractiveIndexNameItemId:
+          type: integer
+          format: int64
+        lopRefractiveIndexNameItemName:
+          type: string
+        lopRefractiveIndexNameLineItemId:
+          type: integer
+          format: int64
+        lopRefractiveIndexNameListPrice:
+          type: number
+        lopRefractiveIndexNamePreparation1:
+          type: string
+        lopRefractiveIndexNamePreparation2:
+          type: string
+        lopRefractiveIndexNameRegisterPrincipal:
+          type: string
+        lopRefractiveIndexNameRegisterTimestamp:
+          type: integer
+          format: int64
+        lopRefractiveIndexNameSellingPrice:
+          type: number
+        lopRefractiveIndexNameTaxGroupCode:
+          type: string
+        lopRefractiveIndexNameUpdatePrincipal:
+          type: string
+        lopRefractiveIndexNameUpdateTimestamp:
+          type: integer
+          format: int64
+        lopRefractiveIndexNameVersion:
+          type: integer
+          format: int64
+        lopRimlessFinishingCategoryItemCategoryCode:
+          type: string
+        lopRimlessFinishingCategoryItemCode:
+          type: string
+        lopRimlessFinishingCategoryItemId:
+          type: integer
+          format: int64
+        lopRimlessFinishingCategoryItemName:
+          type: string
+        lopRimlessFinishingCategoryLineItemId:
+          type: integer
+          format: int64
+        lopRimlessFinishingCategoryListPrice:
+          type: number
+        lopRimlessFinishingCategoryPreparation1:
+          type: string
+        lopRimlessFinishingCategoryPreparation2:
+          type: string
+        lopRimlessFinishingCategoryRegisterPrincipal:
+          type: string
+        lopRimlessFinishingCategoryRegisterTimestamp:
+          type: integer
+          format: int64
+        lopRimlessFinishingCategorySellingPrice:
+          type: number
+        lopRimlessFinishingCategoryTaxGroupCode:
+          type: string
+        lopRimlessFinishingCategoryUpdatePrincipal:
+          type: string
+        lopRimlessFinishingCategoryUpdateTimestamp:
+          type: integer
+          format: int64
+        lopRimlessFinishingCategoryVersion:
+          type: integer
+          format: int64
+        lopSalesColorNameItemCategoryCode:
+          type: string
+        lopSalesColorNameItemCode:
+          type: string
+        lopSalesColorNameItemId:
+          type: integer
+          format: int64
+        lopSalesColorNameItemName:
+          type: string
+        lopSalesColorNameLineItemId:
+          type: integer
+          format: int64
+        lopSalesColorNameListPrice:
+          type: number
+        lopSalesColorNamePreparation1:
+          type: string
+        lopSalesColorNamePreparation2:
+          type: string
+        lopSalesColorNameRegisterPrincipal:
+          type: string
+        lopSalesColorNameRegisterTimestamp:
+          type: integer
+          format: int64
+        lopSalesColorNameSellingPrice:
+          type: number
+        lopSalesColorNameTaxGroupCode:
+          type: string
+        lopSalesColorNameUpdatePrincipal:
+          type: string
+        lopSalesColorNameUpdateTimestamp:
+          type: integer
+          format: int64
+        lopSalesColorNameVersion:
+          type: integer
+          format: int64
+        lopSalesLensSpecItemCategoryCode:
+          type: string
+        lopSalesLensSpecItemCode:
+          type: string
+        lopSalesLensSpecItemId:
+          type: integer
+          format: int64
+        lopSalesLensSpecItemName:
+          type: string
+        lopSalesLensSpecLineItemId:
+          type: integer
+          format: int64
+        lopSalesLensSpecListPrice:
+          type: number
+        lopSalesLensSpecPreparation1:
+          type: string
+        lopSalesLensSpecPreparation2:
+          type: string
+        lopSalesLensSpecRegisterPrincipal:
+          type: string
+        lopSalesLensSpecRegisterTimestamp:
+          type: integer
+          format: int64
+        lopSalesLensSpecSellingPrice:
+          type: number
+        lopSalesLensSpecTaxGroupCode:
+          type: string
+        lopSalesLensSpecUpdatePrincipal:
+          type: string
+        lopSalesLensSpecUpdateTimestamp:
+          type: integer
+          format: int64
+        lopSalesLensSpecVersion:
+          type: integer
+          format: int64
+        needsPurchaseLens:
+          type: boolean
+        note:
+          type: string
+        orderCode:
+          type: string
+        orderType:
+          type: string
+        powerId:
+          type: integer
+          format: int64
+        prescriptionId:
+          type: integer
+          format: int64
+        registerPrincipal:
+          type: string
+        registerTimestamp:
+          type: integer
+          format: int64
+        subtotalAmount:
+          type: number
+        subtotalListAmount:
+          type: number
+        subtotalSellingAmount:
+          type: number
+        subtotalTaxAmount:
+          type: number
+        updatePrincipal:
+          type: string
+        updateTimestamp:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          format: int64
+        warrantyExchangeItem:
+          type: string
+    OrderDetailReadDto:
+      type: object
+      properties:
+        cartId:
+          type: integer
+          format: int64
+        channel:
+          type: string
+        countryCodeAlpha2:
+          type: string
+        currencyCode:
+          type: string
+        customerId:
+          type: string
+        customerName:
+          type: string
+        discountLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscountLineMixinReadDto'
+        feeLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeeLineMixinReadDto'
+        glassLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/GlassLineHorizontalMixinReadDto'
+        orderCode:
+          type: string
+        orderDate:
+          type: string
+        orderStatus:
+          type: string
+        payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentMixinReadDto'
+        phoneNumber:
+          type: string
+        receptionDateTime:
+          type: string
+        receptionNumber:
+          type: string
+        receptionStoreCode:
+          type: string
+        receptionStoreId:
+          type: integer
+          format: int64
+        receptionStoreName:
+          type: string
+        registerPrincipal:
+          type: string
+        registerTimestamp:
+          type: integer
+          format: int64
+        returns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnMixinReadDto'
+        taxLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxLineMixinReadDto'
+        totalAmount:
+          type: number
+        totalDiscountAmount:
+          type: number
+        totalFeeAmount:
+          type: number
+        totalListAmount:
+          type: number
+        totalSellingAmount:
+          type: number
+        totalTaxAmount:
+          type: number
+        updatePrincipal:
+          type: string
+        updateTimestamp:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          format: int64
+    OrderType:
+      type: object
+      description: メガネ行毎の注文種類を指定する配列※未指定時は全メガネ行の注文種類が"PLAIN"として処理されます(※)
+      example:
+        - itemGroupCode: GLASS
+          orderType: PLAIN
+      properties:
+        itemGroupCode:
+          type: string
+          description: カートのメガネ行の一意コード
+          example: GLASS
+        orderType:
+          type: string
+          description: 注文種類（"PLAIN"/"WARRANTY_EXCHANGE"/"LENSE_REPLACE"）※未指定時は"PLAIN"として処理されます(※)
+          example: PLAIN
+      required:
+        - itemGroupCode
+    PaymentMixinReadDto:
+      type: object
+      properties:
+        orderCode:
+          type: string
+        paymentAmount:
+          type: number
+        paymentCode:
+          type: string
+        paymentDateTime:
+          type: string
+          format: date-time
+          example: '2024-11-30T11:59:59'
+        paymentMethod:
+          type: string
+        paymentStatus:
+          type: string
+        registerPrincipal:
+          type: string
+        registerTimestamp:
+          type: integer
+          format: int64
+        updatePrincipal:
+          type: string
+        updateTimestamp:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          format: int64
+    PlaceOrderByCartReadDto:
+      type: object
+      properties:
+        order:
+          $ref: '#/components/schemas/OrderDetailReadDto'
+    PlaceOrderByCartWriteDto:
+      type: object
+      properties:
+        calculationBaseDate:
+          type: string
+          format: date
+          description: 価格計算基準日(ローカル日付)
+          example: '2024-11-01'
+        channel:
+          type: string
+          description: チャネル
+          example: E
+        countryCodeAlpha2:
+          type: string
+          description: 国コード
+          example: US
+        customerName:
+          type: string
+          description: 注文者名
+          example: example
+        orderDate:
+          type: string
+          format: date
+          description: 注文確定日
+          example: '2024-11-01'
+        orderTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderType'
+        phoneNumber:
+          type: string
+          description: 電話番号
+          example: '08012345678'
+        useInventory:
+          type: boolean
+          description: 'デジタル基盤で在庫管理するか(true: 在庫管理する、 false: 在庫管理しない。 未指定時はtrue)'
+          example: true
+        warrantyExchangeTerms:
+          type: array
+          items:
+            $ref: '#/components/schemas/WarrantyExchangeTerm'
+      required:
+        - calculationBaseDate
+        - channel
+        - countryCodeAlpha2
+        - customerName
+        - phoneNumber
+    ReturnMixinReadDto:
+      type: object
+      properties:
+        customerId:
+          type: string
+        customerName:
+          type: string
+        glassLineCode:
+          type: string
+        orderCode:
+          type: string
+        registerPrincipal:
+          type: string
+        registerTimestamp:
+          type: integer
+          format: int64
+        returnCode:
+          type: string
+        returnDateTime:
+          type: string
+          format: date-time
+          example: '2024-11-30T11:59:59'
+        returnReasonCode:
+          type: string
+        returnStoreCode:
+          type: string
+        updatePrincipal:
+          type: string
+        updateTimestamp:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          format: int64
+    ReturnOrderRequest:
+      type: object
+      properties:
+        customerId:
+          type: string
+          description: 会員ID
+          example: CUSTOMER001
+        customerName:
+          type: string
+          description: 会員名
+          example: 山田 太郎
+        glassLineCode:
+          type: string
+          description: 注文メガネ行コード
+          example: GLASS001
+        orderCode:
+          type: string
+          description: 注文コード
+          example: ORDER001
+        returnDateTime:
+          type: string
+          description: 返品日時 (YYYY-MM-DDThh:mm:ss 形式) 未指定時はシステム日時が設定されます。
+          example: '2025-01-15T12:34:56'
+        returnReasonCode:
+          type: string
+          description: 返品理由コード
+          example: '91'
+        returnStoreCode:
+          type: string
+          description: 返品受付店舗コード
+          example: STORE001
+      required:
+        - glassLineCode
+        - orderCode
+        - returnReasonCode
+        - returnStoreCode
+    ReturnOrderResponse:
+      type: object
+      properties:
+        customerId:
+          type: string
+        customerName:
+          type: string
+        glassLineCode:
+          type: string
+        orderCode:
+          type: string
+        returnCode:
+          type: string
+        returnDateTime:
+          type: string
+          format: date-time
+          example: '2024-11-30T11:59:59'
+        returnReasonCode:
+          type: string
+        returnStoreCode:
+          type: string
+    TaxFeeLineMixinReadDto:
+      type: object
+      properties:
+        feeLineCode:
+          type: string
+        orderCode:
+          type: string
+        registerPrincipal:
+          type: string
+        registerTimestamp:
+          type: integer
+          format: int64
+        taxAmount:
+          type: number
+        taxFeeLineCode:
+          type: string
+        taxRateCode:
+          type: string
+        taxableAmount:
+          type: number
+        updatePrincipal:
+          type: string
+        updateTimestamp:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          format: int64
+    TaxGlassLineItemMixinReadDto:
+      type: object
+      properties:
+        glassLineCode:
+          type: string
+        glassLineItemCode:
+          type: string
+        itemId:
+          type: integer
+          format: int64
+        orderCode:
+          type: string
+        registerPrincipal:
+          type: string
+        registerTimestamp:
+          type: integer
+          format: int64
+        taxAmount:
+          type: number
+        taxGlassLineItemCode:
+          type: string
+        taxRateCode:
+          type: string
+        taxablePrice:
+          type: number
+        updatePrincipal:
+          type: string
+        updateTimestamp:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          format: int64
+    TaxLineMixinReadDto:
+      type: object
+      properties:
+        orderCode:
+          type: string
+        registerPrincipal:
+          type: string
+        registerTimestamp:
+          type: integer
+          format: int64
+        taxAmount:
+          type: number
+        taxCode:
+          type: string
+        taxFeeLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxFeeLineMixinReadDto'
+        taxGlassLineItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxGlassLineItemMixinReadDto'
+        taxGroupCode:
+          type: string
+        taxRateCode:
+          type: string
+        taxRatePercentage:
+          type: number
+        taxableAmount:
+          type: number
+        updatePrincipal:
+          type: string
+        updateTimestamp:
+          type: integer
+          format: int64
+        version:
+          type: integer
+          format: int64
+    UpdateGlassLinesStatusWriteDto:
+      type: object
+      properties:
+        version:
+          type: string
+          description: バージョン
+          example: '1'
+    UpdateOrderStatusReadDto:
+      type: object
+      properties:
+        order:
+          $ref: '#/components/schemas/OrderDetailReadDto'
+    UpdateOrderStatusWriteDto:
+      type: object
+      properties:
+        paymentDateTime:
+          type: string
+          format: YYYY-MM-DDThh:mm:ss
+          description: 支払日時
+          example: '2025-01-01T12:45:00'
+          pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}
+        version:
+          type: string
+          description: バージョン
+          example: '1'
+    WarrantyExchangeTerm:
+      type: object
+      description: orderTypeで"WARRANTY_EXCHANGE"を指定した場合、保証交換条件を指定する配列
+      example:
+        - itemGroupCode: GLASS
+          exchangeItem: FRAME
+      properties:
+        exchangeItem:
+          type: string
+          description: 交換部位("FRAME"/"LENS"/"ALL")
+          example: FRAME
+        itemGroupCode:
+          type: string
+          description: カートのメガネ行の一意コード
+          example: GLASS
+      required:
+        - exchangeItem
+        - itemGroupCode

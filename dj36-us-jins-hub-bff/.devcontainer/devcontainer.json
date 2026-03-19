@@ -1,0 +1,15 @@
+{
+	"name": "us-shop-orders-app-bff-dev",
+	"dockerComposeFile": "../compose.yaml",
+	"service": "dev",
+	"workspaceFolder": "/workspace",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"42crunch.vscode-openapi",
+				"formulahendry.code-runner",
+				"wallabyjs.quokka-vscode"
+			]
+		}
+	}
+}

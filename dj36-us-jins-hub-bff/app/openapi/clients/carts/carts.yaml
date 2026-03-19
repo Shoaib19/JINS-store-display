@@ -1,0 +1,4285 @@
+openapi: 3.0.3
+info:
+  title: ${info.title}
+  description: |-
+    ### カート/受付サービスAPI (L2-1)
+    ### 共通仕様
+    #### リクエストヘッダー
+    TBD
+    #### レスポンスヘッダー
+    TBD
+    #### エラーレスポンス
+    TBD
+    ##### エラーコード
+    * 400: Bad Request
+    * 401: Unauthorized
+    * 403: Forbidden
+    * 404: Not Found
+    * 405: Method Not Allowed
+    * 406: Not Acceptable
+    * 429: Too Many Requests
+    * 500: Internal Server Error
+    * 501: Not Implemented
+    * 503: Service Unavailable
+    * 504: Gateway Timeout
+  version: ${api.version}
+paths:
+  /cart/receptions/{storeCode}:
+    get:
+      tags:
+        - Receptions
+      summary: 待ち状況取得API
+      description: 店舗CDをもとに本日である呼出待ち, 呼出中, 不在, 外出となっている受付情報を取得する。
+      operationId: findReceptions
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: storeCode
+          description: 店舗CD
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 830005
+        - name: receptionNumber
+          description: 受付番号
+          in: query
+          schema:
+            type: string
+            example: 250114US000001
+        - name: registeredDate
+          description: 登録日
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: '2025-05-13'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceptionGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/cart/receptions/{storeCode}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.path.storeCode: method.request.path.storeCode
+  /cart/receptions:
+    post:
+      tags:
+        - Receptions
+      summary: 受付情報新規作成API
+      operationId: postReception
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+      requestBody:
+        required: true
+        description: 受付情報新規作成APIのリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceptionPostRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceptionPostResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                COM_0001:
+                  $ref: '#/components/examples/COM_0001'
+                DPFM_RCPT_0004:
+                  $ref: '#/components/examples/DPFM_RCPT_0004'
+                DPFM_RCPT_0005:
+                  $ref: '#/components/examples/DPFM_RCPT_0005'
+                DPFM_RCPT_0007:
+                  $ref: '#/components/examples/DPFM_RCPT_0007'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        uri: ${apigateway.uri}/cart/receptions
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+    get:
+      tags:
+        - Receptions
+      summary: 受付情報検索API
+      operationId: searchReceptionInformation
+      parameters:
+      - $ref: '#/components/parameters/JinsTraceID'
+      - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+      - $ref: '#/components/parameters/JinsUserID'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/Limit'
+      - name: storeCode
+        description: 店舗CD
+        in: query
+        required: false
+        schema:
+          type: string
+          example: "830005"
+      - name: receptionNumber
+        description: 受付番号
+        in: query
+        required: false
+        schema:
+          type: string
+          example: "241230US00001"
+      - name: registeredDate
+        description: 登録日
+        in: query
+        schema:
+          type: string
+          format: date
+          example: "2025-05-13"
+      - name: sortKey
+        description: 
+          ソートキー<br>
+          昇順降順はコロン区切り<br>
+          複数の場合はカンマ区切り<br>
+          スペースは挟まない
+        in: query
+        required: false
+        schema:
+          type: string
+          example: "registeredDate:ASC"
+      - name: keyword
+        description: 検索キーワード（顧客名、電話番号、受付番号のどちらか）
+        in: query
+        required: false
+        schema:
+          type: string
+          example: "241230US00001"
+      - name: registeredDateTimeFrom
+        description: 受付日時From
+        in: query
+        schema:
+          type: string
+          format: date-time
+          example: "2025-05-13T09:00:00"
+      - name: registeredDateTimeTo
+        description: 受付日時To
+        in: query
+        schema:
+          type: string
+          format: date-time
+          example: "2025-05-14T09:00:00"
+      - name: receptionStatusCode
+        description: 
+          受付ステータスコード<br>
+          複数指定の場合はカンマ区切りで指定
+        in: query
+        required: false
+        schema:
+          type: string
+          example: "100,101"
+      - name: countryCodeAlpha2
+        description: 国コード(alpha-2)
+        in: query
+        required: false
+        schema:
+          type: string
+          example: "US"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessesGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/cart/receptions
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+  /cart/receptions-events/{receptionNumber}:
+    get:
+      tags:
+        - ReceptionEvents
+      summary: 受付履歴取得API
+      operationId: findReceptionEvents
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - $ref: '#/components/parameters/OrderBy'
+        - name: receptionNumber
+          description: 受付番号
+          in: path
+          schema:
+            type: string
+            maximum: 14
+            example: 241015US000001
+          required: true
+        - name: itemGroupCode
+          description: 商品グループCD
+          in: query
+          schema:
+            type: string
+            maxLength: 17
+            example: 241015US000001-1
+          required: false
+        - name: lastedFlag
+          description: 最新情報取得フラグ
+          in: query
+          schema:
+            type: boolean
+            example: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceptionEventsGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/cart/receptions-events/{receptionNumber}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.path.receptionNumber: method.request.path.receptionNumber
+  /cart/receptions-events:
+    post:
+      tags:
+        - ReceptionEvents
+      summary: 受付情報更新API
+      operationId: postReceptionEvents
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+      requestBody:
+        required: true
+        description: 受付情報更新APIのリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceptionEventsRequest'
+      responses:
+        '204':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        uri: ${apigateway.uri}/cart/receptions-events
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+  /cart/prescriptions/{itemGroupCode}:
+    get:
+      tags:
+        - Prescriptions
+      summary: 処方箋画像取得API
+      description: 登録済みの処方箋画像を取得する
+      operationId: getPrescription
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: itemGroupCode
+          description: 商品グループCD
+          in: path
+          required: true
+          schema:
+            type: string
+            maxLength: 17
+            example: prct001
+        - name: countryCodeAlpha2
+          description: 事業国コード
+          in: query
+          schema:
+            type: string
+            maxLength: 2
+            example: US
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrescriptionsGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/cart/prescriptions/{itemGroupCode}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.path.itemGroupCode: method.request.path.itemGroupCode
+  /cart/prescriptions/copy/{originalItemGroupCode}/{copiedItemGroupCode}:
+    post:
+      tags:
+        - Prescriptions
+      summary: 処方箋画像コピーAPI
+      description: 登録済みの処方箋画像をコピーする
+      operationId: copyPrescription
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: originalItemGroupCode
+          description: コピー元商品グループCD
+          in: path
+          required: true
+          schema:
+            type: string
+            maxLength: 17
+            example: prct001
+        - name: copiedItemGroupCode
+          description: コピー先商品グループCD
+          in: path
+          required: true
+          schema:
+            type: string
+            maxLength: 17
+            example: prct001
+        - name: countryCodeAlpha2
+          description: 事業国コード
+          in: query
+          schema:
+            type: string
+            maxLength: 2
+            example: US
+      responses:
+        '204':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        uri: ${apigateway.uri}/cart/prescriptions/copy/{originalItemGroupCode}/{copiedItemGroupCode}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.path.originalItemGroupCode: method.request.path.originalItemGroupCode
+          integration.request.path.copiedItemGroupCode: method.request.path.copiedItemGroupCode
+  /cart/item-groups/{receptionNumber}/{itemGroupCode}:
+    put:
+      tags:
+        - ItemGroups
+      summary: 受取方法登録API
+      operationId: putItemGroups
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: receptionNumber
+          description: 受付番号
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 241031US000001
+            maxLength: 14
+        - name: itemGroupCode
+          description: 商品グループコード
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 241031US000001-1
+            maxLength: 17
+      requestBody:
+        required: true
+        description: 受取方法登録APIのリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemGroupPutRequest'
+      responses:
+        '204':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                COM_0001:
+                  $ref: '#/components/examples/COM_0001'
+                DPFM_RCPT_0010:
+                  $ref: '#/components/examples/DPFM_RCPT_0010'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: PUT
+        uri: ${apigateway.uri}/cart/item-groups/{receptionNumber}/{itemGroupCode}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.path.receptionNumber: method.request.path.receptionNumber
+          integration.request.path.itemGroupCode: method.request.path.itemGroupCode
+  /cart/item-groups/items/{itemGroupCode}:
+    delete:
+      tags:
+        - ItemGroups
+      summary: 商品グループ削除API
+      operationId: deleteItemGroups
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: itemGroupCode
+          description: 商品グループコード
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 240123US000001-1
+            maxLength: 17
+        - name: countryCodeAlpha2
+          description: 事業国コード
+          in: query
+          schema:
+            type: string
+            example: US
+            maxLength: 2
+      responses:
+        '204':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: DELETE
+        uri: ${apigateway.uri}/cart/item-groups/items/{itemGroupCode}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.path.itemGroupCode: method.request.path.itemGroupCode
+  /cart/lineitems:
+    post:
+      tags:
+        - Lineitems
+      summary: カート情報登録API
+      operationId: postLineitem
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+      requestBody:
+        required: true
+        description: カート情報登録APIのリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineitemPostRequest'
+      responses:
+        '204':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                COM_0001:
+                  $ref: '#/components/examples/COM_0001'
+                DPFM_RCPT_0006:
+                  $ref: '#/components/examples/DPFM_RCPT_0006'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        uri: ${apigateway.uri}/cart/lineitems
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+  /cart/carts:
+    get:
+      tags:
+        - Carts
+      summary: カート・カタログ取得API
+      description: カートIDに紐づくカート・商品グループ・カート明細の情報を取得する
+      operationId: findCart
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: cartId
+          description: カートID
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            example: 123
+        - name: receptionNumber
+          description: 受付番号
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 14
+            example: UH340930000001
+        - name: deleteFlag
+          description: 削除レコード取得フラグ
+          in: query
+          required: false
+          schema:
+            type: boolean
+            example: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                COM_0001:
+                  $ref: '#/components/examples/COM_0001'
+                DPFM_RCPT_0010:
+                  $ref: '#/components/examples/DPFM_RCPT_0010'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/cart/carts
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+    post:
+      tags:
+        - Carts
+      summary: カート新規作成API
+      operationId: postCart
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+      requestBody:
+        required: true
+        description: カート新規作成APIのリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartPostRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonErrorResponse'
+              examples:
+                COM_0001:
+                  $ref: '#/components/examples/COM_0001'
+                DPFM_RCPT_0008:
+                  $ref: '#/components/examples/DPFM_RCPT_0008'
+                DPFM_RCPT_0009:
+                  $ref: '#/components/examples/DPFM_RCPT_0009'
+                DPFM_RCPT_0010:
+                  $ref: '#/components/examples/DPFM_RCPT_0010'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        uri: ${apigateway.uri}/cart/carts
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+  /cart/carts/{cartId}:
+    patch:
+      tags:
+        - Carts
+      summary: カート削除フラグ更新API
+      operationId: patchCart
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: cartId
+          description: カートID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 123
+      requestBody:
+        required: true
+        description: カート削除フラグ更新APIのリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartPatchRequest'
+      responses:
+        '204':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: PATCH
+        uri: ${apigateway.uri}/cart/carts/{cartId}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.path.cartId: method.request.path.cartId
+  /cart/call-management/{storeCode}:
+    get:
+      tags:
+        - CallManagement
+      summary: 呼出し管理取得API
+      description: 店舗IDに紐づく呼出し管理情報を取得する
+      operationId: getCallManagement
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: storeCode
+          description: 店舗CD
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 83005
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CallManagementGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/cart/call-management/{storeCode}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.path.storeCode: method.request.path.storeCode
+    put:
+      tags:
+        - CallManagement
+      summary: 呼出し管理情報登録API
+      description: 呼出し管理情報を登録する
+      operationId: putCallManagement
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/JinsTraceIdBranchNo'
+        - $ref: '#/components/parameters/JinsUserID'
+        - name: storeCode
+          description: 店舗コード
+          in: path
+          required: true
+          schema:
+            type: string
+            example: '83005'
+            maxLength: 5
+      requestBody:
+        required: true
+        description: 呼出し管理情報登録APIリクエストボディ
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CallManagementPutRequest'
+      responses:
+        '204':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: PUT
+        uri: ${apigateway.uri}/cart/call-management/{storeCode}
+        type: ${apigateway.etc}
+        requestParameters:
+          integration.request.header.jins-trace-id: method.request.header.jins-trace-id
+          integration.request.header.jins-trace-id-branch-no: method.request.header.jins-trace-id-branch-no
+          integration.request.header.jins-user-id: method.request.header.jins-user-id
+          integration.request.path.storeCode: method.request.path.storeCode
+components:
+  parameters:
+    JinsTraceID:
+      in: header
+      name: jins-trace-id
+      description: アプリケーションノード間のトレーサビリティを確保するためのID
+      required: true
+      example: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+      schema:
+        type: string
+        nullable: false
+    JinsTraceIdBranchNo:
+      name: jins-trace-id-branch-no
+      description: jins-trace-idに紐付く呼出し枝番
+      in: header
+      example: 1
+      schema:
+        type: string
+        maxLength: 64
+    JinsUserID:
+      in: header
+      name: jins-user-id
+      description: UI側でユーザを識別できるIDを格納
+      required: true
+      example: U00001
+      schema:
+        type: string
+        maxLength: 256
+    OrderBy:
+      name: orderBy
+      description: |
+        順序
+        降順の場合は頭にマイナスをつける。
+        複数の場合はカンマ区切り。
+      in: query
+      required: false
+      example: rfid_chip_id, -location_id
+      schema:
+        type: string
+    Limit:
+      name: limit
+      description: 取得制限数
+      in: query
+      required: false
+      example: 1000000
+      schema:
+        $ref: '#/components/schemas/Limit'
+    Offset:
+      name: offset
+      description: 取得開始位置
+      in: query
+      required: false
+      example: 0
+      schema:
+        $ref: '#/components/schemas/Offset'
+  schemas:
+    Limit:
+      description: 取得制限数
+      type: integer
+      minimum: 1
+      maximum: 100000
+      example: 20
+      default: 100000
+    Offset:
+      description: 取得開始位置
+      type: integer
+      minimum: 0
+      example: 0
+      default: 0
+    Count:
+      description: 今回取得件数
+      type: integer
+      example: 20
+    TotalResults:
+      description: 総件数
+      type: integer
+      example: 10000
+    HasMore:
+      description: 次回データ存在有無
+      type: boolean
+      example: true
+    ReceptionInfos:
+      description: 受付情報
+      type: object
+      properties:
+        registeredDate:
+          type: string
+          description: 登録日
+        visitingPurposeCode:
+          type: string
+          description: 来店目的コード
+        customerIssueCode:
+          type: string
+          description: 困りごとコード
+        prescriptionRegistCode:
+          type: string
+          description: 度数登録方法コード
+        callingNumber:
+          type: string
+          description: 呼出番号
+        receptionNumber:
+          type: string
+          description: 受付番号
+        statusCode:
+          type: string
+          description: ステータスコード
+        callingStatusCode:
+          type: string
+          description: 呼出状態コード
+        countryCodeAlpha2:
+          type: string
+          description: 国コード(alpha-2)
+        storeId:
+          type: integer
+          description: 店舗ID
+        customerName:
+          type: string
+          description: 注文者名
+        phoneNumber:
+          type: string
+          description: 電話番号
+        jinsAccountId:
+          type: string
+          description: JINSアカウントID
+        registeredUserId:
+          type: string
+          description: 登録者ID
+        registeredProgram:
+          type: string
+          description: 登録プログラム
+        registeredDatetime:
+          type: string
+          description: 登録日時
+        updatedUserId:
+          type: string
+          description: 更新者ID
+        updatedProgram:
+          type: string
+          description: 更新プログラム
+        updatedDatetime:
+          type: string
+          description: 更新日時
+    ReceptionGetResponse:
+      type: object
+      description: 待ち状況取得APIレスポンス
+      properties:
+        receptionInfos:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReceptionInfos'
+      example:
+        receptionInfos:
+          - registeredDate: '2025-01-14'
+            visitingPurposeCode: '010'
+            customerIssueCode: '001'
+            prescriptionRegistCode: '001'
+            callingNumber: A1
+            receptionNumber: 250114US000001
+            statusCode: '100'
+            callingStatusCode: '001'
+            countryCodeAlpha2: US
+            storeId: '1143416'
+            customerName: John Doe
+            phoneNumber: '07012345678'
+            jinsAccountId: null
+            registeredUserId: JINS0001
+            registeredProgram: Step2_test
+            registeredDatetime: '2025-03-28T05:01:00'
+            updatedUserId: JINS0001
+            updatedProgram: Step2_test
+            updatedDatetime: '2025-03-28T05:01:00'
+          - registeredDate: '2025-01-14'
+            visitingPurposeCode: '010'
+            customerIssueCode: '001'
+            prescriptionRegistCode: '002'
+            callingNumber: B1
+            receptionNumber: 250114US000002
+            statusCode: '101'
+            callingStatusCode: '001'
+            countryCodeAlpha2: US
+            storeId: '1143416'
+            customerName: Smith
+            phoneNumber: '07012345679'
+            jinsAccountId: null
+            registeredUserId: JINS0001
+            registeredProgram: Step2_test
+            registeredDatetime: '2025-03-28T05:01:00'
+            updatedUserId: JINS0001
+            updatedProgram: Step2_test
+            updatedDatetime: '2025-03-28T05:01:00'
+    CommonErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+      required:
+        - code
+        - message
+    ReceptionInfoAllItems:
+      description: 受付情報
+      type: object
+      properties:
+        registeredDate:
+          type: string
+          description: 登録日
+        visitingPurposeCode:
+          type: string
+          description: 来店目的コード
+        customerIssueCode:
+          type: string
+          description: 困りごとコード
+        prescriptionRegistCode:
+          type: string
+          description: 度数登録方法コード
+        callingNumber:
+          type: string
+          description: 呼出番号
+        receptionNumber:
+          type: string
+          description: 受付番号
+        statusCode:
+          type: string
+          description: ステータスコード
+        callingStatusCode:
+          type: string
+          description: 呼出状態コード
+        countryCodeAlpha2:
+          type: string
+          description: 国コード(alpha-2)
+        storeId:
+          type: integer
+          description: 店舗ID
+        customerName:
+          type: string
+          description: 注文者名
+        phoneNumber:
+          type: string
+          description: 電話番号
+        jinsAccountId:
+          type: string
+          description: JINSアカウントID
+        registeredUserId:
+          type: string
+          description: 登録者ID
+        registeredProgram:
+          type: string
+          description: 登録プログラム
+        registeredDatetime:
+          type: string
+          description: 登録日時
+          format: date-time
+        updatedUserId:
+          type: string
+          description: 更新者ID
+        updatedProgram:
+          type: string
+          description: 更新プログラム
+        updatedDatetime:
+          type: string
+          description: 更新日時
+          format: date-time
+        hasLensInCart:
+          type: boolean
+          description: カートにレンズが登録されているかどうかのフラグ
+        hasFrameInCart:
+          type: boolean
+          description: カートにフレームが登録されているかどうかのフラグ
+    ProcessesGetResponse:
+      type: object
+      description: 受付情報検索APIレスポンス
+      properties:
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        limit:
+          $ref: '#/components/schemas/Limit'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        ReceptionInfoAllItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReceptionInfoAllItems'
+      example:
+        offset: 1
+        count: 20
+        limit: 20
+        totalResults: 9878
+        hasMore: true,
+        ReceptionInfoAllItems:
+        - registeredDate: "2025-03-28"
+          visitingPurposeCode: "010"
+          customerIssueCode: "001"
+          prescriptionRegistCode: "001"
+          callingNumber: "A44"
+          receptionNumber: "241230US00001"
+          statusCode: "100"
+          callingStatusCode: "001"
+          countryCodeAlpha2: "US"
+          storeId: 83005
+          customerName: "John Doe"
+          phoneNumber: "07012345678"
+          jinsAccountId: null
+          registeredUserId: 'JINS0001'
+          registeredProgram: 'Step2_test'
+          registeredDatetime: '2025-03-28T05:01:00'
+          updatedUserId: 'JINS0001'
+          updatedProgram: 'Step2_test'
+          updatedDatetime: '2025-03-28T05:01:00'
+          hasLensInCart: true
+          hasFrameInCart: true
+        - registeredDate: "2025-03-28"
+          visitingPurposeCode: "010"
+          customerIssueCode: "001"
+          prescriptionRegistCode: "002"
+          callingNumber: "A45"
+          receptionNumber: "241230US00002"
+          statusCode: "101"
+          callingStatusCode: "001"
+          countryCodeAlpha2: "US"
+          storeId: 83005
+          customerName: "Smith"
+          phoneNumber: "07012345679"
+          jinsAccountId: null
+          registeredUserId: 'JINS0001'
+          registeredProgram: 'Step2_test'
+          registeredDatetime: '2025-03-28T05:01:00'
+          updatedUserId: 'JINS0001'
+          updatedProgram: 'Step2_test'
+          updatedDatetime: '2025-03-28T05:01:00'
+          hasLensInCart: false
+          hasFrameInCart: false
+    ReceptionPostRequest:
+      type: object
+      description: 受付情報新規登録APIリクエスト
+      properties:
+        registeredDate:
+          type: string
+          format: date
+          description: 登録日
+          example: '2025-05-13'
+        visitingPurposeCode:
+          type: string
+          description: 来店目的（コード値)
+          example: R01
+        customerIssueCode:
+          type: string
+          description: 困りごと（コード値)
+          example: 100
+        prescriptionRegistCode:
+          type: string
+          description: 度数登録方法コード
+          example: R01
+        countryCodeAlpha2:
+          type: string
+          description: 国コード(alpha-2)
+          example: US
+        storeCode:
+          type: string
+          description: 店舗コード
+          example: Shop_001
+        customerName:
+          type: string
+          description: 注文者氏名
+          maxLength: 40
+          example: John
+        phoneNumber:
+          type: string
+          description: 電話番号
+          maxLength: 12
+          example: '07012345678'
+      required:
+        - registeredDate
+        - visitingPurposeCode
+        - storeCode
+        - customerName
+    ReceptionPostResponse:
+      type: object
+      description: 受付番号発番レスポンス
+      properties:
+        callingNumber:
+          type: string
+          description: 呼出番号
+          example: B11
+        receptionNumber:
+          type: string
+          description: 受付番号
+          example: UH240911300001
+    ReceptionEvents:
+      type: object
+      properties:
+        rowid:
+          type: integer
+          format: int64
+        receptionNumber:
+          type: string
+        itemGroupCode:
+          type: string
+        eventCode:
+          type: string
+        storeId:
+          type: integer
+          format: int64
+        jinsAccountId:
+          type: string
+        registeredUserId:
+          type: string
+        registeredProgram:
+          type: string
+        registeredDatetime:
+          type: string
+          format: date-time
+        registeredDatetimeUS:
+          type: string
+        updatedUserId:
+          type: string
+        updatedProgram:
+          type: string
+        updatedDatetimeUS:
+          type: string
+        updatedDatetime:
+          type: string
+          format: date-time
+        optimisticLockVerNo:
+          type: number
+        storeCode:
+          type: string
+        eventName:
+          type: string
+        staffName:
+          type: string
+          nullable: true
+      example:
+        rowid: 1
+        receptionNumber: 240115US000001
+        itemGroupCode: 240115US000001-1
+        eventCode: '000'
+        storeCode: '84403'
+        jinsAccountId: null
+        registeredUserId: staff001
+        registeredProgram: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        registeredDatetime: '2024-10-15T10:00:00'
+        updatedUserId: staff001
+        updatedProgram: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        updatedDatetime: '2024-10-15T10:00:00'
+        optimisticLockVerNo: 1
+        eventName: Check-in
+        staffName: STAFF_NAME
+    ReceptionEventsGetResponse:
+      type: object
+      properties:
+        rcptEvent:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReceptionEvents'
+    ReceptionEventsRequest:
+      type: object
+      description: 受付情報更新APIリクエスト
+      properties:
+        receptionNumber:
+          type: string
+          description: 受付番号
+          maxLength: 14
+          example: UH240911300001
+        storeCode:
+          type: string
+          description: 店舗コード
+          maxLength: 5
+          example: '84403'
+        statusCode:
+          type: string
+          description: 受付ステータス
+          maxLength: 3
+          example: '101'
+        callingStatusCode:
+          type: string
+          description: 呼出状態
+          maxLength: 3
+          example: '001'
+        itemGroupCode:
+          type: string
+          description: 商品グループCD
+          example: '11111'
+        eventCode:
+          type: string
+          description: 処理コード
+          maxLength: 3
+          example: '100'
+        subEventCode:
+          type: string
+          description: サブ処理コード
+          maxLength: 3
+          example: '010'
+    PrescriptionsGetResponse:
+      type: object
+      description: 処方箋画像取得APIレスポンス
+      properties:
+        data:
+          type: string
+          description: 処方箋画像
+      example:
+        data: data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAAAAAAD/...
+    ItemGroupPutRequest:
+      description: 受取方法登録APIリクエスト
+      type: object
+      properties:
+        deliveryMethodCode:
+          type: string
+          maxLength: 3
+          description: 受取方法コード
+        deliveryDatetime:
+          type: string
+          format: date-time
+          description: 受取予定日時
+        deliveryStoreCode:
+          type: string
+          maxLength: 5
+          description: 受け取り店舗CD
+        customerName:
+          type: string
+          maxLength: 40
+          description: 注文者名
+        phoneNumber:
+          type: string
+          description: 電話番号
+          maxLength: 12
+        shippingAddressZip:
+          type: string
+          description: 配送先住所_郵便番号
+          maxLength: 10
+        shippingAddress1:
+          type: string
+          description: 配送先住所1
+          maxLength: 40
+        shippingAddress2:
+          type: string
+          description: 配送先住所2
+          maxLength: 40
+        shippingAddress3:
+          type: string
+          description: 配送先住所3
+          maxLength: 40
+        shippingAddress4:
+          type: string
+          description: 配送先住所4
+          maxLength: 40
+        isWaitingLens:
+          type: boolean
+          description: レンズ納品待ち
+        isDeliveryToday:
+          type: boolean
+          description: 当日受渡フラグ
+        jinsAccountId:
+          type: string
+          description: JINSアカウントID
+          maxLength: 256
+      required:
+        - deliveryMethodCode
+        - isWaitingLens
+        - isDeliveryToday
+      example:
+        deliveryMethodCode: '002'
+        deliveryDatetime: '2024-10-31T09:00:00'
+        deliveryStoreCode: '83005'
+        customerName: null
+        phoneNumber: null
+        shippingAddressZip: null
+        shippingAddress1: null
+        shippingAddress2: null
+        shippingAddress3: null
+        shippingAddress4: null
+        isWaitingLens: true
+        isDeliveryToday: false
+        jinsAccountId: null
+    itemCategoryCode:
+      type: string
+      description: |
+        商品種別コード
+        |コード|名称|
+        |:---|:---|
+        |01|フレーム|
+        |04|ケース|
+        |05|セリート|
+        |11|度数情報|
+        |12|レンズOP|
+        |14|レンズ交換OP|
+        <br>
+      maxLength: 2
+    operationCode:
+      type: string
+      description: |
+        操作種別コード
+        |コード|名称|
+        |:---|:---|
+        |01|Insert.|
+        |02|Update.|
+        |03|Delete.|
+        <br>
+      maxLength: 2
+    Lineitem:
+      description: カート明細
+      type: object
+      properties:
+        lineitemId:
+          type: integer
+          format: int64
+          description: カート明細ID
+        itemCode:
+          type: string
+          description: 商品コード
+          maxLength: 18
+        countryCodeAlpha2:
+          type: string
+          description: 業務国コード
+          maxLength: 2
+        itemCategoryCode:
+          $ref: '#/components/schemas/itemCategoryCode'
+        operationCode:
+          $ref: '#/components/schemas/operationCode'
+        preparation1:
+          type: string
+          description: 予備1
+          maxLength: 2048
+        preparation2:
+          type: string
+          description: 予備2
+        taxClass:
+          type: string
+          description: 税区分
+          maxLength: 1
+        listPrice:
+          type: number
+          description: 定価
+        discountPrice:
+          type: number
+          description: 割引額
+        taxPrice:
+          type: number
+          description: 税額
+        salesPrice:
+          type: number
+          description: 販売額
+        lot: 
+          type: string
+          description: ロット
+          maxLength: 2
+        quantity: 
+          type: integer
+          description: 数量
+        optimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号
+    ItemGroup:
+      type: object
+      description: 商品グループ情報
+      properties:
+        lineitemGroupId:
+          type: integer
+          format: int64
+          description: 商品グループID
+        itemGroupCode:
+          type: string
+          description: 商品グループCD
+          maxLength: 17
+        statusCode:
+          type: string
+          description: ステータスコード
+          maxLength: 3
+        callingStatusCode:
+          type: string
+          description: 呼出状態コード
+          maxLength: 3
+        deliveryMethodCode:
+          type: string
+          description: 受取方法コード
+          maxLength: 3
+        deliveryDatetime:
+          type: string
+          format: date-time
+          description: 受取予定日時
+        deliveryStoreCode:
+          type: string
+          description: 受取店舗CD
+          maxLength: 5
+        customerName:
+          type: string
+          description: 注文者名
+          maxLength: 40
+        phoneNumber:
+          type: string
+          description: 電話番号
+          maxLength: 12
+        shippingAddressZip:
+          type: string
+          description: 配送先住所_郵便番号
+          maxLength: 10
+        shippingAddress1:
+          type: string
+          description: 配送先住所1
+          maxLength: 40
+        shippingAddress2:
+          type: string
+          description: 配送先住所2
+          maxLength: 40
+        shippingAddress3:
+          type: string
+          description: 配送先住所3
+          maxLength: 40
+        shippingAddress4:
+          type: string
+          description: 配送先住所4
+          maxLength: 40
+        isExchangeLens:
+          type: boolean
+          description: レンズ交換フラグ
+        isWaitingLens:
+          type: boolean
+          description: レンズ納品待ち
+        isDeliveryToday:
+          type: boolean
+          description: 当日受渡フラグ
+        note:
+          type: string
+          description: 備考
+        discountPrice:
+          type: number
+          description: 割引額
+        subtotal:
+          type: number
+          description: 小計
+        totalDiscountPrice:
+          type: number
+          description: 割引額合計
+        totalTaxPrice:
+          type: number
+          description: 税額合計
+        salesPrice:
+          type: number
+          description: 販売額
+        jinsAccountId:
+          type: string
+          description: JINSアカウントID
+        optimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号
+        Lineitems:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lineitem'
+    LineitemPostRequest:
+      description: カート情報登録APIリクエスト
+      type: object
+      properties:
+        cartId:
+          type: integer
+          format: int64
+          description: カートID
+        discountPrice:
+          type: number
+        subtotal:
+          type: number
+        totalDiscountPrice:
+          type: number
+        totalTaxPrice:
+          type: number
+        totalSalesPrice:
+          type: number
+        ItemGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemGroup'
+      required:
+        - cartId
+      example:
+        cartId: 123
+        discountPrice: 0
+        subtotal: 0
+        totalDiscountPrice: 0
+        totalTaxPrice: 0
+        totalSalesPrice: 0
+        ItemGroups:
+          - lineitemGroupId: 111
+            itemGroupCode: 241112US000001-1
+            statusCode: '000'
+            callingStatusCode: '000'
+            deliveryMethodCode: null
+            deliveryDatetime: null
+            deliveryStoreCode: null
+            customerName: customer
+            phoneNumber: '09011112222'
+            shippingAddressZip: null
+            shippingAddress1: null
+            shippingAddress2: null
+            shippingAddress3: null
+            shippingAddress4: null
+            isExchangeLens: false
+            isWaitingLens: false
+            isDeliveryToday: false
+            note: null
+            discountPrice: 0
+            subtotal: 0
+            totalDiscountPrice: 0
+            totalTaxPrice: 0
+            salesPrice: 0
+            optimisticLockVerNo: 1
+            Lineitems:
+              - lineitemId: 1
+                itemCode: MFA-24S-U019U-96
+                countryCodeAlpha2: null
+                itemCategoryCode: '01'
+                operationCode: '01'
+                preparation1: null
+                preparation2: null
+                taxClass: '1'
+                listPrice: 0
+                discountPrice: 0
+                taxPrice: 0
+                salesPrice: 0
+                lot: "AB"
+                quantity: null
+                optimisticLockVerNo: 1
+              - lineitemId: null
+                itemCode: null
+                countryCodeAlpha2: US
+                itemCategoryCode: '11'
+                operationCode: '02'
+                preparation1: presctiptionInfo:{aaaa:bbbbb,cccc:ddddd}
+                preparation2: null
+                taxClass: null
+                listPrice: 0
+                discountPrice: 0
+                taxPrice: 0
+                salesPrice: 0
+                lot: "AB"
+                quantity: 3
+                optimisticLockVerNo: 1
+    itemGroupCompleteSet:
+      description: 商品グループ(メガネ一式)
+      type: object
+      properties:
+        lineitemGroupId:
+          type: integer
+          format: int64
+          description: 商品グループID
+        itemGroupCode:
+          type: string
+          description: 商品グループCD
+          maxLength: 17
+        statusCode:
+          type: string
+          description: ステータスコード
+          maxLength: 3
+        callingStatusCode:
+          type: string
+          description: 呼出状態コード
+          maxLength: 3
+        callingNumber:
+          type: string
+          description: 呼出番号
+          maxLength: 4
+        prescriptionRegistCode:
+          type: string
+          description: 度数登録方法コード
+          maxLength: 3
+        deliveryMethodCode:
+          type: string
+          description: 受取方法コード
+          maxLength: 3
+          nullable: true
+        deliveryDatetime:
+          type: string
+          format: date-time
+          description: 受取予定日時
+          nullable: true
+        deliveryStoreId:
+          type: integer
+          format: int64
+          description: 受取店舗ID
+          nullable: true
+        customerName:
+          type: string
+          description: 注文者名
+          maxLength: 40
+          nullable: true
+        phoneNumber:
+          type: string
+          description: 電話番号
+          maxLength: 12
+          nullable: true
+        shippingAddressZip:
+          type: string
+          description: 配送先住所_郵便番号
+          maxLength: 10
+          nullable: true
+        shippingAddress1:
+          type: string
+          description: 配送先住所1
+          maxLength: 40
+          nullable: true
+        shippingAddress2:
+          type: string
+          description: 配送先住所2
+          maxLength: 40
+          nullable: true
+        shippingAddress3:
+          type: string
+          description: 配送先住所3
+          maxLength: 40
+          nullable: true
+        shippingAddress4:
+          type: string
+          description: 配送先住所4
+          maxLength: 40
+          nullable: true
+        isExchangeLens:
+          type: boolean
+          description: レンズ交換フラグ
+        isWaitingLens:
+          type: boolean
+          description: レンズ納品待ち
+        isDeliveryToday:
+          type: boolean
+          description: 当日受渡フラグ
+        note:
+          type: string
+          description: 備考
+          maxLength: 1024
+          nullable: true
+        discountPrice:
+          type: number
+          description: 割引額
+        subtotal:
+          type: number
+          description: 小計
+        totalDiscountPrice:
+          type: number
+          description: 割引額合計
+        totalTaxPrice:
+          type: number
+          description: 税額合計
+        salesPrice:
+          type: number
+          description: 販売額
+        deletedFlag:
+          type: number
+          description: 削除フラグ
+        jinsAccountId:
+          type: string
+          description: JINSアカウントID
+        registeredUserId:
+          type: string
+          description: 登録者ID
+          maxLength: 256
+        registeredProgram:
+          type: string
+          description: 登録プログラム
+          maxLength: 256
+        registeredDatetime:
+          type: string
+          format: date-time
+          description: 登録日時
+        updatedUserId:
+          type: string
+          description: 更新者ID
+          maxLength: 256
+        updatedProgram:
+          type: string
+          description: 更新プログラム
+          maxLength: 256
+        updatedDatetime:
+          type: string
+          format: date-time
+          description: 更新日時
+        optimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号
+        deliveryStoreCode:
+          type: string
+          description: 受取店舗CD
+          maxLength: 5
+          nullable: true
+        statusName:
+          type: string
+          description: ステータス名
+          maxLength: 3
+        deliveryMethodName:
+          type: string
+          description: 受取方法名称
+          maxLength: 3
+          nullable: true
+        frameLineitemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: カート明細ID(フレーム)
+        frameItemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: 商品ID(フレーム)
+        frameItemCategoryCode:
+          type: string
+          description: 商品種別コード(フレーム)
+          maxLength: 2
+          nullable: true
+        frameTaxClass:
+          type: string
+          description: 税区分(フレーム)
+          maxLength: 1
+          nullable: true
+        frameListPrice:
+          type: number
+          description: 定価(フレーム)
+          nullable: true
+        frameDiscountPrice:
+          type: number
+          description: 割引額(フレーム)
+          nullable: true
+        frameTaxPrice:
+          type: number
+          description: 税額(フレーム)
+          nullable: true
+        frameSalesPrice:
+          type: number
+          description: 販売額(フレーム)
+          nullable: true
+        framePreparation1:
+          type: string
+          description: 予備1(フレーム)
+          maxLength: 2048
+          nullable: true
+        framePreparation2:
+          type: string
+          description: 予備2(フレーム)
+          maxLength: 256
+          nullable: true
+        frameDeletedFlag:
+          type: number
+          description: 削除フラグ(フレーム)
+          nullable: true
+        frameRegisteredUserId:
+          type: string
+          description: 登録者ID(フレーム)
+          maxLength: 256
+          nullable: true
+        frameRegisteredProgram:
+          type: string
+          description: 登録プログラム(フレーム)
+          maxLength: 256
+          nullable: true
+        frameRegisteredDatetime:
+          type: string
+          format: date-time
+          description: 登録日時(フレーム)
+          nullable: true
+        frameUpdatedUserId:
+          type: string
+          description: 更新者ID(フレーム)
+          nullable: true
+          maxLength: 256
+        frameUpdatedProgram:
+          type: string
+          description: 更新プログラム(フレーム)
+          nullable: true
+          maxLength: 256
+        frameUpdatedDatetime:
+          type: string
+          format: date-time
+          description: 更新日時(フレーム)
+          nullable: true
+        frameOptimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号(フレーム)
+          nullable: true
+        frameItemCode:
+          type: string
+          description: 商品コード(フレーム)
+          nullable: true
+        frameItemName:
+          type: string
+          description: 商品名(フレーム)
+          nullable: true
+        frameItemNameKana:
+          type: string
+          description: 商品名カナ(フレーム)
+          nullable: true
+        frameItemNameEnglish:
+          type: string
+          description: 商品名（英語）(フレーム)
+          nullable: true
+        frameItemNameSimplefied:
+          type: string
+          description: 商品名（簡体語）(フレーム)
+          nullable: true
+        frameItemNameTraditional:
+          type: string
+          description: 商品名（繁体語）(フレーム)
+          nullable: true
+        frameLot:
+          type: string
+          description: ロット(フレーム)
+          nullable: true
+        frameQuantity:
+          type: integer
+          description: 数量(フレーム)
+          nullable: true
+        caseLineitemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: カート明細ID(ケース)
+        caseItemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: 商品ID(ケース)
+        caseItemCategoryCode:
+          type: string
+          description: 商品種別コード(ケース)
+          nullable: true
+          maxLength: 2
+        caseTaxClass:
+          type: string
+          description: 税区分(ケース)
+          nullable: true
+          maxLength: 1
+        caseListPrice:
+          type: number
+          description: 定価(ケース)
+          nullable: true
+        caseDiscountPrice:
+          type: number
+          description: 割引額(ケース)
+          nullable: true
+        caseTaxPrice:
+          type: number
+          description: 税額(ケース)
+          nullable: true
+        caseSalesPrice:
+          type: number
+          description: 販売額(ケース)
+          nullable: true
+        casePreparation1:
+          type: string
+          description: 予備1(ケース)
+          nullable: true
+          maxLength: 2048
+        casePreparation2:
+          type: string
+          description: 予備2(ケース)
+          nullable: true
+          maxLength: 256
+        caseDeletedFlag:
+          type: number
+          description: 削除フラグ(ケース)
+          nullable: true
+        caseRegisteredUserId:
+          type: string
+          description: 登録者ID(ケース)
+          nullable: true
+          maxLength: 256
+        caseRegisteredProgram:
+          type: string
+          description: 登録プログラム(ケース)
+          nullable: true
+          maxLength: 256
+        caseRegisteredDatetime:
+          type: string
+          format: date-time
+          description: 登録日時(ケース)
+          nullable: true
+        caseUpdatedUserId:
+          type: string
+          description: 更新者ID(ケース)
+          nullable: true
+          maxLength: 256
+        caseUpdatedProgram:
+          type: string
+          description: 更新プログラム(ケース)
+          nullable: true
+          maxLength: 256
+        caseUpdatedDatetime:
+          type: string
+          format: date-time
+          description: 更新日時(ケース)
+          nullable: true
+        caseOptimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号(ケース)
+          nullable: true
+        caseItemCode:
+          type: string
+          description: 商品コード(ケース)
+          nullable: true
+        caseItemName:
+          type: string
+          description: 商品名(ケース)
+          nullable: true
+        caseItemNameKana:
+          type: string
+          description: 商品名カナ(ケース)
+          nullable: true
+        caseItemNameEnglish:
+          type: string
+          description: 商品名（英語）(ケース)
+          nullable: true
+        caseItemNameSimplefied:
+          type: string
+          description: 商品名（簡体語）(ケース)
+          nullable: true
+        caseItemNameTraditional:
+          type: string
+          description: 商品名（繁体語）(ケース)
+          nullable: true
+        caseLot:
+          type: string
+          description: ロット(ケース)
+          nullable: true
+        caseQuantity:
+          type: integer
+          description: 数量(ケース)
+          nullable: true
+        isCaseNone:
+          type: boolean
+          description: ケースなしフラグ
+          nullable: true
+        cerritoLineitemId:
+          type: integer
+          format: int64
+          description: カート明細ID(セリート)
+          nullable: true
+        cerritoItemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: 商品ID(セリート)
+        cerritoItemCategoryCode:
+          type: string
+          description: 商品種別コード(セリート)
+          nullable: true
+          maxLength: 2
+        cerritoTaxClass:
+          type: string
+          description: 税区分(セリート)
+          nullable: true
+          maxLength: 1
+        cerritoListPrice:
+          type: number
+          description: 定価(セリート)
+          nullable: true
+        cerritoDiscountPrice:
+          type: number
+          description: 割引額(セリート)
+          nullable: true
+        cerritoTaxPrice:
+          type: number
+          description: 税額(セリート)
+          nullable: true
+        cerritoSalesPrice:
+          type: number
+          description: 販売額(セリート)
+          nullable: true
+        cerritoPreparation1:
+          type: string
+          description: 予備1(セリート)
+          nullable: true
+          maxLength: 2048
+        cerritoPreparation2:
+          type: string
+          description: 予備2(セリート)
+          nullable: true
+          maxLength: 256
+        cerritoDeletedFlag:
+          type: number
+          description: 削除フラグ(セリート)
+          nullable: true
+        cerritoRegisteredUserId:
+          type: string
+          description: 登録者ID(セリート)
+          nullable: true
+          maxLength: 256
+        cerritoRegisteredProgram:
+          type: string
+          description: 登録プログラム(セリート)
+          nullable: true
+          maxLength: 256
+        cerritoRegisteredDatetime:
+          type: string
+          format: date-time
+          description: 登録日時(セリート)
+          nullable: true
+        cerritoUpdatedUserId:
+          type: string
+          description: 更新者ID(セリート)
+          nullable: true
+          maxLength: 256
+        cerritoUpdatedProgram:
+          type: string
+          description: 更新プログラム(セリート)
+          nullable: true
+          maxLength: 256
+        cerritoUpdatedDatetime:
+          type: string
+          format: date-time
+          description: 更新日時(セリート)
+          nullable: true
+        cerritoOptimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号(セリート)
+          nullable: true
+        cerritoItemCode:
+          type: string
+          description: 商品コード(セリート)
+          nullable: true
+        cerritoItemName:
+          type: string
+          description: 商品名(セリート)
+          nullable: true
+        cerritoItemNameKana:
+          type: string
+          description: 商品名カナ(セリート)
+          nullable: true
+        cerritoItemNameEnglish:
+          type: string
+          description: 商品名（英語）(セリート)
+          nullable: true
+        cerritoItemNameSimplefied:
+          type: string
+          description: 商品名（簡体語）(セリート)
+          nullable: true
+        cerritoItemNameTraditional:
+          type: string
+          description: 商品名（繁体語）(セリート)
+          nullable: true
+        cerritoLot:
+          type: string
+          description: ロット(セリート)
+          nullable: true
+        cerritoQuantity:
+          type: integer
+          description: 数量(セリート)
+          nullable: true
+        lensRightLineitemId:
+          type: integer
+          format: int64
+          description: カート明細ID(右レンズ)
+          nullable: true
+        lensRightItemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: 商品ID(右レンズ)
+        lensRightItemCategoryCode:
+          type: string
+          description: 商品種別コード(右レンズ)
+          nullable: true
+          maxLength: 2
+        lensRightTaxClass:
+          type: string
+          description: 税区分(右レンズ)
+          nullable: true
+          maxLength: 1
+        lensRightListPrice:
+          type: number
+          description: 定価(右レンズ)
+          nullable: true
+        lensRightDiscountPrice:
+          type: number
+          description: 割引額(右レンズ)
+          nullable: true
+        lensRightTaxPrice:
+          type: number
+          description: 税額(右レンズ)
+          nullable: true
+        lensRightSalesPrice:
+          type: number
+          description: 販売額(右レンズ)
+          nullable: true
+        lensRightPreparation1:
+          type: string
+          description: 予備1(右レンズ)
+          nullable: true
+          maxLength: 2048
+        lensRightPreparation2:
+          type: string
+          description: 予備2(右レンズ)
+          nullable: true
+          maxLength: 256
+        lensRightDeletedFlag:
+          type: number
+          description: 削除フラグ(右レンズ)
+          nullable: true
+        lensRightRegisteredUserId:
+          type: string
+          description: 登録者ID(右レンズ)
+          nullable: true
+          maxLength: 256
+        lensRightRegisteredProgram:
+          type: string
+          description: 登録プログラム(右レンズ)
+          nullable: true
+          maxLength: 256
+        lensRightRegisteredDatetime:
+          type: string
+          format: date-time
+          description: 登録日時(右レンズ)
+          nullable: true
+        lensRightUpdatedUserId:
+          type: string
+          description: 更新者ID(右レンズ)
+          nullable: true
+          maxLength: 256
+        lensRightUpdatedProgram:
+          type: string
+          description: 更新プログラム(右レンズ)
+          nullable: true
+          maxLength: 256
+        lensRightUpdatedDatetime:
+          type: string
+          format: date-time
+          description: 更新日時(右レンズ)
+          nullable: true
+        lensRightOptimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号(右レンズ)
+          nullable: true
+        lensRightItemCode:
+          type: string
+          description: 商品コード(右レンズ)
+          nullable: true
+        lensRightItemName:
+          type: string
+          description: 商品名(右レンズ)
+          nullable: true
+        lensRightItemNameKana:
+          type: string
+          description: 商品名カナ(右レンズ)
+          nullable: true
+        lensRightItemNameEnglish:
+          type: string
+          description: 商品名（英語）(右レンズ)
+          nullable: true
+        lensRightItemNameSimplefied:
+          type: string
+          description: 商品名（簡体語）(右レンズ)
+          nullable: true
+        lensRightItemNameTraditional:
+          type: string
+          description: 商品名（繁体語）(右レンズ)
+          nullable: true
+        lensRightLot:
+          type: string
+          description: ロット(右レンズ)
+          nullable: true
+        lensRightQuantity:
+          type: integer
+          description: 数量(右レンズ)
+          nullable: true
+        lensLeftLineitemId:
+          type: integer
+          format: int64
+          description: カート明細ID(左レンズ)
+          nullable: true
+        lensLeftItemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: 商品ID(左レンズ)
+        lensLeftItemCategoryCode:
+          type: string
+          description: 商品種別コード(左レンズ)
+          nullable: true
+          maxLength: 2
+        lensLeftTaxClass:
+          type: string
+          description: 税区分(左レンズ)
+          nullable: true
+          maxLength: 1
+        lensLeftListPrice:
+          type: number
+          description: 定価(左レンズ)
+          nullable: true
+        lensLeftDiscountPrice:
+          type: number
+          description: 割引額(左レンズ)
+          nullable: true
+        lensLeftTaxPrice:
+          type: number
+          description: 税額(左レンズ)
+          nullable: true
+        lensLeftSalesPrice:
+          type: number
+          description: 販売額(左レンズ)
+          nullable: true
+        lensLeftPreparation1:
+          type: string
+          description: 予備1(左レンズ)
+          nullable: true
+          maxLength: 2048
+        lensLeftPreparation2:
+          type: string
+          description: 予備2(左レンズ)
+          nullable: true
+          maxLength: 256
+        lensLeftDeletedFlag:
+          type: number
+          description: 削除フラグ(左レンズ)
+          nullable: true
+        lensLeftRegisteredUserId:
+          type: string
+          description: 登録者ID(左レンズ)
+          nullable: true
+          maxLength: 256
+        lensLeftRegisteredProgram:
+          type: string
+          description: 登録プログラム(左レンズ)
+          nullable: true
+          maxLength: 256
+        lensLeftRegisteredDatetime:
+          type: string
+          format: date-time
+          description: 登録日時(左レンズ)
+          nullable: true
+        lensLeftUpdatedUserId:
+          type: string
+          description: 更新者ID(左レンズ)
+          nullable: true
+          maxLength: 256
+        lensLeftUpdatedProgram:
+          type: string
+          description: 更新プログラム(左レンズ)
+          nullable: true
+          maxLength: 256
+        lensLeftUpdatedDatetime:
+          type: string
+          format: date-time
+          description: 更新日時(左レンズ)
+          nullable: true
+        lensLeftOptimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号(左レンズ)
+          nullable: true
+        lensLeftItemCode:
+          type: string
+          description: 商品コード(左レンズ)
+          nullable: true
+        lensLeftItemName:
+          type: string
+          description: 商品名(左レンズ)
+          nullable: true
+        lensLeftItemNameKana:
+          type: string
+          description: 商品名カナ(左レンズ)
+          nullable: true
+        lensLeftItemNameEnglish:
+          type: string
+          description: 商品名（英語）(左レンズ)
+          nullable: true
+        lensLeftItemNameSimplefied:
+          type: string
+          description: 商品名（簡体語）(左レンズ)
+          nullable: true
+        lensLeftItemNameTraditional:
+          type: string
+          description: 商品名（繁体語）(左レンズ)
+          nullable: true
+        lensLeftLot:
+          type: string
+          description: ロット(左レンズ)
+          nullable: true
+        lensLeftQuantity:
+          type: integer
+          description: 数量(左レンズ)
+          nullable: true
+        registeredLineitemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: カート明細ID(度数)
+        registeredItemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: 商品ID(度数)
+        registeredItemCategoryCode:
+          type: string
+          description: 商品種別コード(度数)
+          nullable: true
+          maxLength: 2
+        registeredTaxClass:
+          type: string
+          description: 税区分(度数)
+          nullable: true
+          maxLength: 1
+        registeredListPrice:
+          type: number
+          description: 定価(度数)
+          nullable: true
+        registeredDiscountPrice:
+          type: number
+          description: 割引額(度数)
+          nullable: true
+        registeredTaxPrice:
+          type: number
+          description: 税額(度数)
+          nullable: true
+        registeredSalesPrice:
+          type: number
+          description: 販売額(度数)
+          nullable: true
+        registeredPreparation1:
+          type: string
+          description: 予備1(度数)
+          nullable: true
+          maxLength: 2048
+        registeredPreparation2:
+          type: string
+          description: 予備2(度数)
+          nullable: true
+          maxLength: 256
+        registeredDeletedFlag:
+          type: number
+          description: 削除フラグ(度数)
+          nullable: true
+        registeredRegisteredUserId:
+          type: string
+          description: 登録者ID(度数)
+          nullable: true
+          maxLength: 256
+        registeredRegisteredProgram:
+          type: string
+          description: 登録プログラム(度数)
+          nullable: true
+          maxLength: 256
+        registeredRegisteredDatetime:
+          type: string
+          format: date-time
+          description: 登録日時(度数)
+          nullable: true
+        registeredUpdatedUserId:
+          type: string
+          description: 更新者ID(度数)
+          nullable: true
+          maxLength: 256
+        registeredUpdatedProgram:
+          type: string
+          description: 更新プログラム(度数)
+          nullable: true
+          maxLength: 256
+        registeredUpdatedDatetime:
+          type: string
+          format: date-time
+          description: 更新日時(度数)
+          nullable: true
+        registeredOptimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号(度数)
+          nullable: true
+        registeredLot:
+          type: string
+          description: ロット(度数)
+          nullable: true
+        registeredQuantity:
+          type: integer
+          description: 数量(度数)
+          nullable: true
+        lopSalesColorNameLineitemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: カート明細ID(販売用カラー名称)
+        lopSalesColorNameItemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: 商品ID(販売用カラー名称)
+        lopSalesColorNameItemCategoryCode:
+          type: string
+          description: 商品種別コード(販売用カラー名称)
+          nullable: true
+          maxLength: 2
+        lopSalesColorNameTaxClass:
+          type: string
+          description: 税区分(販売用カラー名称)
+          nullable: true
+          maxLength: 1
+        lopSalesColorNameListPrice:
+          type: number
+          description: 定価(販売用カラー名称)
+          nullable: true
+        lopSalesColorNameDiscountPrice:
+          type: number
+          description: 割引額(販売用カラー名称)
+          nullable: true
+        lopSalesColorNameTaxPrice:
+          type: number
+          description: 税額(販売用カラー名称)
+          nullable: true
+        lopSalesColorNameSalesPrice:
+          type: number
+          description: 販売額(販売用カラー名称)
+          nullable: true
+        lopSalesColorNamePreparation1:
+          type: string
+          description: 予備1(販売用カラー名称)
+          nullable: true
+          maxLength: 2048
+        lopSalesColorNamePreparation2:
+          type: string
+          description: 予備2(販売用カラー名称)
+          nullable: true
+          maxLength: 256
+        lopSalesColorNameDeletedFlag:
+          type: number
+          description: 削除フラグ(販売用カラー名称)
+          nullable: true
+        lopSalesColorNameRegisteredUserId:
+          type: string
+          description: 登録者ID(販売用カラー名称)
+          nullable: true
+          maxLength: 256
+        lopSalesColorNameRegisteredProgram:
+          type: string
+          description: 登録プログラム(販売用カラー名称)
+          nullable: true
+          maxLength: 256
+        lopSalesColorNameRegisteredDatetime:
+          type: string
+          format: date-time
+          description: 登録日時(販売用カラー名称)
+          nullable: true
+        lopSalesColorNameUpdatedUserId:
+          type: string
+          description: 更新者ID(販売用カラー名称)
+          nullable: true
+          maxLength: 256
+        lopSalesColorNameUpdatedProgram:
+          type: string
+          description: 更新プログラム(販売用カラー名称)
+          nullable: true
+          maxLength: 256
+        lopSalesColorNameUpdatedDatetime:
+          type: string
+          format: date-time
+          description: 更新日時(販売用カラー名称)
+          nullable: true
+        lopSalesColorNameOptimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号(販売用カラー名称)
+          nullable: true
+        lopSalesColorNameLensOptionCode:
+          type: string
+          description: レンズオプションコード(販売用カラー名称)
+          nullable: true
+        lopSalesColorNameLensOptionName:
+          type: string
+          description: レンズオプション名(販売用カラー名称)
+          nullable: true
+        lopSalesColorNameLot:
+          type: string
+          description: ロット(販売用カラー名称)
+          nullable: true
+        lopSalesColorNameQuantity:
+          type: integer
+          description: 数量(販売用カラー名称)
+          nullable: true
+        lopSalesLensSpecLineitemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: カート明細ID(販売用レンズ仕様)
+        lopSalesLensSpecItemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: 商品ID(販売用レンズ仕様)
+        lopSalesLensSpecItemCategoryCode:
+          type: string
+          description: 商品種別コード(販売用レンズ仕様)
+          nullable: true
+          maxLength: 2
+        lopSalesLensSpecTaxClass:
+          type: string
+          description: 税区分(販売用レンズ仕様)
+          nullable: true
+          maxLength: 1
+        lopSalesLensSpecListPrice:
+          type: number
+          description: 定価(販売用レンズ仕様)
+          nullable: true
+        lopSalesLensSpecDiscountPrice:
+          type: number
+          description: 割引額(販売用レンズ仕様)
+          nullable: true
+        lopSalesLensSpecTaxPrice:
+          type: number
+          description: 税額(販売用レンズ仕様)
+          nullable: true
+        lopSalesLensSpecSalesPrice:
+          type: number
+          description: 販売額(販売用レンズ仕様)
+          nullable: true
+        lopSalesLensSpecPreparation1:
+          type: string
+          description: 予備1(販売用レンズ仕様)
+          nullable: true
+          maxLength: 2048
+        lopSalesLensSpecPreparation2:
+          type: string
+          description: 予備2(販売用レンズ仕様)
+          nullable: true
+          maxLength: 256
+        lopSalesLensSpecDeletedFlag:
+          type: number
+          description: 削除フラグ(販売用レンズ仕様)
+          nullable: true
+        lopSalesLensSpecRegisteredUserId:
+          type: string
+          description: 登録者ID(販売用レンズ仕様)
+          nullable: true
+          maxLength: 256
+        lopSalesLensSpecRegisteredProgram:
+          type: string
+          description: 登録プログラム(販売用レンズ仕様)
+          nullable: true
+          maxLength: 256
+        lopSalesLensSpecRegisteredDatetime:
+          type: string
+          format: date-time
+          description: 登録日時(販売用レンズ仕様)
+          nullable: true
+        lopSalesLensSpecUpdatedUserId:
+          type: string
+          description: 更新者ID(販売用レンズ仕様)
+          nullable: true
+          maxLength: 256
+        lopSalesLensSpecUpdatedProgram:
+          type: string
+          description: 更新プログラム(販売用レンズ仕様)
+          nullable: true
+          maxLength: 256
+        lopSalesLensSpecUpdatedDatetime:
+          type: string
+          format: date-time
+          description: 更新日時(販売用レンズ仕様)
+          nullable: true
+        lopSalesLensSpecOptimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号(販売用レンズ仕様)
+          nullable: true
+        lopSalesLensSpecLensOptionCode:
+          type: string
+          description: レンズオプションコード(販売用レンズ仕様)
+          nullable: true
+        lopSalesLensSpecLensOptionName:
+          type: string
+          description: レンズオプション名(販売用レンズ仕様)
+          nullable: true
+        lopSalesLensSpecLot:
+          type: string
+          description: ロット(販売用レンズ仕様)
+          nullable: true
+        lopSalesLensSpecQuantity:
+          type: integer
+          description: 数量(販売用レンズ仕様)
+          nullable: true
+        lopFocusCategoryLineitemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: カート明細ID(焦点分類)
+        lopFocusCategoryItemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: 商品ID(焦点分類)
+        lopFocusCategoryItemCategoryCode:
+          type: string
+          description: 商品種別コード(焦点分類)
+          nullable: true
+          maxLength: 2
+        lopFocusCategoryTaxClass:
+          type: string
+          description: 税区分(焦点分類)
+          nullable: true
+          maxLength: 1
+        lopFocusCategoryListPrice:
+          type: number
+          description: 定価(焦点分類)
+          nullable: true
+        lopFocusCategoryDiscountPrice:
+          type: number
+          description: 割引額(焦点分類)
+          nullable: true
+        lopFocusCategoryTaxPrice:
+          type: number
+          description: 税額(焦点分類)
+          nullable: true
+        lopFocusCategorySalesPrice:
+          type: number
+          description: 販売額(焦点分類)
+          nullable: true
+        lopFocusCategoryPreparation1:
+          type: string
+          description: 予備1(焦点分類)
+          nullable: true
+          maxLength: 2048
+        lopFocusCategoryPreparation2:
+          type: string
+          description: 予備2(焦点分類)
+          nullable: true
+          maxLength: 256
+        lopFocusCategoryDeletedFlag:
+          type: number
+          description: 削除フラグ(焦点分類)
+          nullable: true
+        lopFocusCategoryRegisteredUserId:
+          type: string
+          description: 登録者ID(焦点分類)
+          nullable: true
+          maxLength: 256
+        lopFocusCategoryRegisteredProgram:
+          type: string
+          description: 登録プログラム(焦点分類)
+          nullable: true
+          maxLength: 256
+        lopFocusCategoryRegisteredDatetime:
+          type: string
+          format: date-time
+          description: 登録日時(焦点分類)
+          nullable: true
+        lopFocusCategoryUpdatedUserId:
+          type: string
+          description: 更新者ID(焦点分類)
+          nullable: true
+          maxLength: 256
+        lopFocusCategoryUpdatedProgram:
+          type: string
+          description: 更新プログラム(焦点分類)
+          nullable: true
+          maxLength: 256
+        lopFocusCategoryUpdatedDatetime:
+          type: string
+          format: date-time
+          description: 更新日時(焦点分類)
+          nullable: true
+        lopFocusCategoryOptimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号(焦点分類)
+          nullable: true
+        lopFocusCategoryLensOptionCode:
+          type: string
+          description: レンズオプションコード(焦点分類)
+          nullable: true
+        lopFocusCategoryLensOptionName:
+          type: string
+          description: レンズオプション名(焦点分類)
+          nullable: true
+        lopFocusCategoryLot:
+          type: string
+          description: ロット(焦点分類)
+          nullable: true
+        lopFocusCategoryQuantity:
+          type: integer
+          description: 数量(焦点分類)
+          nullable: true
+        lopProgressiveCategoryLineitemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: カート明細ID(累進分類)
+        lopProgressiveCategoryItemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: 商品ID(累進分類)
+        lopProgressiveCategoryItemCategoryCode:
+          type: string
+          description: 商品種別コード(累進分類)
+          nullable: true
+          maxLength: 2
+        lopProgressiveCategoryTaxClass:
+          type: string
+          description: 税区分(累進分類)
+          nullable: true
+          maxLength: 1
+        lopProgressiveCategoryListPrice:
+          type: number
+          description: 定価(累進分類)
+          nullable: true
+        lopProgressiveCategoryDiscountPrice:
+          type: number
+          description: 割引額(累進分類)
+          nullable: true
+        lopProgressiveCategoryTaxPrice:
+          type: number
+          description: 税額(累進分類)
+          nullable: true
+        lopProgressiveCategorySalesPrice:
+          type: number
+          description: 販売額(累進分類)
+          nullable: true
+        lopProgressiveCategoryPreparation1:
+          type: string
+          description: 予備1(累進分類)
+          nullable: true
+          maxLength: 2048
+        lopProgressiveCategoryPreparation2:
+          type: string
+          description: 予備2(累進分類)
+          nullable: true
+          maxLength: 256
+        lopProgressiveCategoryDeletedFlag:
+          type: number
+          description: 削除フラグ(累進分類)
+          nullable: true
+        lopProgressiveCategoryRegisteredUserId:
+          type: string
+          description: 登録者ID(累進分類)
+          nullable: true
+          maxLength: 256
+        lopProgressiveCategoryRegisteredProgram:
+          type: string
+          description: 登録プログラム(累進分類)
+          nullable: true
+          maxLength: 256
+        lopProgressiveCategoryRegisteredDatetime:
+          type: string
+          format: date-time
+          description: 登録日時(累進分類)
+          nullable: true
+        lopProgressiveCategoryUpdatedUserId:
+          type: string
+          description: 更新者ID(累進分類)
+          nullable: true
+          maxLength: 256
+        lopProgressiveCategoryUpdatedProgram:
+          type: string
+          description: 更新プログラム(累進分類)
+          nullable: true
+          maxLength: 256
+        lopProgressiveCategoryUpdatedDatetime:
+          type: string
+          format: date-time
+          description: 更新日時(累進分類)
+          nullable: true
+        lopProgressiveCategoryOptimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号(累進分類)
+          nullable: true
+        lopProgressiveCategoryLensOptionCode:
+          type: string
+          description: レンズオプションコード(累進分類)
+          nullable: true
+        lopProgressiveCategoryLensOptionName:
+          type: string
+          description: レンズオプション名(累進分類)
+          nullable: true
+        lopProgressiveCategoryLot:
+          type: string
+          description: ロット(累進分類)
+          nullable: true
+        lopProgressiveCategoryQuantity:
+          type: integer
+          description: 数量(累進分類)
+          nullable: true
+        lopRefractiveIndexNameLineitemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: カート明細ID(屈折率名称)
+        lopRefractiveIndexNameItemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: 商品ID(屈折率名称)
+        lopRefractiveIndexNameItemCategoryCode:
+          type: string
+          description: 商品種別コード(屈折率名称)
+          nullable: true
+          maxLength: 2
+        lopRefractiveIndexNameTaxClass:
+          type: string
+          description: 税区分(屈折率名称)
+          nullable: true
+          maxLength: 1
+        lopRefractiveIndexNameListPrice:
+          type: number
+          description: 定価(屈折率名称)
+          nullable: true
+        lopRefractiveIndexNameDiscountPrice:
+          type: number
+          description: 割引額(屈折率名称)
+          nullable: true
+        lopRefractiveIndexNameTaxPrice:
+          type: number
+          description: 税額(屈折率名称)
+          nullable: true
+        lopRefractiveIndexNameSalesPrice:
+          type: number
+          description: 販売額(屈折率名称)
+          nullable: true
+        lopRefractiveIndexNamePreparation1:
+          type: string
+          description: 予備1(屈折率名称)
+          nullable: true
+          maxLength: 2048
+        lopRefractiveIndexNamePreparation2:
+          type: string
+          description: 予備2(屈折率名称)
+          nullable: true
+          maxLength: 256
+        lopRefractiveIndexNameDeletedFlag:
+          type: number
+          description: 削除フラグ(屈折率名称)
+          nullable: true
+        lopRefractiveIndexNameRegisteredUserId:
+          type: string
+          description: 登録者ID(屈折率名称)
+          nullable: true
+          maxLength: 256
+        lopRefractiveIndexNameRegisteredProgram:
+          type: string
+          description: 登録プログラム(屈折率名称)
+          nullable: true
+          maxLength: 256
+        lopRefractiveIndexNameRegisteredDatetime:
+          type: string
+          format: date-time
+          description: 登録日時(屈折率名称)
+          nullable: true
+        lopRefractiveIndexNameUpdatedUserId:
+          type: string
+          description: 更新者ID(屈折率名称)
+          nullable: true
+          maxLength: 256
+        lopRefractiveIndexNameUpdatedProgram:
+          type: string
+          description: 更新プログラム(屈折率名称)
+          nullable: true
+          maxLength: 256
+        lopRefractiveIndexNameUpdatedDatetime:
+          type: string
+          format: date-time
+          description: 更新日時(屈折率名称)
+          nullable: true
+        lopRefractiveIndexNameOptimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号(屈折率名称)
+          nullable: true
+        lopRefractiveIndexNameLensOptionCode:
+          type: string
+          description: レンズオプションコード(屈折率名称)
+          nullable: true
+        lopRefractiveIndexNameLensOptionName:
+          type: string
+          description: レンズオプション名(屈折率名称)
+          nullable: true
+        lopRefractiveIndexNameLot:
+          type: string
+          description: ロット(屈折率名称)
+          nullable: true
+        lopRefractiveIndexNameQuantity:
+          type: integer
+          description: 数量(屈折率名称)
+          nullable: true
+        lopRimlessFinishingCategoryLineitemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: カート明細ID(リムレス仕上げ分類)
+        lopRimlessFinishingCategoryItemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: 商品ID(リムレス仕上げ分類)
+        lopRimlessFinishingCategoryItemCategoryCode:
+          type: string
+          description: 商品種別コード(リムレス仕上げ分類)
+          nullable: true
+          maxLength: 2
+        lopRimlessFinishingCategoryTaxClass:
+          type: string
+          description: 税区分(リムレス仕上げ分類)
+          nullable: true
+          maxLength: 1
+        lopRimlessFinishingCategoryListPrice:
+          type: number
+          description: 定価(リムレス仕上げ分類)
+          nullable: true
+        lopRimlessFinishingCategoryDiscountPrice:
+          type: number
+          description: 割引額(リムレス仕上げ分類)
+          nullable: true
+        lopRimlessFinishingCategoryTaxPrice:
+          type: number
+          description: 税額(リムレス仕上げ分類)
+          nullable: true
+        lopRimlessFinishingCategorySalesPrice:
+          type: number
+          description: 販売額(リムレス仕上げ分類)
+          nullable: true
+        lopRimlessFinishingCategoryPreparation1:
+          type: string
+          description: 予備1(リムレス仕上げ分類)
+          nullable: true
+          maxLength: 2048
+        lopRimlessFinishingCategoryPreparation2:
+          type: string
+          description: 予備2(リムレス仕上げ分類)
+          nullable: true
+          maxLength: 256
+        lopRimlessFinishingCategoryDeletedFlag:
+          type: number
+          description: 削除フラグ(リムレス仕上げ分類)
+          nullable: true
+        lopRimlessFinishingCategoryRegisteredUserId:
+          type: string
+          description: 登録者ID(リムレス仕上げ分類)
+          nullable: true
+          maxLength: 256
+        lopRimlessFinishingCategoryRegisteredProgram:
+          type: string
+          description: 登録プログラム(リムレス仕上げ分類)
+          nullable: true
+          maxLength: 256
+        lopRimlessFinishingCategoryRegisteredDatetime:
+          type: string
+          format: date-time
+          description: 登録日時(リムレス仕上げ分類)
+          nullable: true
+        lopRimlessFinishingCategoryUpdatedUserId:
+          type: string
+          description: 更新者ID(リムレス仕上げ分類)
+          nullable: true
+          maxLength: 256
+        lopRimlessFinishingCategoryUpdatedProgram:
+          type: string
+          description: 更新プログラム(リムレス仕上げ分類)
+          nullable: true
+          maxLength: 256
+        lopRimlessFinishingCategoryUpdatedDatetime:
+          type: string
+          format: date-time
+          description: 更新日時(リムレス仕上げ分類)
+          nullable: true
+        lopRimlessFinishingCategoryOptimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号(リムレス仕上げ分類)
+          nullable: true
+        lopRimlessFinishingCategoryLensOptionCode:
+          type: string
+          description: レンズオプションコード(リムレス仕上げ分類)
+          nullable: true
+        lopRimlessFinishingCategoryLensOptionName:
+          type: string
+          description: レンズオプション名(リムレス仕上げ分類)
+          nullable: true
+        lopRimlessFinishingCategoryLot:
+          type: string
+          description: ロット(リムレス仕上げ分類)
+          nullable: true
+        lopRimlessFinishingCategoryQuantity:
+          type: integer
+          description: 数量(リムレス仕上げ分類)
+          nullable: true
+        lensReplacementLineitemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: カート明細ID(レンズ交換オプション)
+        lensReplacementItemId:
+          type: integer
+          format: int64
+          nullable: true
+          description: 商品ID(レンズ交換オプション)
+        lensReplacementItemCategoryCode:
+          type: string
+          description: 商品種別コード(レンズ交換オプション)
+          nullable: true
+          maxLength: 2
+        lensReplacementTaxClass:
+          type: string
+          description: 税区分(レンズ交換オプション)
+          nullable: true
+          maxLength: 1
+        lensReplacementListPrice:
+          type: number
+          description: 定価(レンズ交換オプション)
+          nullable: true
+        lensReplacementDiscountPrice:
+          type: number
+          description: 割引額(レンズ交換オプション)
+          nullable: true
+        lensReplacementTaxPrice:
+          type: number
+          description: 税額(レンズ交換オプション)
+          nullable: true
+        lensReplacementSalesPrice:
+          type: number
+          description: 販売額(レンズ交換オプション)
+          nullable: true
+        lensReplacementPreparation1:
+          type: string
+          description: 予備1(レンズ交換オプション)
+          nullable: true
+          maxLength: 2048
+        lensReplacementPreparation2:
+          type: string
+          description: 予備2(レンズ交換オプション)
+          nullable: true
+          maxLength: 256
+        lensReplacementDeletedFlag:
+          type: number
+          description: 削除フラグ(レンズ交換オプション)
+          nullable: true
+        lensReplacementRegisteredUserId:
+          type: string
+          description: 登録者ID(レンズ交換オプション)
+          nullable: true
+          maxLength: 256
+        lensReplacementRegisteredProgram:
+          type: string
+          description: 登録プログラム(レンズ交換オプション)
+          nullable: true
+          maxLength: 256
+        lensReplacementRegisteredDatetime:
+          type: string
+          format: date-time
+          description: 登録日時(レンズ交換オプション)
+          nullable: true
+        lensReplacementUpdatedUserId:
+          type: string
+          description: 更新者ID(レンズ交換オプション)
+          nullable: true
+          maxLength: 256
+        lensReplacementUpdatedProgram:
+          type: string
+          description: 更新プログラム(レンズ交換オプション)
+          nullable: true
+          maxLength: 256
+        lensReplacementUpdatedDatetime:
+          type: string
+          format: date-time
+          description: 更新日時(レンズ交換オプション)
+          nullable: true
+        lensReplacementOptimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号(レンズ交換オプション)
+          nullable: true
+        lensReplacementTypeCode:
+          type: string
+          description: レンズ交換分類コード
+          nullable: true
+        lensReplacementTypeName:
+          type: string
+          description: 商品名(レンズ交換オプション)
+          nullable: true
+        lensReplacementTypeNameKana:
+          type: string
+          description: 商品名カナ(レンズ交換オプション)
+          nullable: true
+        lensReplacementTypeNameEnglish:
+          type: string
+          description: 商品名（英語）(レンズ交換オプション)
+          nullable: true
+        lensReplacementTypeNameSimplefied:
+          type: string
+          description: 商品名（簡体語）(レンズ交換オプション)
+          nullable: true
+        lensReplacementTypeNameTraditional:
+          type: string
+          description: 商品名（繁体語）(レンズ交換オプション)
+          nullable: true
+        lensReplacementTypeLot:
+          type: string
+          description: ロット(レンズ交換オプション)
+          nullable: true
+        lensReplacementTypeQuantity:
+          type: integer
+          description: 数量(レンズ交換オプション)
+          nullable: true
+    cart:
+      description: カート
+      type: object
+      properties:
+        cartId:
+          type: integer
+          format: int64
+          description: カートID
+        customerName:
+          type: string
+          description: 注文者名
+          maxLength: 40
+        phoneNumber:
+          type: string
+          description: 電話番号
+          maxLength: 12
+          nullable: true
+        discountPrice:
+          type: number
+          description: 割引額
+        subtotal:
+          type: number
+          description: 小計
+        totalDiscountPrice:
+          type: number
+          description: 割引額合計
+        totalTaxPrice:
+          type: number
+          description: 税額合計
+        totalSalesPrice:
+          type: number
+          description: 合計金額
+        receptionNumber:
+          type: string
+          description: 受付番号
+          maxLength: 14
+        deletedFlag:
+          type: number
+          description: 削除フラグ
+        registeredUserId:
+          type: string
+          description: 登録者ID
+          maxLength: 256
+        registeredProgram:
+          type: string
+          description: 登録プログラム
+          maxLength: 256
+        registeredDatetime:
+          type: string
+          format: date-time
+          description: 登録日時
+        updatedUserId:
+          type: string
+          description: 更新者ID
+          maxLength: 256
+        updatedProgram:
+          type: string
+          description: 更新プログラム
+          maxLength: 256
+        updatedDatetime:
+          type: string
+          format: date-time
+          description: 更新日時
+        optimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号
+        receptionStoreId:
+          type: integer
+          format: int64
+          description: 受付店舗ID
+          nullable: true
+        receptionStoreCode:
+          type: string
+          description: 受付店舗コード
+          nullable: true
+        itemGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/itemGroupCompleteSet'
+      example:
+        cartId: 123
+        customerName: GUEST_NAME
+        phoneNumber: '090123412234'
+        discountPrice: 1
+        subtotal: 200
+        totalDiscountPrice: 5
+        totalTaxPrice: 10
+        totalSalesPrice: 204
+        receptionNumber: 241031US000001
+        deletedFlag: 0
+        registeredUserId: STAFF_A
+        registeredProgram: 550e8400-e29b-41d4-a716-446655440000
+        registeredDatetime: '2024-08-29T18:48:12'
+        updatedUserId: STAFF_A
+        updatedProgram: 550e8400-e29b-41d4-a716-446655440000
+        updatedDatetime: '2024-08-29T18:48:12'
+        optimisticLockVerNo: 1
+        receptionStoreId: 111
+        receptionStoreCode: '83005'
+        itemGroups:
+          - lineitemGroupId: 1111110
+            cartId: 123
+            itemGroupCode: 241031US000001-1
+            statusCode: '200'
+            callingStatusCode: '000'
+            callingNumber: B1
+            prescriptionRegistCode: '002'
+            deliveryMethodCode: null
+            deliveryDatetime: '2024-10-31T11:00:00'
+            deliveryStoreCode: '80001'
+            customerName: John
+            phoneNumber: '09012341234'
+            shippingAddressZip: '1111111'
+            shippingAddress1: Address1
+            shippingAddress2: Address2
+            shippingAddress3: Address3
+            shippingAddress4: Address4
+            isExchangeLens: true
+            isWaitingLens: false
+            isDeliveryToday: false
+            note: メガネ１のメモ欄
+            discountPrice: 0
+            subtotal: 220
+            totalDiscountPrice: 0
+            totalTaxPrice: 20
+            salesPrice: 200
+            deletedFlag: 0
+            jinsAccountId: null
+            registeredUserId: STAFF_A
+            registeredProgram: 550e8400-e29b-41d4-a716-446655440000
+            registeredDatetime: '2024-10-31T18:48:12'
+            updatedUserId: STAFF_A
+            updatedProgram: 550e8400-e29b-41d4-a716-446655440000
+            updatedDatetime: '2024-10-31T18:48:12'
+            optimisticLockVerNo: 1
+            statusName: Check-in
+            deliveryMethodName: Hand over here
+            frameLineitemId: 1
+            frameItemId: 11111
+            frameItemCategoryCode: '01'
+            frameTaxClass: '1'
+            frameListPrice: 100
+            frameDiscountPrice: 1
+            frameTaxPrice: 2
+            frameSalesPrice: 101
+            framePreparation1: null
+            framePreparation2: null
+            frameDeletedFlag: 0
+            frameRegisteredUserId: STAFF_A
+            frameRegisteredProgram: 550e8400-e29b-41d4-a716-446655440000
+            frameRegisteredDatetime: '2024-10-31T18:48:12'
+            frameUpdatedUserId: STAFF_A
+            frameUpdatedProgram: 550e8400-e29b-41d4-a716-446655440000
+            frameUpdatedDatetime: '2024-10-31T18:48:12'
+            frameOptimisticLockVerNo: 1
+            frameItemCode: MMF-24S-U019U-94
+            frameItemName: Multi size metal - Browline U019 Medium Could Be Three Lines
+            frameItemNameKana: null
+            frameItemNameEnglish: Multi size metal - Browline U019 Medium Could Be Three Lines
+            frameItemNameSimplefied: null
+            frameItemNameTraditional: null
+            frameLot: "AB"
+            frameQuantity: 
+            caseLineitemId: 2
+            caseItemId: 144
+            caseItemCategoryCode: '03'
+            caseTaxClass: '1'
+            caseListPrice: 0
+            caseDiscountPrice: 0
+            caseTaxPrice: 0
+            caseSalesPrice: 100
+            casePreparation1: null
+            casePreparation2: null
+            caseDeletedFlag: 0
+            caseRegisteredUserId: STAFF_A
+            caseRegisteredProgram: 550e8400-e29b-41d4-a716-446655440000
+            caseRegisteredDatetime: '2024-10-31T18:48:12'
+            caseUpdatedUserId: STAFF_A
+            caseUpdatedProgram: 550e8400-e29b-41d4-a716-446655440000
+            caseUpdatedDatetime: '2024-10-31T18:48:12'
+            caseOptimisticLockVerNo: 1
+            caseItemCode: SampleCode
+            caseItemName: Education case
+            caseItemNameKana: null
+            caseItemNameEnglish: Education case
+            caseItemNameSimplefied: null
+            caseItemNameTraditional: null
+            isCaseNone: false
+            caseLot: "AC"
+            caseQuantity: 2
+            cerritoLineitemId: 3
+            cerritoItemId: 12345
+            cerritoItemCategoryCode: '04'
+            cerritoTaxClass: '1'
+            cerritoListPrice: 0
+            cerritoDiscountPrice: 0
+            cerritoTaxPrice: 0
+            cerritoSalesPrice: 0
+            cerritoPreparation1: null
+            cerritoPreparation2: null
+            cerritoDeletedFlag: 0
+            cerritoRegisteredUserId: STAFF_A
+            cerritoRegisteredProgram: 550e8400-e29b-41d4-a716-446655440000
+            cerritoRegisteredDatetime: '2024-10-31T18:48:12'
+            cerritoUpdatedUserId: STAFF_A
+            cerritoUpdatedProgram: 550e8400-e29b-41d4-a716-446655440000
+            cerritoUpdatedDatetime: '2024-10-31T18:48:12'
+            cerritoOptimisticLockVerNo: 1
+            cerritoItemCode: null
+            cerritoItemName: CerritoName
+            cerritoItemNameKana: null
+            cerritoItemNameEnglish: CerritoName
+            cerritoItemNameSimplefied: null
+            cerritoItemNameTraditional: null
+            cerritoLot: "AD"
+            cerritoQuantity: 3
+            registeredLineitemId: 4
+            registeredItemId: null
+            registeredItemCategoryCode: '09'
+            registeredTaxClass: '0'
+            registeredListPrice: 0
+            registeredDiscountPrice: 0
+            registeredTaxPrice: 0
+            registeredSalesPrice: 0
+            registeredPreparation1: '{  "prescriptionId": null,  "registrationMethodCode": "002",  "prescriptionInfo": {    "vision": null,    "perspectiveTypeCode": "004",    "eyepointRight": 1.0,    "eyepointLeft": -1.0,    "pdRight": 40.00,    "pdLeft": 60.00,    "sphRight": 29.00,    "sphLeft": 26.75,    "cylRight": 8.75,    "cylLeft": -1.50,    "axisRight": 180,    "axisLeft": 170,    "addRight": 9.00,    "addLeft": 2.50,    "prismFlag": true,    "prism01Right": 1.00,    "prism01Left": 1.00,    "baseHRight": "BO",    "baseHLeft": "BO",    "prism02Right": 0.50,    "prism02Left": 0.50,    "baseVRight": "BU",    "baseVLeft": "BD"  },  "prescriptionExpiration": "12/24/2025" }'
+            registeredPreparation2: aaaaa
+            registeredDeletedFlag: 0
+            registeredRegisteredUserId: STAFF_A
+            registeredRegisteredProgram: 550e8400-e29b-41d4-a716-446655440000
+            registeredRegisteredDatetime: '2024-10-31T18:48:12'
+            registeredUpdatedUserId: STAFF_A
+            registeredUpdatedProgram: 550e8400-e29b-41d4-a716-446655440000
+            registeredUpdatedDatetime: '2024-10-31T18:48:12'
+            registeredOptimisticLockVerNo: 1
+            registeredLot:
+            registeredQuantity:
+            lensRightLineitemId: null
+            lensRightItemId: null
+            lensRightItemCategoryCode: null
+            lensRightTaxClass: '1'
+            lensRightListPrice: 0
+            lensRightDiscountPrice: 0
+            lensRightTaxPrice: 0
+            lensRightSalesPrice: 0
+            lensRightPreparation1: null
+            lensRightPreparation2: null
+            lensRightDeletedFlag: 0
+            lensRightRegisteredUserId: STAFF_A
+            lensRightRegisteredProgram: 550e8400-e29b-41d4-a716-446655440000
+            lensRightRegisteredDatetime: '2024-10-31T18:48:12'
+            lensRightUpdatedUserId: STAFF_A
+            lensRightUpdatedProgram: 550e8400-e29b-41d4-a716-446655440000
+            lensRightUpdatedDatetime: '2024-10-31T18:48:12'
+            lensRightOptimisticLockVerNo: 1
+            lensRightItemCode: null
+            lensRightItemName: null
+            lensRightItemNameKana: null
+            lensRightItemNameEnglish: null
+            lensRightItemNameSimplefied: null
+            lensRightItemNameTraditional: null
+            lensRightLot:
+            lensRightQuantity:
+            lensLeftLineitemId: null
+            lensLeftItemId: null
+            lensLeftItemCategoryCode: null
+            lensLeftTaxClass: '1'
+            lensLeftListPrice: 0
+            lensLeftDiscountPrice: 0
+            lensLeftTaxPrice: 0
+            lensLeftSalesPrice: 0
+            lensLeftPreparation1: null
+            lensLeftPreparation2: null
+            lensLeftDeletedFlag: 0
+            lensLeftRegisteredUserId: STAFF_A
+            lensLeftRegisteredProgram: 550e8400-e29b-41d4-a716-446655440000
+            lensLeftRegisteredDatetime: '2024-10-31T18:48:12'
+            lensLeftUpdatedUserId: STAFF_A
+            lensLeftUpdatedProgram: 550e8400-e29b-41d4-a716-446655440000
+            lensLeftUpdatedDatetime: '2024-10-31T18:48:12'
+            lensLeftOptimisticLockVerNo: 1
+            lensLeftItemCode: null
+            lensLeftItemName: null
+            lensLeftItemNameKana: null
+            lensLeftItemNameEnglish: null
+            lensLeftItemNameSimplefied: null
+            lensLeftItemNameTraditional: null
+            lensLeftLot:
+            lensLeftQuantity:
+            lopSalesColorNameLineitemId: null
+            lopSalesColorNameItemId: null
+            lopSalesColorNameItemCategoryCode: null
+            lopSalesColorNameTaxClass: '1'
+            lopSalesColorNameListPrice: 0
+            lopSalesColorNameDiscountPrice: 0
+            lopSalesColorNameTaxPrice: 0
+            lopSalesColorNameSalesPrice: 0
+            lopSalesColorNamePreparation1: null
+            lopSalesColorNamePreparation2: null
+            lopSalesColorNameDeletedFlag: 0
+            lopSalesColorNameRegisteredUserId: STAFF_A
+            lopSalesColorNameRegisteredProgram: 550e8400-e29b-41d4-a716-446655440000
+            lopSalesColorNameRegisteredDatetime: '2024-10-31T18:48:12'
+            lopSalesColorNameUpdatedUserId: STAFF_A
+            lopSalesColorNameUpdatedProgram: 550e8400-e29b-41d4-a716-446655440000
+            lopSalesColorNameUpdatedDatetime: '2024-10-31T18:48:12'
+            lopSalesColorNameOptimisticLockVerNo: 1
+            lopSalesColorNameLensOptionCode: Csample999
+            lopSalesColorNameLensOptionName: Clear Lens
+            lopSalesColorNameLot:
+            lopSalesColorNameQuantity:
+            lopSalesLensSpecLineitemId: null
+            lopSalesLensSpecItemId: null
+            lopSalesLensSpecItemCategoryCode: null
+            lopSalesLensSpecTaxClass: '1'
+            lopSalesLensSpecListPrice: 0
+            lopSalesLensSpecDiscountPrice: 0
+            lopSalesLensSpecTaxPrice: 0
+            lopSalesLensSpecSalesPrice: 0
+            lopSalesLensSpecPreparation1: null
+            lopSalesLensSpecPreparation2: null
+            lopSalesLensSpecDeletedFlag: 0
+            lopSalesLensSpecRegisteredUserId: STAFF_A
+            lopSalesLensSpecRegisteredProgram: 550e8400-e29b-41d4-a716-446655440000
+            lopSalesLensSpecRegisteredDatetime: '2024-10-31T18:48:12'
+            lopSalesLensSpecUpdatedUserId: STAFF_A
+            lopSalesLensSpecUpdatedProgram: 550e8400-e29b-41d4-a716-446655440000
+            lopSalesLensSpecUpdatedDatetime: '2024-10-31T18:48:12'
+            lopSalesLensSpecOptimisticLockVerNo: 1
+            lopSalesLensSpecLensOptionCode: Ssample999
+            lopSalesLensSpecLensOptionName: Standard
+            lopSalesLensSpecLot:
+            lopSalesLensSpecQuantity:
+            lopFocusCategoryLineitemId: null
+            lopFocusCategoryItemId: null
+            lopFocusCategoryItemCategoryCode: null
+            lopFocusCategoryTaxClass: '1'
+            lopFocusCategoryListPrice: 0
+            lopFocusCategoryDiscountPrice: 0
+            lopFocusCategoryTaxPrice: 0
+            lopFocusCategorySalesPrice: 0
+            lopFocusCategoryPreparation1: null
+            lopFocusCategoryPreparation2: null
+            lopFocusCategoryDeletedFlag: 0
+            lopFocusCategoryRegisteredUserId: STAFF_A
+            lopFocusCategoryRegisteredProgram: 550e8400-e29b-41d4-a716-446655440000
+            lopFocusCategoryRegisteredDatetime: '2024-10-31T18:48:12'
+            lopFocusCategoryUpdatedUserId: STAFF_A
+            lopFocusCategoryUpdatedProgram: 550e8400-e29b-41d4-a716-446655440000
+            lopFocusCategoryUpdatedDatetime: '2024-10-31T18:48:12'
+            lopFocusCategoryOptimisticLockVerNo: 1
+            lopFocusCategoryLensOptionCode: Fsample999
+            lopFocusCategoryLensOptionName: Standard
+            lopFocusCategoryLot:
+            lopFocusCategoryQuantity:
+            lopProgressiveCategoryLineitemId: null
+            lopProgressiveCategoryItemId: null
+            lopProgressiveCategoryItemCategoryCode: null
+            lopProgressiveCategoryTaxClass: '1'
+            lopProgressiveCategoryListPrice: 0
+            lopProgressiveCategoryDiscountPrice: 0
+            lopProgressiveCategoryTaxPrice: 0
+            lopProgressiveCategorySalesPrice: 0
+            lopProgressiveCategoryPreparation1: null
+            lopProgressiveCategoryPreparation2: null
+            lopProgressiveCategoryDeletedFlag: 0
+            lopProgressiveCategoryRegisteredUserId: STAFF_A
+            lopProgressiveCategoryRegisteredProgram: 550e8400-e29b-41d4-a716-446655440000
+            lopProgressiveCategoryRegisteredDatetime: '2024-10-31T18:48:12'
+            lopProgressiveCategoryUpdatedUserId: STAFF_A
+            lopProgressiveCategoryUpdatedProgram: 550e8400-e29b-41d4-a716-446655440000
+            lopProgressiveCategoryUpdatedDatetime: '2024-10-31T18:48:12'
+            lopProgressiveCategoryOptimisticLockVerNo: 1
+            lopProgressiveCategoryLensOptionCode: Psample999
+            lopProgressiveCategoryLensOptionName: None
+            lopProgressiveCategoryLot:
+            lopProgressiveCategoryQuantity:
+            lopRefractiveIndexNameLineitemId: null
+            lopRefractiveIndexNameItemId: null
+            lopRefractiveIndexNameItemCategoryCode: null
+            lopRefractiveIndexNameTaxClass: '1'
+            lopRefractiveIndexNameListPrice: 0
+            lopRefractiveIndexNameDiscountPrice: 0
+            lopRefractiveIndexNameTaxPrice: 0
+            lopRefractiveIndexNameSalesPrice: 0
+            lopRefractiveIndexNamePreparation1: null
+            lopRefractiveIndexNamePreparation2: null
+            lopRefractiveIndexNameDeletedFlag: 0
+            lopRefractiveIndexNameRegisteredUserId: STAFF_A
+            lopRefractiveIndexNameRegisteredProgram: 550e8400-e29b-41d4-a716-446655440000
+            lopRefractiveIndexNameRegisteredDatetime: '2024-10-31T18:48:12'
+            lopRefractiveIndexNameUpdatedUserId: STAFF_A
+            lopRefractiveIndexNameUpdatedProgram: 550e8400-e29b-41d4-a716-446655440000
+            lopRefractiveIndexNameUpdatedDatetime: '2024-10-31T18:48:12'
+            lopRefractiveIndexNameOptimisticLockVerNo: 1
+            lopRefractiveIndexNameLensOptionCode: Rsample999
+            lopRefractiveIndexNameLensOptionName: Ultra thin 1.74
+            lopRefractiveIndexNameLot:
+            lopRefractiveIndexNameQuantity:
+            lopRimlessFinishingCategoryLineitemId: null
+            lopRimlessFinishingCategoryItemId: null
+            lopRimlessFinishingCategoryItemCategoryCode: null
+            lopRimlessFinishingCategoryTaxClass: '1'
+            lopRimlessFinishingCategoryListPrice: 0
+            lopRimlessFinishingCategoryDiscountPrice: 0
+            lopRimlessFinishingCategoryTaxPrice: 0
+            lopRimlessFinishingCategorySalesPrice: 0
+            lopRimlessFinishingCategoryPreparation1: null
+            lopRimlessFinishingCategoryPreparation2: null
+            lopRimlessFinishingCategoryDeletedFlag: 0
+            lopRimlessFinishingCategoryRegisteredUserId: STAFF_A
+            lopRimlessFinishingCategoryRegisteredProgram: 550e8400-e29b-41d4-a716-446655440000
+            lopRimlessFinishingCategoryRegisteredDatetime: '2024-10-31T18:48:12'
+            lopRimlessFinishingCategoryUpdatedUserId: STAFF_A
+            lopRimlessFinishingCategoryUpdatedProgram: 550e8400-e29b-41d4-a716-446655440000
+            lopRimlessFinishingCategoryUpdatedDatetime: '2024-10-31T18:48:12'
+            lopRimlessFinishingCategoryOptimisticLockVerNo: 1
+            lopRimlessFinishingCategoryLensOptionCode: Rsample999
+            lopRimlessFinishingCategoryLensOptionName: Sample
+            lopRimlessFinishingCategoryLot:
+            lopRimlessFinishingCategoryQuantity:
+            lensReplacementLineitemId: 4
+            lensReplacementItemId: 999999999999990000
+            lensReplacementItemCategoryCode: '14'
+            lensReplacementTaxClass: 0
+            lensReplacementListPrice: 0
+            lensReplacementDiscountPrice: 0
+            lensReplacementTaxPrice: 0
+            lensReplacementSalesPrice: 0
+            lensReplacementPreparation1: null
+            lensReplacementPreparation2: null
+            lensReplacementDeletedFlag: 0
+            lensReplacementRegisteredUserId: STAFF_A
+            lensReplacementRegisteredProgram: 550e8400-e29b-41d4-a716-446655440000
+            lensReplacementRegisteredDatetime: '2024-10-31T18:48:12'
+            lensReplacementUpdatedUserId: STAFF_A
+            lensReplacementUpdatedProgram: 550e8400-e29b-41d4-a716-446655440000
+            lensReplacementUpdatedDatetime: '2024-10-31T18:48:12'
+            lensReplacementOptimisticLockVerNo: 1
+            lensReplacementTypeCode: JINS-FRAME
+            lensReplacementTypeName: JINS frame brought in
+            lensReplacementTypeNameKana: null
+            lensReplacementTypeNameEnglish: null
+            lensReplacementTypeNameSimplefied: null
+            lensReplacementTypeNameTraditional: null
+            lensReplacementTypeLot:
+            lensReplacementTypeQuantity:
+          - lineitemGroupId: 1111111
+            cartId: 123
+            itemGroupCode: 241031US000001-2
+            statusCode: '101'
+            callingStatusCode: '003'
+            callingNumber: B1
+            prescriptionRegistCode: '002'
+            deliveryMethodCode: null
+            deliveryDatetime: '2024-10-31T11:00:00'
+            deliveryStoreCode: '80001'
+            customerName: John
+            phoneNumber: '09012341234'
+            shippingAddressZip: null
+            shippingAddress1: null
+            shippingAddress2: null
+            shippingAddress3: null
+            shippingAddress4: null
+            note: null
+            discountPrice: 0
+            subtotal: 0
+            totalDiscountPrice: 0
+            totalTaxPrice: 0
+            salesPrice: 0
+            deletedFlag: 0
+            jinsAccountId: null
+            registeredUserId: STAFF_A
+            registeredProgram: 550e8400-e29b-41d4-a716-446655440000
+            registeredDatetime: '2024-10-31T18:48:12'
+            updatedUserId: STAFF_A
+            updatedProgram: 550e8400-e29b-41d4-a716-446655440000
+            updatedDatetime: '2024-10-31T18:48:12'
+            optimisticLockVerNo: 1
+            statusName: Registered
+            deliveryMethodName: null
+            frameLineitemId: null
+            frameItemId: null
+            frameItemCategoryCode: null
+            frameTaxClass: null
+            frameListPrice: null
+            frameDiscountPrice: null
+            frameTaxPrice: null
+            frameSalesPrice: null
+            framePreparation1: null
+            framePreparation2: null
+            frameDeletedFlag: null
+            frameRegisteredUserId: null
+            frameRegisteredProgram: null
+            frameRegisteredDatetime: null
+            frameUpdatedUserId: null
+            frameUpdatedProgram: null
+            frameUpdatedDatetime: null
+            frameOptimisticLockVerNo: null
+            frameItemCode: null
+            frameItemName: null
+            frameItemNameKana: null
+            frameItemNameEnglish: null
+            frameItemNameSimplefied: null
+            frameItemNameTraditional: null
+            frameLot:
+            frameQuantity: 
+            caseLineitemId: null
+            caseItemId: null
+            caseItemCategoryCode: null
+            caseTaxClass: null
+            caseListPrice: null
+            caseDiscountPrice: null
+            caseTaxPrice: null
+            caseSalesPrice: null
+            casePreparation1: null
+            casePreparation2: null
+            caseDeletedFlag: null
+            caseRegisteredUserId: null
+            caseRegisteredProgram: null
+            caseRegisteredDatetime: null
+            caseUpdatedUserId: null
+            caseUpdatedProgram: null
+            caseUpdatedDatetime: null
+            caseOptimisticLockVerNo: null
+            caseItemCode: null
+            caseItemName: null
+            caseItemNameKana: null
+            caseItemNameEnglish: null
+            caseItemNameSimplefied: null
+            caseItemNameTraditional: null
+            isCaseNone: true
+            caseLot:
+            caseQuantity:
+            cerritoLineitemId: null
+            cerritoItemId: null
+            cerritoItemCategoryCode: null
+            cerritoTaxClass: null
+            cerritoListPrice: null
+            cerritoDiscountPrice: null
+            cerritoTaxPrice: null
+            cerritoSalesPrice: null
+            cerritoPreparation1: null
+            cerritoPreparation2: null
+            cerritoDeletedFlag: null
+            cerritoRegisteredUserId: null
+            cerritoRegisteredProgram: null
+            cerritoRegisteredDatetime: null
+            cerritoUpdatedUserId: null
+            cerritoUpdatedProgram: null
+            cerritoUpdatedDatetime: null
+            cerritoOptimisticLockVerNo: null
+            cerritoItemCode: null
+            cerritoItemName: null
+            cerritoItemNameKana: null
+            cerritoItemNameEnglish: null
+            cerritoItemNameSimplefied: null
+            cerritoItemNameTraditional: null
+            cerritoLot:
+            cerritoQuantity: 
+            registeredLineitemId: null
+            registeredItemId: null
+            registeredItemCategoryCode: null
+            registeredTaxClass: null
+            registeredListPrice: null
+            registeredDiscountPrice: null
+            registeredTaxPrice: null
+            registeredSalesPrice: null
+            registeredPreparation1: null
+            registeredPreparation2: null
+            registeredDeletedFlag: null
+            registeredRegisteredUserId: null
+            registeredRegisteredProgram: null
+            registeredRegisteredDatetime: null
+            registeredUpdatedUserId: null
+            registeredUpdatedProgram: null
+            registeredUpdatedDatetime: null
+            registeredOptimisticLockVerNo: null
+            registeredLot:
+            registeredQuantity:
+            lensRightLineitemId: null
+            lensRightItemId: null
+            lensRightItemCategoryCode: null
+            lensRightTaxClass: null
+            lensRightListPrice: null
+            lensRightDiscountPrice: null
+            lensRightTaxPrice: null
+            lensRightSalesPrice: null
+            lensRightPreparation1: null
+            lensRightPreparation2: null
+            lensRightDeletedFlag: null
+            lensRightRegisteredUserId: null
+            lensRightRegisteredProgram: null
+            lensRightRegisteredDatetime: null
+            lensRightUpdatedUserId: null
+            lensRightUpdatedProgram: null
+            lensRightUpdatedDatetime: null
+            lensRightOptimisticLockVerNo: null
+            lensRightItemCode: null
+            lensRightItemName: null
+            lensRightItemNameKana: null
+            lensRightItemNameEnglish: null
+            lensRightItemNameSimplefied: null
+            lensRightItemNameTraditional: null
+            lensRightLot:
+            lensRightQuantity:
+            lensLeftLineitemId: null
+            lensLeftItemId: null
+            lensLeftItemCategoryCode: null
+            lensLeftTaxClass: null
+            lensLeftListPrice: null
+            lensLeftDiscountPrice: null
+            lensLeftTaxPrice: null
+            lensLeftSalesPrice: null
+            lensLeftPreparation1: null
+            lensLeftPreparation2: null
+            lensLeftDeletedFlag: null
+            lensLeftRegisteredUserId: null
+            lensLeftRegisteredProgram: null
+            lensLeftRegisteredDatetime: null
+            lensLeftUpdatedUserId: null
+            lensLeftUpdatedProgram: null
+            lensLeftUpdatedDatetime: null
+            lensLeftOptimisticLockVerNo: null
+            lensLeftItemCode: null
+            lensLeftItemName: null
+            lensLeftItemNameKana: null
+            lensLeftItemNameEnglish: null
+            lensLeftItemNameSimplefied: null
+            lensLeftItemNameTraditional: null
+            lensLeftLot:
+            lensLeftQuantity:
+            lopSalesColorNameLineitemId: null
+            lopSalesColorNameItemId: null
+            lopSalesColorNameItemCategoryCode: null
+            lopSalesColorNameTaxClass: null
+            lopSalesColorNameListPrice: null
+            lopSalesColorNameDiscountPrice: null
+            lopSalesColorNameTaxPrice: null
+            lopSalesColorNameSalesPrice: null
+            lopSalesColorNamePreparation1: null
+            lopSalesColorNamePreparation2: null
+            lopSalesColorNameDeletedFlag: null
+            lopSalesColorNameRegisteredUserId: null
+            lopSalesColorNameRegisteredProgram: null
+            lopSalesColorNameRegisteredDatetime: null
+            lopSalesColorNameUpdatedUserId: null
+            lopSalesColorNameUpdatedProgram: null
+            lopSalesColorNameUpdatedDatetime: null
+            lopSalesColorNameOptimisticLockVerNo: null
+            lopSalesColorNameLensOptionCode: null
+            lopSalesColorNameLensOptionName: null
+            lopSalesColorNameLot:
+            lopSalesColorNameQuantity:
+            lopSalesLensSpecLineitemId: null
+            lopSalesLensSpecItemId: null
+            lopSalesLensSpecItemCategoryCode: null
+            lopSalesLensSpecTaxClass: null
+            lopSalesLensSpecListPrice: null
+            lopSalesLensSpecDiscountPrice: null
+            lopSalesLensSpecTaxPrice: null
+            lopSalesLensSpecSalesPrice: null
+            lopSalesLensSpecPreparation1: null
+            lopSalesLensSpecPreparation2: null
+            lopSalesLensSpecDeletedFlag: null
+            lopSalesLensSpecRegisteredUserId: null
+            lopSalesLensSpecRegisteredProgram: null
+            lopSalesLensSpecRegisteredDatetime: null
+            lopSalesLensSpecUpdatedUserId: null
+            lopSalesLensSpecUpdatedProgram: null
+            lopSalesLensSpecUpdatedDatetime: null
+            lopSalesLensSpecOptimisticLockVerNo: null
+            lopSalesLensSpecLensOptionCode: null
+            lopSalesLensSpecLensOptionName: null
+            lopSalesLensSpecLot:
+            lopSalesLensSpecQuantity:
+            lopFocusCategoryLineitemId: null
+            lopFocusCategoryItemId: null
+            lopFocusCategoryItemCategoryCode: null
+            lopFocusCategoryTaxClass: null
+            lopFocusCategoryListPrice: null
+            lopFocusCategoryDiscountPrice: null
+            lopFocusCategoryTaxPrice: null
+            lopFocusCategorySalesPrice: null
+            lopFocusCategoryPreparation1: null
+            lopFocusCategoryPreparation2: null
+            lopFocusCategoryDeletedFlag: null
+            lopFocusCategoryRegisteredUserId: null
+            lopFocusCategoryRegisteredProgram: null
+            lopFocusCategoryRegisteredDatetime: null
+            lopFocusCategoryUpdatedUserId: null
+            lopFocusCategoryUpdatedProgram: null
+            lopFocusCategoryUpdatedDatetime: null
+            lopFocusCategoryOptimisticLockVerNo: null
+            lopFocusCategoryLensOptionCode: null
+            lopFocusCategoryLensOptionName: null
+            lopFocusCategoryLot:
+            lopFocusCategoryQuantity:
+            lopProgressiveCategoryLineitemId: null
+            lopProgressiveCategoryItemId: null
+            lopProgressiveCategoryItemCategoryCode: null
+            lopProgressiveCategoryTaxClass: null
+            lopProgressiveCategoryListPrice: null
+            lopProgressiveCategoryDiscountPrice: null
+            lopProgressiveCategoryTaxPrice: null
+            lopProgressiveCategorySalesPrice: null
+            lopProgressiveCategoryPreparation1: null
+            lopProgressiveCategoryPreparation2: null
+            lopProgressiveCategoryDeletedFlag: null
+            lopProgressiveCategoryRegisteredUserId: null
+            lopProgressiveCategoryRegisteredProgram: null
+            lopProgressiveCategoryRegisteredDatetime: null
+            lopProgressiveCategoryUpdatedUserId: null
+            lopProgressiveCategoryUpdatedProgram: null
+            lopProgressiveCategoryUpdatedDatetime: null
+            lopProgressiveCategoryOptimisticLockVerNo: null
+            lopProgressiveCategoryLensOptionCode: null
+            lopProgressiveCategoryLensOptionName: null
+            lopProgressiveCategoryLot:
+            lopProgressiveCategoryQuantity:
+            lopRefractiveIndexNameLineitemId: null
+            lopRefractiveIndexNameItemId: null
+            lopRefractiveIndexNameItemCategoryCode: null
+            lopRefractiveIndexNameTaxClass: null
+            lopRefractiveIndexNameListPrice: null
+            lopRefractiveIndexNameDiscountPrice: null
+            lopRefractiveIndexNameTaxPrice: null
+            lopRefractiveIndexNameSalesPrice: null
+            lopRefractiveIndexNamePreparation1: null
+            lopRefractiveIndexNamePreparation2: null
+            lopRefractiveIndexNameDeletedFlag: null
+            lopRefractiveIndexNameRegisteredUserId: null
+            lopRefractiveIndexNameRegisteredProgram: null
+            lopRefractiveIndexNameRegisteredDatetime: null
+            lopRefractiveIndexNameUpdatedUserId: null
+            lopRefractiveIndexNameUpdatedProgram: null
+            lopRefractiveIndexNameUpdatedDatetime: null
+            lopRefractiveIndexNameOptimisticLockVerNo: null
+            lopRefractiveIndexNameLensOptionCode: null
+            lopRefractiveIndexNameLensOptionName: null
+            lopRefractiveIndexNameLot:
+            lopRefractiveIndexNameQuantity:
+            lopRimlessFinishingCategoryLineitemId: null
+            lopRimlessFinishingCategoryItemId: null
+            lopRimlessFinishingCategoryItemCategoryCode: null
+            lopRimlessFinishingCategoryTaxClass: null
+            lopRimlessFinishingCategoryListPrice: null
+            lopRimlessFinishingCategoryDiscountPrice: null
+            lopRimlessFinishingCategoryTaxPrice: null
+            lopRimlessFinishingCategorySalesPrice: null
+            lopRimlessFinishingCategoryPreparation1: null
+            lopRimlessFinishingCategoryPreparation2: null
+            lopRimlessFinishingCategoryDeletedFlag: null
+            lopRimlessFinishingCategoryRegisteredUserId: null
+            lopRimlessFinishingCategoryRegisteredProgram: null
+            lopRimlessFinishingCategoryRegisteredDatetime: null
+            lopRimlessFinishingCategoryUpdatedUserId: null
+            lopRimlessFinishingCategoryUpdatedProgram: null
+            lopRimlessFinishingCategoryUpdatedDatetime: null
+            lopRimlessFinishingCategoryOptimisticLockVerNo: null
+            lopRimlessFinishingCategoryLensOptionCode: null
+            lopRimlessFinishingCategoryLensOptionName: null
+            lopRimlessFinishingCategoryLot:
+            lopRimlessFinishingCategoryQuantity:
+            lensReplacementLineitemId: null
+            lensReplacementItemId: null
+            lensReplacementItemCategoryCode: null
+            lensReplacementTaxClass: null
+            lensReplacementListPrice: null
+            lensReplacementDiscountPrice: null
+            lensReplacementTaxPrice: null
+            lensReplacementSalesPrice: null
+            lensReplacementPreparation1: null
+            lensReplacementPreparation2: null
+            lensReplacementDeletedFlag: null
+            lensReplacementRegisteredUserId: null
+            lensReplacementRegisteredProgram: null
+            lensReplacementRegisteredDatetime: null
+            lensReplacementUpdatedUserId: null
+            lensReplacementUpdatedProgram: null
+            lensReplacementUpdatedDatetime: null
+            lensReplacementOptimisticLockVerNo: null
+            lensReplacementTypeCode: null
+            lensReplacementTypeName: null
+            lensReplacementTypeNameKana: null
+            lensReplacementTypeNameEnglish: null
+            lensReplacementTypeNameSimplefied: null
+            lensReplacementTypeNameTraditional: null
+            lensReplacementTypeLot:
+            lensReplacementTypeQuantity:
+    CartResponse:
+      type: object
+      description: カート・カタログ取得APIレスポンス
+      properties:
+        cart:
+          $ref: '#/components/schemas/cart'
+    CartPostRequest:
+      type: object
+      description: カート新規登録APIリクエスト
+      properties:
+        cartId:
+          type: integer
+          format: int64
+          description: カートID
+          example: 123
+          nullable: true
+        receptionNumber:
+          type: string
+          description: 受付番号
+          maxLength: 14
+          example: 241031US000001
+          nullable: false
+    CartPatchRequest:
+      type: object
+      description: カート削除フラグ更新APIリクエスト
+      properties:
+        deletedFlag:
+          type: number
+          description: 削除フラグ
+          example: 1
+          nullable: false
+        optimisticLockVerNo:
+          type: number
+          description: 楽観ロック用バージョン番号
+          example: 1
+          nullable: true
+    LineSetting:
+      type: object
+      description: 視力測定ライン設定
+      properties:
+        startTime:
+          type: string
+          pattern: ^(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])$
+          description: 開始時間
+        availableLines:
+          type: integer
+          minimum: 0
+          description: 視力測定ライン数
+      example:
+        startTime: '13:00:00'
+        availableLines: 3
+    CallManagementInfo:
+      description: 呼出し管理情報
+      type: object
+      properties:
+        timeRequiredUntilCall:
+          type: number
+          description: 案内時間
+        availableLines:
+          type: number
+          description: 視力測定ライン数
+        lineSettings:
+          type: array
+          description: 視力測定ライン設定
+          maxItems: 4
+          nullable: true
+          items:
+            $ref: '#/components/schemas/LineSetting'
+        receptionCloseTime:
+          type: string
+          description: 受付案内終了時間
+          maxLength: 8
+        processingCloseTime:
+          type: string
+          description: 加工終了時間
+          maxLength: 8
+        inStockLensPickupTime:
+          type: string
+          maxLength: 8
+          description: 常備レンズ後日お渡し時間
+        awaitingDeliveryLensPickupTime:
+          type: string
+          maxLength: 8
+          description: 発注レンズ後日お渡し時間
+      example:
+        timeRequiredUntilCall: 200
+        availableLines: 10
+        lineSettings:
+          - startTime: '11:00:00'
+            availableLines: 3
+        receptionCloseTime: '08:00:00'
+        processingCloseTime: '20:00:00'
+        inStockLensPickupTime: '09:00:00'
+        awaitingDeliveryLensPickupTime: '11:00:00'
+    CallManagementGetResponse:
+      type: object
+      description: 呼出し管理情報取得APIレスポンス
+      properties:
+        callManagementInfo:
+          $ref: '#/components/schemas/CallManagementInfo'
+    CallManagementPutRequest:
+      type: object
+      description: 呼出し管理情報登録APIリクエスト
+      properties:
+        timeRequiredUntilCall:
+          type: integer
+          description: 案内時間
+        availableLines:
+          type: integer
+          description: 視力測定ライン数
+        lineSettings:
+          type: array
+          description: 視力測定ライン設定
+          maxItems: 4
+          items:
+            $ref: '#/components/schemas/LineSetting'
+        receptionCloseTime:
+          type: string
+          pattern: ^(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])$
+          description: 受付案内終了時間
+        processingCloseTime:
+          type: string
+          pattern: ^(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])$
+          description: 加工終了時間
+        inStockLensPickupTime:
+          type: string
+          pattern: ^(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])$
+          description: 常備レンズ後日お渡し時間
+        awaitingDeliveryLensPickupTime:
+          type: string
+          pattern: ^(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])$
+          description: 発注レンズ後日お渡し時間
+      example:
+        timeRequiredUntilCall: 10
+        availableLines: 2
+        lineSettings:
+          - startTime: '11:00:00'
+            availableLines: 3
+        receptionCloseTime: '18:00:00'
+        processingCloseTime: '20:00:00'
+        inStockLensPickupTime: '09:00:00'
+        awaitingDeliveryLensPickupTime: '11:00:00'
+      required:
+        - timeRequiredUntilCall
+        - availableLines
+        - receptionCloseTime
+        - processingCloseTime
+        - inStockLensPickupTime
+        - awaitingDeliveryLensPickupTime
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0001
+            message: Validation error occurred.
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0002
+            message: Specified data not found.
+    TooManyRequests:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0004
+            message: Duplicate api invocation detected.
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0000
+            message: Unexpected error occurred.
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0003
+            message: Transaction failed due to optimisitic lock failure.
+  examples:
+    COM_0001:
+      summary: Validation Error
+      description: |
+        バリデーションエラー
+      value:
+        Jins-Trace-ID: b76d2300-cc59-11ea-a9ea-00059a3c7a00
+        code: COM_0001
+        message: Validation error occurred.
+    DPFM_RCPT_0004:
+      summary: 受付番号のオーバーフロー
+      description: |
+        受付番号がオーバーフローしてしまった場合に発生<br>
+        250123US999999 の次の番号を採番するなど
+      value:
+        Jins-Trace-ID: b76d2300-cc59-11ea-a9ea-00059a3c7a00
+        code: DPFM_RCPT_0004
+        message: reception number overflow.
+    DPFM_RCPT_0005:
+      summary: 呼出し番号のオーバーフロー
+      description: |
+        呼出し番号がオーバーフローしてしまった場合に発生<br>
+        A999 の次の番号を採番するなど
+      value:
+        Jins-Trace-ID: b76d2300-cc59-11ea-a9ea-00059a3c7a00
+        code: DPFM_RCPT_0005
+        message: calling number overflow.
+    DPFM_RCPT_0007:
+      summary: 来店目的に合致する対応を店舗がしていない
+      description: |
+        (USで測定を行うなど)店舗で対応していない目的で来店している場合
+      value:
+        Jins-Trace-ID: b76d2300-cc59-11ea-a9ea-00059a3c7a00
+        code: DPFM_RCPT_0007
+        message: Purpose of visit cannot be accepted.
+    DPFM_RCPT_0010:
+      summary: 商品グループコードのオーバーフロー
+      description: |
+        カートIDが複数取れた場合に発生<br>
+      value:
+        Jins-Trace-ID: b76d2300-cc59-11ea-a9ea-00059a3c7a00
+        code: DPFM_RCPT_0010
+        message: ReceptionNumber duplicate in t_cart.
+    DPFM_RCPT_0006:
+      summary: 処方箋画像形式不正
+      description: |
+        処方箋画像形式不正
+      value:
+        Jins-Trace-ID: b76d2300-cc59-11ea-a9ea-00059a3c7a00
+        code: DPFM_RCPT_0006
+        message: The prescription image is not in the correct format.
+    DPFM_RCPT_0008:
+      summary: 商品グループの6件目を登録しようとする
+      description: |
+        論理削除/物理削除されていない 既存商品グループコードが5件であり、6件目を登録しようとする
+      value:
+        Jins-Trace-ID: b76d2300-cc59-11ea-a9ea-00059a3c7a00
+        code: DPFM_RCPT_0008
+        message: The product group code can be registered up to a maximum of 5 entries.
+    DPFM_RCPT_0009:
+      summary: 商品グループコードのオーバーフロー
+      description: |
+        商品グループコードがオーバーフローしてしまった場合に発生<br>
+        250123US456789-99 が登録されている状態で次の商品グループを追加しようとするなど
+      value:
+        Jins-Trace-ID: b76d2300-cc59-11ea-a9ea-00059a3c7a00
+        code: DPFM_RCPT_0009
+        message: The maximum number of product groups that can be registered is 99.

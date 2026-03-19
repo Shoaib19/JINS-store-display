@@ -1,0 +1,752 @@
+openapi: 3.0.3
+info:
+  title: ${info.title}
+  description: ''
+  version: ${api.version}
+paths:
+  /inventory/inventories:
+    get:
+      tags:
+        - Inventories
+      summary: 在庫検索API
+      description: |
+        必須のクエリパラメータは存在しません。<br>
+        クエリパラメータを指定しない場合は、すべての検索結果が返されます。
+      operationId: getInventories
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/LocationIdList'
+        - $ref: '#/components/parameters/LocationCodeList'
+        - $ref: '#/components/parameters/ItemIdList'
+        - $ref: '#/components/parameters/ItemCodeList'
+        - $ref: '#/components/parameters/SalesStatusIdList'
+        - $ref: '#/components/parameters/ItemStatusIdList'
+        - $ref: '#/components/parameters/QuantityMin'
+        - $ref: '#/components/parameters/QuantityMax'
+        - $ref: '#/components/parameters/SortKey'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoriesGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: GET
+        uri: ${apigateway.uri}/inventory/inventories
+        type: ${apigateway.etc}
+    post:
+      tags:
+        - Inventories
+      summary: 在庫更新API
+      description: 在庫更新API
+      operationId: postInventories
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/UserID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoriesPostRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoriesPostResponse'
+              examples:
+                '201':
+                  $ref: '#/components/examples/InventoriesPostResponseExample'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        uri: ${apigateway.uri}/inventory/inventories
+        type: ${apigateway.etc}
+  /inventory/rfid-inventories:
+    post:
+      tags:
+        - RfidInventories
+      summary: 在庫更新API
+      operationId: postInventories
+      parameters:
+        - $ref: '#/components/parameters/JinsTraceID'
+        - $ref: '#/components/parameters/UserID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RfidInventoriesPostRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RfidInventoriesPostResponse'
+              examples:
+                '201':
+                  $ref: '#/components/examples/RfidInventoriesPostSuccessExample'
+        '207':
+          description: Multi-Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RfidInventoriesPostResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        uri: ${apigateway.uri}/inventory/rfid-inventories
+        type: ${apigateway.etc}
+components:
+  parameters:
+    JinsTraceID:
+      name: jins-trace-id
+      description: <BFFシステムコード>_\<UUID>
+      in: header
+      required: true
+      example: bff_usgjpic_ab623ca6-b1e4-3796-a761-ca05605da64a
+      schema:
+        type: string
+        maxLength: 64
+    UserID:
+      name: jins-user-id
+      description: UI側でユーザを識別できるIDを格納
+      in: header
+      required: true
+      example: U00001
+      schema:
+        type: string
+        maxLength: 64
+    LocationIdList:
+      name: locationIdList
+      description: ロケーションIDリスト(完全一致)
+      in: query
+      required: false
+      example: 123456,123457,123458
+      schema:
+        type: array
+        items:
+          description: ロケーションID
+          type: integer
+          format: int64
+          minimum: 1
+          example: 123456
+      style: form
+      explode: false
+    LocationCodeList:
+      name: locationCodeList
+      description: ロケーションコードリスト（完全一致）
+      in: query
+      required: false
+      example: 84999, 85000, 85001
+      schema:
+        type: array
+        items:
+          description: ロケーションコード
+          type: string
+          minLength: 1
+          maxLength: 80
+          example: 84999
+      style: form
+      explode: false
+    ItemIdList:
+      name: itemIdList
+      description: 商品IDリスト（完全一致）
+      in: query
+      required: false
+      example: 123456,123457,123458
+      schema:
+        type: array
+        items:
+          description: 商品ID
+          type: integer
+          format: int64
+          minimum: 1
+          example: 123456
+      style: form
+      explode: false
+    ItemCodeList:
+      name: itemCodeList
+      description: 商品コードリスト（完全一致）
+      in: query
+      required: false
+      example: MFA-AA-1234, MFA-BB-4567
+      schema:
+        type: array
+        items:
+          description: 商品コード
+          type: string
+          minLength: 1
+          maxLength: 18
+          example: MFA-AA-1234
+      style: form
+      explode: false
+    SalesStatusIdList:
+      name: salesStatusIdList
+      description: 販売ステータスIDリスト
+      in: query
+      required: false
+      example: 2,3
+      schema:
+        type: array
+        items:
+          description: 販売ステータスID
+          type: integer
+          format: int32
+          minimum: 1
+          example: 2
+      style: form
+      explode: false
+    ItemStatusIdList:
+      name: itemStatusIdList
+      description: 商品ステータスIDリスト
+      in: query
+      required: false
+      example: 2,3
+      schema:
+        type: array
+        items:
+          description: 商品ステータスID
+          type: integer
+          format: int32
+          minimum: 1
+          example: 2
+      style: form
+      explode: false
+    QuantityMin:
+      name: quantityMin
+      description: 在庫数量（最小値）
+      in: query
+      required: false
+      example: 0
+      schema:
+        $ref: '#/components/schemas/Quantity'
+    QuantityMax:
+      name: quantityMax
+      description: 在庫数量（最大値）
+      in: query
+      required: false
+      example: 0
+      schema:
+        $ref: '#/components/schemas/Quantity'
+    SortKey:
+      name: sortKey
+      description: |
+        ソートキー
+        昇順降順はコロン区切り
+        複数の場合はカンマ区切り
+        スペースは挟まない
+      in: query
+      required: false
+      example: locationCode:ASC, itemCode:ASC
+      schema:
+        type: string
+        default: locationCode:ASC,itemCode:ASC
+    Limit:
+      name: limit
+      description: 取得制限数
+      in: query
+      required: false
+      example: 1000000
+      schema:
+        $ref: '#/components/schemas/Limit'
+    Offset:
+      name: offset
+      description: 取得開始位置
+      in: query
+      required: false
+      example: 0
+      schema:
+        $ref: '#/components/schemas/Offset'
+  schemas:
+    Quantity:
+      description: 在庫数量
+      type: integer
+      format: int64
+      minimum: 0
+      example: 20
+    Limit:
+      description: 取得制限数
+      type: integer
+      minimum: 1
+      example: 20
+      default: 1000000
+    Offset:
+      description: 取得開始位置
+      type: integer
+      minimum: 0
+      example: 0
+      default: 0
+    Count:
+      description: 今回取得件数
+      type: integer
+      example: 20
+    TotalResults:
+      description: 総件数
+      type: integer
+      example: 10000
+    HasMore:
+      description: 次回データ存在有無
+      type: boolean
+      example: true
+    LocationId:
+      description: ロケーションID
+      type: integer
+      format: int64
+      minimum: 1
+      example: 100
+    LocationCode:
+      description: ロケーションコード
+      type: string
+      maxLength: 80
+      example: 83003
+    LocationName:
+      description: ロケーション名
+      type: string
+      maxLength: 40
+      example: Valley Fair
+    ItemId:
+      description: 商品ID
+      type: integer
+      format: int64
+      minimum: 1
+      example: 1143516
+    ItemCode:
+      description: 商品コード
+      type: string
+      maxLength: 18
+      example: UCF-24A-105-394
+    ItemName:
+      description: 商品名
+      type: string
+      maxLength: 40
+      example: UCF-24A-105-394
+    SalesStatusId:
+      description: 販売ステータスID
+      type: integer
+      format: int32
+      minimum: 1
+      example: 2
+    SalesStatusName:
+      description: 販売ステータス名
+      type: string
+      maxLength: 100
+      example: For sale
+    ItemStatusId:
+      description: 商品ステータスID
+      type: integer
+      format: int32
+      minimum: 1
+      example: 2
+    ItemStatusName:
+      description: 商品ステータス名
+      type: string
+      maxLength: 100
+      example: Good quality item
+    UpdatedUserId:
+      description: 更新ユーザID
+      type: string
+      example: inventoryUser
+    UpdatedDatetime:
+      description: 更新日時
+      type: string
+      format: date-time
+      example: '2024-09-13T00:00:00'
+    OptimisticLockVerNo:
+      description: 楽観ロックバージョン番号
+      type: integer
+      format: int64
+      minimum: 1
+      example: 1
+    InventoryRecord:
+      description: 在庫テーブルレコード（コード、名称付与）
+      type: object
+      properties:
+        locationId:
+          $ref: '#/components/schemas/LocationId'
+        locationCode:
+          $ref: '#/components/schemas/LocationCode'
+        locationName:
+          $ref: '#/components/schemas/LocationName'
+        itemId:
+          $ref: '#/components/schemas/ItemId'
+        itemCode:
+          $ref: '#/components/schemas/ItemCode'
+        itemName:
+          $ref: '#/components/schemas/ItemName'
+        salesStatusId:
+          $ref: '#/components/schemas/SalesStatusId'
+        salesStatusName:
+          $ref: '#/components/schemas/SalesStatusName'
+        itemStatusId:
+          $ref: '#/components/schemas/ItemStatusId'
+        itemStatusName:
+          $ref: '#/components/schemas/ItemStatusName'
+        inventoryQuantity:
+          $ref: '#/components/schemas/Quantity'
+        updatedUserId:
+          $ref: '#/components/schemas/UpdatedUserId'
+        updatedDatetime:
+          $ref: '#/components/schemas/UpdatedDatetime'
+        optimisticLockVerNo:
+          $ref: '#/components/schemas/OptimisticLockVerNo'
+    InventoriesGetResponse:
+      description: 在庫検索APIレスポンス
+      type: object
+      properties:
+        limit:
+          $ref: '#/components/schemas/Limit'
+        offset:
+          $ref: '#/components/schemas/Offset'
+        count:
+          $ref: '#/components/schemas/Count'
+        totalResults:
+          $ref: '#/components/schemas/TotalResults'
+        hasMore:
+          $ref: '#/components/schemas/HasMore'
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/InventoryRecord'
+    CommonErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+      required:
+        - code
+        - message
+    EventId:
+      description: 在庫操作イベントID
+      type: integer
+      format: int32
+      minimum: 1
+      example: 1
+    Location:
+      description: ロケーションID or ロケーションコード
+      type: string
+      maxLength: 80
+      example: 83003
+    Item:
+      description: 商品ID or 商品コード
+      type: string
+      maxLength: 19
+      example: UCF-24A-105-394
+    InventoryEventTarget:
+      description: 在庫イベント対象
+      type: object
+      properties:
+        item:
+          $ref: '#/components/schemas/Item'
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+        optimisticLockVerNo:
+          $ref: '#/components/schemas/OptimisticLockVerNo'
+      required:
+        - item
+        - quantity
+    InventoryEventOptions:
+      description: 在庫イベント制御オプション
+      type: object
+      properties:
+        allowNegativeInventory:
+          type: boolean
+          default: true
+        useCode:
+          type: boolean
+          default: true
+    InventoryEvent:
+      description: 在庫イベント
+      type: object
+      properties:
+        eventId:
+          $ref: '#/components/schemas/EventId'
+        location:
+          $ref: '#/components/schemas/Location'
+        targets:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/InventoryEventTarget'
+        options:
+          $ref: '#/components/schemas/InventoryEventOptions'
+      required:
+        - eventId
+        - location
+        - targets
+        - options
+    InventoriesPostRequest:
+      description: 在庫更新APIリクエスト
+      type: object
+      properties:
+        events:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/InventoryEvent'
+    ProcessedItemInfo:
+      type: object
+      properties:
+        itemId:
+          $ref: '#/components/schemas/ItemId'
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+    InventoryEventResult:
+      type: object
+      properties:
+        eventId:
+          $ref: '#/components/schemas/EventId'
+        locationId:
+          $ref: '#/components/schemas/LocationId'
+        processed:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProcessedItemInfo'
+    InventoriesPostResponse:
+      description: 在庫更新APIレスポンス
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/InventoryEventResult'
+    schemas-LocationId:
+      description: ロケーションID
+      type: integer
+      format: int64
+      example: 123
+    schemas-ItemId:
+      description: 商品ID
+      type: integer
+      format: int64
+      example: 12345678
+    RfidEventId:
+      description: RFIDイベントID
+      type: integer
+      format: int32
+      maximum: 999
+      example: 2
+    schemas-SalesStatusId:
+      description: 販売ステータスID
+      type: integer
+      format: int32
+      maximum: 999
+      example: 1
+    schemas-ItemStatusId:
+      description: 商品ステータスID
+      type: integer
+      format: int32
+      maximum: 999
+      example: 0
+    IssueSourceLocationId:
+      description: 出庫元ロケーションID
+      type: integer
+      format: int64
+      example: 123456
+    schemas-Quantity:
+      description: 数量
+      type: integer
+      format: int32
+      example: 5
+    RfidInventoryPostRequest:
+      type: object
+      properties:
+        locationId:
+          $ref: '#/components/schemas/schemas-LocationId'
+        itemId:
+          $ref: '#/components/schemas/schemas-ItemId'
+        rfidEventId:
+          $ref: '#/components/schemas/RfidEventId'
+        salesStatusId:
+          $ref: '#/components/schemas/schemas-SalesStatusId'
+        itemStatusId:
+          $ref: '#/components/schemas/schemas-ItemStatusId'
+        issueSourceLocationId:
+          $ref: '#/components/schemas/IssueSourceLocationId'
+        quantity:
+          $ref: '#/components/schemas/schemas-Quantity'
+      required:
+        - locationId
+        - itemId
+        - rfidEventId
+        - salesStatusId
+        - itemStatusId
+        - quantity
+    RfidInventoriesPostRequest:
+      description: 在庫更新APIのリクエストボディ
+      type: object
+      properties:
+        records:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/RfidInventoryPostRequest'
+      required:
+        - records
+    RfidInventoryPostResponse:
+      description: 在庫更新のレスポンス要素
+      type: object
+      properties:
+        locationId:
+          $ref: '#/components/schemas/schemas-LocationId'
+        itemId:
+          $ref: '#/components/schemas/schemas-ItemId'
+        rfidEventId:
+          $ref: '#/components/schemas/RfidEventId'
+        salesStatusId:
+          $ref: '#/components/schemas/schemas-SalesStatusId'
+        itemStatusId:
+          $ref: '#/components/schemas/schemas-ItemStatusId'
+        issueSourceLocationId:
+          $ref: '#/components/schemas/IssueSourceLocationId'
+        quantity:
+          $ref: '#/components/schemas/schemas-Quantity'
+    RfidInventoriesPostErrorResponse:
+      description: 在庫更新のエラーレスポンス要素
+      type: object
+      properties:
+        errorCode:
+          description: エラーコード
+          type: string
+          example: E1_001
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/RfidInventoryPostResponse'
+    RfidInventoriesPostResponse:
+      description: 在庫更新のマルチステータスレスポンスボディ
+      type: object
+      properties:
+        successCount:
+          description: 成功件数
+          type: integer
+          example: 15
+        successDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/RfidInventoryPostResponse'
+        errorCount:
+          description: エラー件数
+          type: integer
+          example: 3
+        errorDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/RfidInventoriesPostErrorResponse'
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0001
+            message: Validation error occurred.
+    TooManyRequests:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0004
+            message: Duplicate api invocation detected.
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0000
+            message: Unexpected error occurred.
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0002
+            message: Specified data not found.
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CommonErrorResponse'
+          example:
+            code: COM_0003
+            message: Transaction failed due to optimisitic lock failure.
+  examples:
+    InventoriesPostResponseExample:
+      value:
+        results:
+          - eventId: 1
+            locationId: 100
+            processed:
+              - itemId: 123456
+                quantity: 10
+              - itemId: 678910
+                quantity: 20
+          - eventId: 2
+            locationId: 100
+            processed:
+              - itemId: 123456
+                quantity: 10
+    RfidInventoriesPostSuccessExample:
+      value:
+        successCount: 2
+        successDetails:
+          - locationId: 123
+            itemId: 1234
+            rfidEventId: 5
+            salesStatusId: 1
+            itemStatusId: 0
+            issueSourceLocationId: 122
+            quantity: 5
+          - locationId: 124
+            itemId: 1235
+            rfidEventId: 6
+            salesStatusId: 1
+            itemStatusId: 1
+            issueSourceLocationId: null
+            quantity: 5
+        errorCount: 0
+        errorDetails: []

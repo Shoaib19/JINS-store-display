@@ -1,0 +1,389 @@
+services:
+  ##############################################################################
+  # Development
+  ##############################################################################
+  dev:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev
+    profiles:
+      - dev
+    container_name: us-shop-orders-app-bff-dev
+    hostname: us-shop-orders-app-bff-dev
+    shm_size: "4gb"
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/workspace:cached
+      - node_modules:/workspace/node_modules
+    environment:
+      API_BACKOFF: "500"
+      API_RETRIES: "1"
+      API_VERSION: "v1"
+      DUMMY_SERVER: "https://ysd3gwlu1d-vpce-0e61940b5e477d371.execute-api.ap-northeast-1.amazonaws.com/v1" # JPエンドポイント
+      DUMMY_SERVER2: "https://ysd3gwlu1d-vpce-0be9d4bdb4502a7fe.execute-api.us-west-2.amazonaws.com/v1" # USエンドポイント
+      DIAMETER_SERVICE_JP: "https://684kw4o272-vpce-0935b5ed2fea5d1e5.execute-api.ap-northeast-1.amazonaws.com/v1"
+      SALESORDER_SERVICE_JP: "https://d01od590ti-vpce-0935b5ed2fea5d1e5.execute-api.ap-northeast-1.amazonaws.com/v1"
+      OMS_SERVICE_JP: "https://r17nwdgso2-vpce-0935b5ed2fea5d1e5.execute-api.ap-northeast-1.amazonaws.com"
+      WARRANTY_SERVICE_JP: "https://fqxwpa5yxe-vpce-0935b5ed2fea5d1e5.execute-api.ap-northeast-1.amazonaws.com/v1"
+      CART_SERVICE_JP: "https://ysd3gwlu1d-vpce-0935b5ed2fea5d1e5.execute-api.ap-northeast-1.amazonaws.com/v1"
+      CATALOG_SERVICE_JP: "https://mufbqz6hv2-vpce-0935b5ed2fea5d1e5.execute-api.ap-northeast-1.amazonaws.com/v1"
+      LOCATION_SERVICE_JP: "https://2qs2y5c26b-vpce-0935b5ed2fea5d1e5.execute-api.ap-northeast-1.amazonaws.com/v1"
+      INVENTORY_DATA_SERVICE_JP: "https://3c6uhb4v97-vpce-0e61940b5e477d371.execute-api.ap-northeast-1.amazonaws.com/v1"
+      STAFF_SERVICE_JP: "https://10rqpbd9ma-vpce-0e61940b5e477d371.execute-api.ap-northeast-1.amazonaws.com/v1"
+      PRICE_SERVICE_JP: "https://puflk1ydqa-vpce-0935b5ed2fea5d1e5.execute-api.ap-northeast-1.amazonaws.com/v1"
+      DIAMETER_SERVICE_US: "https://1eqcxw8c3a-vpce-0973bd42a615d06ac.execute-api.us-west-2.amazonaws.com/v1"
+      SALESORDER_SERVICE_US: "https://op1p6hwlm1-vpce-0973bd42a615d06ac.execute-api.us-west-2.amazonaws.com/v1"
+      OMS_SERVICE_US: "https://u02gpwp12m-vpce-0973bd42a615d06ac.execute-api.us-west-2.amazonaws.com/v1"
+      WARRANTY_SERVICE_US: "https://g2ddkntri9-vpce-0973bd42a615d06ac.execute-api.us-west-2.amazonaws.com/v1"
+      CART_SERVICE_US: "https://0r7jcf9ula-vpce-0973bd42a615d06ac.execute-api.us-west-2.amazonaws.com/v1"
+      CATALOG_SERVICE_US: "https://brtfxdcvtb-vpce-0973bd42a615d06ac.execute-api.us-west-2.amazonaws.com/v1"
+      LOCATION_SERVICE_US: "https://8oxvkbw5ni-vpce-0973bd42a615d06ac.execute-api.us-west-2.amazonaws.com/v1"
+      INVENTORY_DATA_SERVICE_US: "https://zs2a708km5-vpce-0be9d4bdb4502a7fe.execute-api.us-west-2.amazonaws.com/v1"
+      STAFF_SERVICE_US: "https://5cc0n6co9h-vpce-09d29da4eab42ace8.execute-api.us-west-2.amazonaws.com/v1"
+      PRICE_SERVICE_US: "https://ofb405ce93-vpce-0973bd42a615d06ac.execute-api.us-west-2.amazonaws.com/v1"
+      BFF_VALIDATOR: "http://debug.bff-validator.dev.api.us-west.store-orders-app-bff.jins.com/api/validator"
+      SMS_NOTIFIER: "https://o9ro6fg0v7.execute-api.us-west-2.amazonaws.com/v1"
+      GIT_AUTHOR_NAME: ${GIT_USERNAME}
+      GIT_COMMITTER_NAME: ${GIT_USERNAME}
+      GIT_AUTHOR_EMAIL: ${GIT_EMAIL_ADDRESS}
+      GIT_COMMITTER_EMAIL: ${GIT_EMAIL_ADDRESS}
+      SERVER_PORT: "3000"
+      NODE_ENV: "develop"
+      TZ: Asia/Tokyo
+      PAGE_SIZE: "30"
+    tty: true
+
+  ##############################################################################
+  # Debug
+  ##############################################################################
+  debug:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev
+    profiles:
+      - debug
+    container_name: us-shop-orders-app-bff-debug
+    hostname: us-shop-orders-app-bff-debug
+    shm_size: "4gb"
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/workspace:cached
+      - node_modules:/workspace/node_modules
+    environment:
+      DUMMY_SERVER: http://localhost:3000
+      SERVER_PORT: "3000"
+      NODE_ENV: "development"
+      TZ: Asia/Tokyo
+      PAGE_SIZE: "30"
+    tty: true
+    command: npm run dev
+
+  ##############################################################################
+  # Lint
+  ##############################################################################
+  lint:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev
+    profiles:
+      - lint
+    container_name: us-shop-orders-app-bff-lint
+    hostname: us-shop-orders-app-bff-lint
+    shm_size: "1gb"
+    volumes:
+      - ./:/workspace:cached
+      - node_modules:/workspace/node_modules
+    environment:
+      DUMMY_SERVER: http://localhost:3000
+      SERVER_PORT: "3000"
+      NODE_ENV: "development"
+      TZ: Asia/Tokyo
+      PAGE_SIZE: "30"
+    tty: true
+    command: npm run lint
+
+  ##############################################################################
+  # Test
+  ##############################################################################
+  test:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev
+    profiles:
+      - test
+    container_name: us-shop-orders-app-bff-test
+    shm_size: "1gb"
+    volumes:
+      - ./:/workspace:cached
+      - node_modules:/workspace/node_modules
+    environment:
+      DUMMY_SERVER: http://localhost:3000
+      SERVER_PORT: "3000"
+      TZ: Asia/Tokyo
+      PAGE_SIZE: "30"
+      CART_SERVICE_JP: http://sales-app-cart-mock-dev:4020
+      CART_SERVICE_US: http://sales-app-cart-mock-dev:4020
+      DIAMETER_SERVICE_JP: http://sales-app-diameter-mock-dev:4030
+      DIAMETER_SERVICE_US: http://sales-app-diameter-mock-dev:4030
+      INVENTORY_DATA_SERVICE_JP: http://sales-app-inventory-mock-dev:4040
+      INVENTORY_DATA_SERVICE_US: http://sales-app-inventory-mock-dev:4040
+      CATALOG_SERVICE_JP: http://sales-app-item-mock-dev:4050
+      CATALOG_SERVICE_US: http://sales-app-item-mock-dev:4050
+      LOCATION_SERVICE_JP: http://sales-app-location-mock-dev:4060
+      LOCATION_SERVICE_US: http://sales-app-location-mock-dev:4060
+      OMS_SERVICE_JP: http://sales-app-oms-mock-dev:4070
+      OMS_SERVICE_US: http://sales-app-oms-mock-dev:4070
+      STAFF_SERVICE_JP: http://sales-app-staff-mock-dev:4080
+      STAFF_SERVICE_US: http://sales-app-staff-mock-dev:4080
+      WARRANTY_SERVICE_JP: http://sales-app-warranty-mock-dev:4090
+      WARRANTY_SERVICE_US: http://sales-app-warranty-mock-dev:4090
+      PRICE_SERVICE_JP: http://sales-app-price-mock-dev:4100
+      PRICE_SERVICE_US: http://sales-app-price-mock-dev:4100
+      SALESORDER_SERVICE_JP: http://sales-app-sales-order-mock-dev:4110
+      SALESORDER_SERVICE_US: http://sales-app-sales-order-mock-dev:4110
+      BFF_VALIDATOR: http://sales-app-bffvalidator-mock-dev:5000
+    command: npm run test
+    depends_on:
+      mock_cart:
+        condition: service_started
+      mock_diameter:
+        condition: service_started
+      mock_inventory:
+        condition: service_started
+      mock_item:
+        condition: service_started
+      mock_location:
+        condition: service_started
+      mock_oms:
+        condition: service_started
+      mock_staff:
+        condition: service_started
+      mock_warranty:
+        condition: service_started
+      mock_price:
+        condition: service_started
+      mock_sales_order:
+        condition: service_started
+      mock_bffvalidator:
+        condition: service_started
+
+  ##############################################################################
+  # Document
+  ##############################################################################
+  doc:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev
+    profiles:
+      - doc
+    container_name: us-shop-orders-app-bff-doc
+    shm_size: "1gb"
+    volumes:
+      - ./:/workspace:cached
+      - node_modules:/workspace/node_modules
+    environment:
+      DUMMY_SERVER: http://localhost:3000
+      SERVER_PORT: "3000"
+      TZ: Asia/Tokyo
+      PAGE_SIZE: "30"
+    command: npm run doc
+
+  ##############################################################################
+  # Mock
+  ##############################################################################
+  mock:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: mock
+    container_name: us-shop-orders-app-bff-mock
+    hostname: sales-app-bff-mock-dev
+    shm_size: "1gb"
+    ports:
+      - 4010:4010
+
+  ##############################################################################
+  # Mock_Cart
+  ##############################################################################
+  mock_cart:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: mock_cart
+    container_name: us-shop-orders-app-cart-mock
+    hostname: sales-app-cart-mock-dev
+    shm_size: "1gb"
+    ports:
+      - 4020:4020
+
+  ##############################################################################
+  # Mock_Diameter
+  ##############################################################################
+  mock_diameter:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: mock_diameter
+    container_name: us-shop-orders-app-diameter-mock
+    hostname: sales-app-diameter-mock-dev
+    shm_size: "1gb"
+    ports:
+      - 4030:4030
+
+  ##############################################################################
+  # Mock_Inventory
+  ##############################################################################
+  mock_inventory:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: mock_inventory
+    container_name: us-shop-orders-app-inventory-mock
+    hostname: sales-app-inventory-mock-dev
+    shm_size: "1gb"
+    ports:
+      - 4040:4040
+
+  ##############################################################################
+  # Mock_Item
+  ##############################################################################
+  mock_item:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: mock_item
+    container_name: us-shop-orders-app-item-mock
+    hostname: sales-app-item-mock-dev
+    shm_size: "1gb"
+    ports:
+      - 4050:4050
+
+  ##############################################################################
+  # Mock_Location
+  ##############################################################################
+  mock_location:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: mock_location
+    container_name: us-shop-orders-app-location-mock
+    hostname: sales-app-location-mock-dev
+    shm_size: "1gb"
+    ports:
+      - 4060:4060
+
+  ##############################################################################
+  # Mock_Oms
+  ##############################################################################
+  mock_oms:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: mock_oms
+    container_name: us-shop-orders-app-oms-mock
+    hostname: sales-app-oms-mock-dev
+    shm_size: "1gb"
+    ports:
+      - 4070:4070
+
+  ##############################################################################
+  # Mock_Staff
+  ##############################################################################
+  mock_staff:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: mock_staff
+    container_name: us-shop-orders-app-staff-mock
+    hostname: sales-app-staff-mock-dev
+    shm_size: "1gb"
+    ports:
+      - 4080:4080
+
+  ##############################################################################
+  # Mock_Warranty
+  ##############################################################################
+  mock_warranty:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: mock_warranty
+    container_name: us-shop-orders-app-warranty-mock
+    hostname: sales-app-warranty-mock-dev
+    shm_size: "1gb"
+    ports:
+      - 4090:4090
+
+  ##############################################################################
+  # Mock_Price
+  ##############################################################################
+  mock_price:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: mock_price
+    container_name: us-shop-orders-app-price-mock
+    hostname: sales-app-price-mock-dev
+    shm_size: "1gb"
+    ports:
+      - 4100:4100
+
+  ##############################################################################
+  # Mock_Sales_Order
+  ##############################################################################
+  mock_sales_order:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: mock_sales_order
+    container_name: us-shop-orders-app-sales-order-mock
+    hostname: sales-app-sales-order-mock-dev
+    shm_size: "1gb"
+    ports:
+      - 4110:4110
+
+  ##############################################################################
+  # Mock_BffValidator
+  ##############################################################################
+  mock_bffvalidator:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: mock_bffvalidator
+    container_name: us-shop-orders-app-bffvalidator-mock
+    hostname: sales-app-bffvalidator-mock-dev
+    shm_size: "1gb"
+    ports:
+      - 5000:5000
+
+  ##############################################################################
+  # Generate
+  ##############################################################################
+  generate:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev
+    profiles:
+      - generate
+    container_name: us-shop-orders-app-bff-generate
+    shm_size: "1gb"
+    volumes:
+      - ./:/workspace:cached
+      - node_modules:/workspace/node_modules
+    environment:
+      DUMMY_SERVER: http://localhost:3000
+      SERVER_PORT: "3000"
+      TZ: Asia/Tokyo
+      PAGE_SIZE: "30"
+    command: npm run generate
+
+volumes:
+  node_modules:

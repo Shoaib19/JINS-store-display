@@ -1,0 +1,527 @@
+// カート・カタログ取得APIレスポンス
+// 使用項目は以下3項目、itemGroupCode以外はnullable:true
+// cart.itemGroups.itemGroupCode
+// cart.itemGroups.lopFocusCategoryItemId
+// cart.itemGroups.lopSalesLensSpecItemId
+export const cartInfoGetResponse = {
+  // ケース１：正常系_データ有
+  case1: {
+    ok: true,
+    status: 200,
+    data: {
+      "cart": {
+        "cartId": 22,
+        "customerName": "Yuta Fujimori",
+        "phoneNumber": "7032048452",
+        "discountPrice": 0.00,
+        "subtotal": 120.00,
+        "totalDiscountPrice": 0.00,
+        "totalTaxPrice": 0.00,
+        "totalSalesPrice": 120.00,
+        "receptionNumber": "250424US000001",
+        "deletedFlag": 0,
+        "registeredUserId": "USA00001",
+        "registeredProgram": "bf8c1805-ea2d-42c4-9f4d-ca0f2a5e4c97-314",
+        "registeredDatetime": "2025-04-24T01:54:40",
+        "updatedUserId": "USA00001",
+        "updatedProgram": "7f20636a-f28d-410d-8ad4-80c1996fcf22-3",
+        "updatedDatetime": "2025-04-24T02:26:37",
+        "optimisticLockVerNo": 18,
+        "receptionStoreId": 1143416,
+        "receptionStoreCode": "83005",
+        "itemGroups": [
+          {
+            "lineitemGroupId": 27,
+            "itemGroupCode": "250424US000001-1",
+            "statusCode": "101",
+            "callingStatusCode": "001",
+            "callingNumber": "A1",
+            "prescriptionRegistCode": "002",
+            "deliveryMethodCode": null,
+            "deliveryDatetime": null,
+            "deliveryStoreId": null,
+            "customerName": null,
+            "phoneNumber": null,
+            "shippingAddressZip": null,
+            "shippingAddress1": null,
+            "shippingAddress2": null,
+            "shippingAddress3": null,
+            "shippingAddress4": null,
+            "isExchangeLens": false,
+            "isWaitingLens": false,
+            "isDeliveryToday": false,
+            "note": null,
+            "discountPrice": 0.00,
+            "subtotal": 120.00,
+            "totalDiscountPrice": 0.00,
+            "totalTaxPrice": 0.00,
+            "salesPrice": 120.00,
+            "deletedFlag": 0,
+            "jinsAccountId": null,
+            "registeredUserId": "USA00001",
+            "registeredProgram": "bf8c1805-ea2d-42c4-9f4d-ca0f2a5e4c97-314",
+            "registeredDatetime": "2025-04-24T01:54:40",
+            "updatedUserId": "USA00001",
+            "updatedProgram": "7f20636a-f28d-410d-8ad4-80c1996fcf22-3",
+            "updatedDatetime": "2025-04-24T02:26:37",
+            "optimisticLockVerNo": 18,
+            "deliveryStoreCode": null,
+            "statusName": "Registered",
+            "deliveryMethodName": null,
+            "frameLineitemId": null,
+            "frameItemId": null,
+            "frameItemCategoryCode": null,
+            "frameTaxClass": null,
+            "frameListPrice": null,
+            "frameDiscountPrice": null,
+            "frameTaxPrice": null,
+            "frameSalesPrice": null,
+            "framePreparation1": null,
+            "framePreparation2": null,
+            "frameDeletedFlag": null,
+            "frameRegisteredUserId": null,
+            "frameRegisteredProgram": null,
+            "frameRegisteredDatetime": null,
+            "frameUpdatedUserId": null,
+            "frameUpdatedProgram": null,
+            "frameUpdatedDatetime": null,
+            "frameOptimisticLockVerNo": null,
+            "frameItemCode": null,
+            "frameItemName": null,
+            "frameItemNameKana": null,
+            "frameItemNameEnglish": null,
+            "frameItemNameSimplefied": null,
+            "frameItemNameTraditional": null,
+            "caseLineitemId": null,
+            "caseItemId": null,
+            "caseItemCategoryCode": null,
+            "caseTaxClass": null,
+            "caseListPrice": null,
+            "caseDiscountPrice": null,
+            "caseTaxPrice": null,
+            "caseSalesPrice": null,
+            "casePreparation1": null,
+            "casePreparation2": null,
+            "caseDeletedFlag": null,
+            "caseRegisteredUserId": null,
+            "caseRegisteredProgram": null,
+            "caseRegisteredDatetime": null,
+            "caseUpdatedUserId": null,
+            "caseUpdatedProgram": null,
+            "caseUpdatedDatetime": null,
+            "caseOptimisticLockVerNo": null,
+            "caseItemCode": null,
+            "caseItemName": null,
+            "caseItemNameKana": null,
+            "caseItemNameEnglish": null,
+            "caseItemNameSimplefied": null,
+            "caseItemNameTraditional": null,
+            "isCaseNone": null,
+            "cerritoLineitemId": null,
+            "cerritoItemId": null,
+            "cerritoItemCategoryCode": null,
+            "cerritoTaxClass": null,
+            "cerritoListPrice": null,
+            "cerritoDiscountPrice": null,
+            "cerritoTaxPrice": null,
+            "cerritoSalesPrice": null,
+            "cerritoPreparation1": null,
+            "cerritoPreparation2": null,
+            "cerritoDeletedFlag": null,
+            "cerritoRegisteredUserId": null,
+            "cerritoRegisteredProgram": null,
+            "cerritoRegisteredDatetime": null,
+            "cerritoUpdatedUserId": null,
+            "cerritoUpdatedProgram": null,
+            "cerritoUpdatedDatetime": null,
+            "cerritoOptimisticLockVerNo": null,
+            "cerritoItemCode": null,
+            "cerritoItemName": null,
+            "cerritoItemNameKana": null,
+            "cerritoItemNameEnglish": null,
+            "cerritoItemNameSimplefied": null,
+            "cerritoItemNameTraditional": null,
+            "lensRightLineitemId": null,
+            "lensRightItemId": null,
+            "lensRightItemCategoryCode": null,
+            "lensRightTaxClass": null,
+            "lensRightListPrice": null,
+            "lensRightDiscountPrice": null,
+            "lensRightTaxPrice": null,
+            "lensRightSalesPrice": null,
+            "lensRightPreparation1": null,
+            "lensRightPreparation2": null,
+            "lensRightDeletedFlag": null,
+            "lensRightRegisteredUserId": null,
+            "lensRightRegisteredProgram": null,
+            "lensRightRegisteredDatetime": null,
+            "lensRightUpdatedUserId": null,
+            "lensRightUpdatedProgram": null,
+            "lensRightUpdatedDatetime": null,
+            "lensRightOptimisticLockVerNo": null,
+            "lensRightItemCode": null,
+            "lensRightItemName": null,
+            "lensRightItemNameKana": null,
+            "lensRightItemNameEnglish": null,
+            "lensRightItemNameSimplefied": null,
+            "lensRightItemNameTraditional": null,
+            "lensLeftLineitemId": null,
+            "lensLeftItemId": null,
+            "lensLeftItemCategoryCode": null,
+            "lensLeftTaxClass": null,
+            "lensLeftListPrice": null,
+            "lensLeftDiscountPrice": null,
+            "lensLeftTaxPrice": null,
+            "lensLeftSalesPrice": null,
+            "lensLeftPreparation1": null,
+            "lensLeftPreparation2": null,
+            "lensLeftDeletedFlag": null,
+            "lensLeftRegisteredUserId": null,
+            "lensLeftRegisteredProgram": null,
+            "lensLeftRegisteredDatetime": null,
+            "lensLeftUpdatedUserId": null,
+            "lensLeftUpdatedProgram": null,
+            "lensLeftUpdatedDatetime": null,
+            "lensLeftOptimisticLockVerNo": null,
+            "lensLeftItemCode": null,
+            "lensLeftItemName": null,
+            "lensLeftItemNameKana": null,
+            "lensLeftItemNameEnglish": null,
+            "lensLeftItemNameSimplefied": null,
+            "lensLeftItemNameTraditional": null,
+            "registeredLineitemId": 54,
+            "registeredItemId": null,
+            "registeredItemCategoryCode": "11",
+            "registeredTaxClass": null,
+            "registeredListPrice": null,
+            "registeredDiscountPrice": null,
+            "registeredTaxPrice": null,
+            "registeredSalesPrice": null,
+            "registeredPreparation1": "{\"prescriptionId\":null,\"registrationMethodCode\":\"002\",\"prescriptionInfo\":{\"vision\":null,\"perspectiveTypeCode\":\"001\",\"eyepointRight\":2,\"eyepointLeft\":2,\"pdRight\":32,\"pdLeft\":32,\"sphRight\":-5,\"sphLeft\":-5.5,\"cylRight\":-2,\"cylLeft\":-2.75,\"axisRight\":90,\"axisLeft\":180,\"prismFlag\":false},\"prescriptionExpiration\":\"2025-04-25T00:00:00\",\"prescriptionRegistDate\":\"2025-04-23T16:55:15\"}",
+            "registeredPreparation2": "jins-ap-northeast-1-digitalplatform-prescription-stg4/250424US000001-1",
+            "registeredDeletedFlag": 0,
+            "registeredRegisteredUserId": "USA00001",
+            "registeredRegisteredProgram": "USA00001",
+            "registeredRegisteredDatetime": "2025-04-24T01:55:16",
+            "registeredUpdatedUserId": "USA00001",
+            "registeredUpdatedProgram": "5316237b-f665-416e-bc83-09e207702f30-3",
+            "registeredUpdatedDatetime": "2025-04-24T02:03:46",
+            "registeredOptimisticLockVerNo": 3,
+            "lopSalesColorNameLineitemId": 56,
+            "lopSalesColorNameItemId": 3210003,
+            "lopSalesColorNameItemCategoryCode": "12",
+            "lopSalesColorNameTaxClass": "0",
+            "lopSalesColorNameListPrice": 120.00,
+            "lopSalesColorNameDiscountPrice": 0.00,
+            "lopSalesColorNameTaxPrice": null,
+            "lopSalesColorNameSalesPrice": 120.00,
+            "lopSalesColorNamePreparation1": "1",
+            "lopSalesColorNamePreparation2": null,
+            "lopSalesColorNameDeletedFlag": 0,
+            "lopSalesColorNameRegisteredUserId": "USA00001",
+            "lopSalesColorNameRegisteredProgram": "1e06a9c0-c102-48a2-b198-f44534d01a11-3",
+            "lopSalesColorNameRegisteredDatetime": "2025-04-24T01:58:01",
+            "lopSalesColorNameUpdatedUserId": "USA00001",
+            "lopSalesColorNameUpdatedProgram": "7f20636a-f28d-410d-8ad4-80c1996fcf22-3",
+            "lopSalesColorNameUpdatedDatetime": "2025-04-24T02:26:37",
+            "lopSalesColorNameOptimisticLockVerNo": 14,
+            "lopSalesColorNameLensOptionCode": "LOP-C3-210003",
+            "lopSalesColorNameLensOptionName": "GRAY",
+            "lopSalesLensSpecLineitemId": 57,
+            "lopSalesLensSpecItemId": 4110001,
+            "lopSalesLensSpecItemCategoryCode": "12",
+            "lopSalesLensSpecTaxClass": "0",
+            "lopSalesLensSpecListPrice": 0.00,
+            "lopSalesLensSpecDiscountPrice": 0.00,
+            "lopSalesLensSpecTaxPrice": null,
+            "lopSalesLensSpecSalesPrice": 0.00,
+            "lopSalesLensSpecPreparation1": "2",
+            "lopSalesLensSpecPreparation2": null,
+            "lopSalesLensSpecDeletedFlag": 0,
+            "lopSalesLensSpecRegisteredUserId": "USA00001",
+            "lopSalesLensSpecRegisteredProgram": "1e06a9c0-c102-48a2-b198-f44534d01a11-3",
+            "lopSalesLensSpecRegisteredDatetime": "2025-04-24T01:58:01",
+            "lopSalesLensSpecUpdatedUserId": "USA00001",
+            "lopSalesLensSpecUpdatedProgram": "7f20636a-f28d-410d-8ad4-80c1996fcf22-3",
+            "lopSalesLensSpecUpdatedDatetime": "2025-04-24T02:26:37",
+            "lopSalesLensSpecOptimisticLockVerNo": 14,
+            "lopSalesLensSpecLensOptionCode": "LOP-L-110001",
+            "lopSalesLensSpecLensOptionName": "Standard",
+            "lopFocusCategoryLineitemId": 55,
+            "lopFocusCategoryItemId": 5110001,
+            "lopFocusCategoryItemCategoryCode": "12",
+            "lopFocusCategoryTaxClass": "0",
+            "lopFocusCategoryListPrice": 0.00,
+            "lopFocusCategoryDiscountPrice": 0.00,
+            "lopFocusCategoryTaxPrice": null,
+            "lopFocusCategorySalesPrice": 0.00,
+            "lopFocusCategoryPreparation1": "3",
+            "lopFocusCategoryPreparation2": null,
+            "lopFocusCategoryDeletedFlag": 0,
+            "lopFocusCategoryRegisteredUserId": "USA00001",
+            "lopFocusCategoryRegisteredProgram": "1de2554a-65f6-46fb-82c6-05893a12e268-3",
+            "lopFocusCategoryRegisteredDatetime": "2025-04-24T01:56:24",
+            "lopFocusCategoryUpdatedUserId": "USA00001",
+            "lopFocusCategoryUpdatedProgram": "5316237b-f665-416e-bc83-09e207702f30-3",
+            "lopFocusCategoryUpdatedDatetime": "2025-04-24T02:03:46",
+            "lopFocusCategoryOptimisticLockVerNo": 2,
+            "lopFocusCategoryLensOptionCode": "LOP-U-110001",
+            "lopFocusCategoryLensOptionName": "Single vision",
+            "lopProgressiveCategoryLineitemId": 58,
+            "lopProgressiveCategoryItemId": 6110001,
+            "lopProgressiveCategoryItemCategoryCode": "12",
+            "lopProgressiveCategoryTaxClass": "0",
+            "lopProgressiveCategoryListPrice": 0.00,
+            "lopProgressiveCategoryDiscountPrice": 0.00,
+            "lopProgressiveCategoryTaxPrice": null,
+            "lopProgressiveCategorySalesPrice": 0.00,
+            "lopProgressiveCategoryPreparation1": "4",
+            "lopProgressiveCategoryPreparation2": null,
+            "lopProgressiveCategoryDeletedFlag": 0,
+            "lopProgressiveCategoryRegisteredUserId": "USA00001",
+            "lopProgressiveCategoryRegisteredProgram": "1e06a9c0-c102-48a2-b198-f44534d01a11-3",
+            "lopProgressiveCategoryRegisteredDatetime": "2025-04-24T01:58:01",
+            "lopProgressiveCategoryUpdatedUserId": "USA00001",
+            "lopProgressiveCategoryUpdatedProgram": "7f20636a-f28d-410d-8ad4-80c1996fcf22-3",
+            "lopProgressiveCategoryUpdatedDatetime": "2025-04-24T02:26:37",
+            "lopProgressiveCategoryOptimisticLockVerNo": 14,
+            "lopProgressiveCategoryLensOptionCode": "LOP-P-110001",
+            "lopProgressiveCategoryLensOptionName": "None",
+            "lopRefractiveIndexNameLineitemId": 59,
+            "lopRefractiveIndexNameItemId": 7110007,
+            "lopRefractiveIndexNameItemCategoryCode": "12",
+            "lopRefractiveIndexNameTaxClass": "0",
+            "lopRefractiveIndexNameListPrice": 0.00,
+            "lopRefractiveIndexNameDiscountPrice": 0.00,
+            "lopRefractiveIndexNameTaxPrice": null,
+            "lopRefractiveIndexNameSalesPrice": 0.00,
+            "lopRefractiveIndexNamePreparation1": "5",
+            "lopRefractiveIndexNamePreparation2": null,
+            "lopRefractiveIndexNameDeletedFlag": 0,
+            "lopRefractiveIndexNameRegisteredUserId": "USA00001",
+            "lopRefractiveIndexNameRegisteredProgram": "1e06a9c0-c102-48a2-b198-f44534d01a11-3",
+            "lopRefractiveIndexNameRegisteredDatetime": "2025-04-24T01:58:01",
+            "lopRefractiveIndexNameUpdatedUserId": "USA00001",
+            "lopRefractiveIndexNameUpdatedProgram": "7f20636a-f28d-410d-8ad4-80c1996fcf22-3",
+            "lopRefractiveIndexNameUpdatedDatetime": "2025-04-24T02:26:37",
+            "lopRefractiveIndexNameOptimisticLockVerNo": 14,
+            "lopRefractiveIndexNameLensOptionCode": "LOP-I-110007",
+            "lopRefractiveIndexNameLensOptionName": "1.67 Index",
+            "lopRimlessFinishingCategoryLineitemId": null,
+            "lopRimlessFinishingCategoryItemId": null,
+            "lopRimlessFinishingCategoryItemCategoryCode": null,
+            "lopRimlessFinishingCategoryTaxClass": null,
+            "lopRimlessFinishingCategoryListPrice": null,
+            "lopRimlessFinishingCategoryDiscountPrice": null,
+            "lopRimlessFinishingCategoryTaxPrice": null,
+            "lopRimlessFinishingCategorySalesPrice": null,
+            "lopRimlessFinishingCategoryPreparation1": null,
+            "lopRimlessFinishingCategoryPreparation2": null,
+            "lopRimlessFinishingCategoryDeletedFlag": null,
+            "lopRimlessFinishingCategoryRegisteredUserId": null,
+            "lopRimlessFinishingCategoryRegisteredProgram": null,
+            "lopRimlessFinishingCategoryRegisteredDatetime": null,
+            "lopRimlessFinishingCategoryUpdatedUserId": null,
+            "lopRimlessFinishingCategoryUpdatedProgram": null,
+            "lopRimlessFinishingCategoryUpdatedDatetime": null,
+            "lopRimlessFinishingCategoryOptimisticLockVerNo": null,
+            "lopRimlessFinishingCategoryLensOptionCode": null,
+            "lopRimlessFinishingCategoryLensOptionName": null,
+            "lensReplacementLineitemId": null,
+            "lensReplacementItemId": null,
+            "lensReplacementItemCategoryCode": null,
+            "lensReplacementTaxClass": null,
+            "lensReplacementListPrice": null,
+            "lensReplacementDiscountPrice": null,
+            "lensReplacementTaxPrice": null,
+            "lensReplacementSalesPrice": null,
+            "lensReplacementPreparation1": null,
+            "lensReplacementPreparation2": null,
+            "lensReplacementDeletedFlag": null,
+            "lensReplacementRegisteredUserId": null,
+            "lensReplacementRegisteredProgram": null,
+            "lensReplacementRegisteredDatetime": null,
+            "lensReplacementUpdatedUserId": null,
+            "lensReplacementUpdatedProgram": null,
+            "lensReplacementUpdatedDatetime": null,
+            "lensReplacementOptimisticLockVerNo": null,
+            "lensReplacementTypeCode": null,
+            "lensReplacementTypeName": null,
+            "lensReplacementTypeNameKana": null,
+            "lensReplacementTypeNameEnglish": null,
+            "lensReplacementTypeNameSimplefied": null,
+            "lensReplacementTypeNameTraditional": null
+          }
+        ]
+      }
+    }
+  },
+  // ケース２：異常系_ステータス404
+  case2: {
+    ok: false,
+    status: 404,
+    data: {
+      code: "COM_0002",
+      message: "Specified data not found."
+    }
+  },
+  // ケース３：正常系_データ無
+  case3: {
+    ok: true,
+    status: 200,
+    data: {}
+  },
+  // ケース４：正常系_データ有null
+  case4: {
+    ok: true,
+    status: 200,
+    data: {
+      "cart": {
+        "itemGroups": [
+          {
+            "itemGroupCode": "250424US000001-1",
+            "lopSalesLensSpecItemId": null,
+            "lopFocusCategoryItemId": null,
+          }
+        ]
+      }
+    }
+  },
+
+};
+
+// 販売用レンズ検索項目検索API呼出
+// 使用項目は以下5項目、全てnullable:true
+// records.salesLensSpec.salesLensSpecName
+// records.salesLensSpec.salesLensSpecId
+// records.salesLensSpec.salesLensSpecCode
+// records.salesLensSpec.sellingPrice.sellingPriceExcludingTax
+// records.salesLensSpec.isSelectable
+export const salesLensSearchGetResponse = {
+  // ケース1：正常系_データ有
+  case1: {
+    ok: true,
+    status: 200,
+    data: {
+      "offset": 0,
+      "count": 5,
+      "limit": 100000,
+      "totalResults": 5,
+      "hasMore": false,
+      "records": [
+        {
+          "countryId": 1143430,
+          "countryCodeAlpha2": "US",
+          "applicationStartDate": "2025-05-16",
+          "salesColorMajorClass": [],
+          "salesLensSpec": [
+            {
+              "salesLensSpecId": 4110001,
+              "salesLensSpecCode": "LOP-L-110001",
+              "salesLensSpecName": "Standard",
+              "lensSpecMinorClassId": 1470969,
+              "displayOrder": 1,
+              "isSelectable": false,
+              "sellingPrice": {
+                "sellingPriceExcludingTax": 0.00,
+                "currencyCode": "USD"
+              }
+            },
+            {
+              "salesLensSpecId": 4110002,
+              "salesLensSpecCode": "LOP-L-110002",
+              "salesLensSpecName": "Anti-fog",
+              "lensSpecMinorClassId": 1470970,
+              "displayOrder": 2,
+              "isSelectable": false,
+              "sellingPrice": {
+                "sellingPriceExcludingTax": 60.00,
+                "currencyCode": "USD"
+              }
+            },
+            {
+              "salesLensSpecId": 4110004,
+              "salesLensSpecCode": "LOP-L-110004",
+              "salesLensSpecName": "Invincible",
+              "lensSpecMinorClassId": 1470972,
+              "displayOrder": 4,
+              "isSelectable": false,
+              "sellingPrice": {
+                "sellingPriceExcludingTax": 100.00,
+                "currencyCode": "USD"
+              }
+            },
+            {
+              "salesLensSpecId": 4110006,
+              "salesLensSpecCode": "LOP-L-110006",
+              "salesLensSpecName": "Gold Mirror",
+              "lensSpecMinorClassId": 1470975,
+              "displayOrder": 6,
+              "isSelectable": false,
+              "sellingPrice": {
+                "sellingPriceExcludingTax": 100.00,
+                "currencyCode": "USD"
+              }
+            },
+            {
+              "salesLensSpecId": 4110007,
+              "salesLensSpecCode": "LOP-L-110007",
+              "salesLensSpecName": "Blue Mirror",
+              "lensSpecMinorClassId": 4160506,
+              "displayOrder": 7,
+              "isSelectable": false,
+              "sellingPrice": {
+                "sellingPriceExcludingTax": 100.00,
+                "currencyCode": "USD"
+              }
+            }
+          ],
+          "focusCategory": [],
+          "progressiveCategory": [],
+          "refractiveIndexName": []
+        }
+      ]
+    }
+  },
+
+  // ケース２：異常系_ステータス500
+  case2: {
+    ok: false,
+    status: 500,
+    data: {
+      code: "COM_0000",
+      message: "Unexpected error occurred."
+    }
+  },
+
+  // ケース３：正常系_データ無
+  case3: {
+    ok: true,
+    status: 200,
+    data: {}
+  },
+
+  // ケース４：正常系_データ有null
+  case4: {
+    ok: true,
+    status: 200,
+    data: {
+      "records": [
+        {
+          "salesLensSpec": [
+            {
+              "salesLensSpecName": null,
+              "salesLensSpecId": null,
+              "salesLensSpecCode": null,
+              "sellingPrice": {
+                "sellingPriceExcludingTax": null
+              },
+              "isSelectable": null
+            }
+          ],
+        }
+      ]
+    }
+  },
+
+};
