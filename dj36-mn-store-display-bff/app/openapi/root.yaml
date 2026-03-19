@@ -1,0 +1,659 @@
+openapi: 3.0.4
+
+info:
+  title: Sample API
+  description: |-
+    ## OpenAPIserverサンプル
+    ### 共通仕様
+    #### リクエストヘッダー
+    TBD
+    #### レスポンスヘッダー
+    TBD
+    #### エラーレスポンス
+    TBD
+    ##### エラーコード
+    * 400: Bad Request
+    * 401: Unauthorized
+    * 403: Forbidden
+    * 404: Not Found
+    * 405: Method Not Allowed
+    * 406: Not Acceptable
+    * 429: Too Many Requests
+    * 500: Internal Server Error
+    * 501: Not Implemented
+    * 503: Service Unavailable
+    * 504: Gateway Timeout
+  version: 0.0.1
+externalDocs:
+  description: デジタル基盤側API仕様(TBD)
+  url: https://example.com
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: sample
+    description: サンプル
+  - name: system
+    description: システム
+paths:
+  /api/status:
+    get:
+      tags:
+        - system
+      summary: health check
+      operationId: status
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: string
+              example: healthy
+        '400':
+          description: failure
+          content:
+            application/json:
+              schema:
+                type: string
+              example: unhealthy
+  /api/dummy:
+    get:
+      tags:
+        - dummy
+      summary: dummy function to call external API
+      operationId: dummy
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: string
+                example: healthy
+        '400':
+          description: failure
+          content:
+            application/json:
+              schema:
+                type: string
+                example: unhealthy
+
+components:
+  parameters:
+    Authorization:
+      in: header
+      name: Authorization
+      required: true
+      description: "POST us/v1/jins/oauth/token で取得したOAuthのBearerトークン。<br>許可された値:
+        Bearer {access_token}"
+      schema:
+        type: string
+    Content-Type:
+      in: header
+      name: Content-Type
+      required: true
+      description: リソース・コンテンツのアプリケーション・メディアタイプ。<br>許可された値:application/json
+      schema:
+        type: string
+        enum:
+          - application/json
+    Accept:
+      in: header
+      name: Accept
+      required: true
+      description: リソース・コンテンツのアプリケーション・メディアタイプ。<br>許可された値:application/json
+      schema:
+        type: string
+        enum:
+          - application/json
+    X-API-KEY:
+      in: header
+      name: X-API-KEY
+      required: true
+      description: 各アプリ・システムに対して環境ごとに払い出されたAPI認証キー
+      schema:
+        type: string
+    Accept-Language:
+      in: header
+      name: Accept-Language
+      required: false
+      description: 言語指定<br>デフォルト値:en<br>許可された値:en
+      schema:
+        type: string
+        enum:
+          - en
+    X-Cursor:
+      in: header
+      name: X-Cursor
+      required: false
+      description: 取得開始位置<br>レスポンスヘッダで返却された X-Cursor の値を指定
+      schema:
+        type: string
+    JinsTraceID:
+      in: header
+      name: Jins-Trace-ID
+      description: アプリケーションノード間のトレーサビリティを確保するためのID
+      required: true
+      example: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+      schema:
+        type: string
+        format: uuid
+        nullable: false
+
+  schemas:
+    ApplicationError:
+      required:
+        - Jins-Trace-ID
+        - timestamp
+        - code
+        - systemName
+        - message
+        - details
+      type: object
+      properties:
+        Jins-Trace-ID:
+          description: アプリケーションノード間のトレーサビリティを確保するためのID
+          type: string
+          format: uuid
+          nullable: false
+        timestamp:
+          description: エラー発生時刻
+          type: string
+          format: date-time
+          nullable: false
+        code:
+          description: |-
+            エラーコード
+          type: string
+          nullable: false
+        systemName:
+          description: |-
+            システム名
+          type: string
+          nullable: false
+        message:
+          description: エラーメッセージ
+          type: string
+          nullable: false
+        details:
+          description: エラー詳細
+          type: string
+          nullable: false
+
+    RcptInfoResponse:
+      description: 待ち状況取得APIレスポンス
+      properties:
+        waitTimeRange:
+          description: 受付待ち時間範囲
+          properties:
+            earliest:
+              type: integer
+              description: 最小待ち時間（分）
+            latest:
+              type: integer
+              description: 最大待ち時間（分）
+        callTime:
+          type: string
+          description: 呼び出し時間
+          nullable: true
+        waitPeople:
+          type: integer
+          description: 修理待ち人数
+        waitingStatusCode:
+          type: string
+          description: 待ち状況ステータスコード
+          nullable: true
+        isReceptionClose:
+          type: boolean
+          description: 受付終了フラグ
+        currentTime: 
+          description: 現在の日付
+          type: string
+          nullable: true
+        queuesData:
+          type: object
+          description: キュー情報
+          properties:
+            callingNumber:
+              type: object
+              description: 発信番号
+              nullable: true
+              properties:
+                callingNumber:
+                  description: 発信番号
+                  type: string
+                registeredDate:
+                  description: 登録日
+                  type: string
+                updatedDatetime:
+                  description: 更新日時
+                  type: string
+            calledList:
+              description: 呼ばれる配列
+              type: array
+              nullable: true
+              items:
+                type: object
+                properties:
+                  callingNumber:
+                    description: 発信番号
+                    type: string
+                  registeredDate:
+                    description: 登録日
+                    type: string
+                  updatedDatetime:
+                    description: 更新日時
+                    type: string
+            waitingList:
+              description: 待機配列
+              type: array
+              nullable: true
+              items:
+                type: object
+                properties:
+                  callingNumber:
+                    description: 発信番号
+                    type: string
+                  registeredDate:
+                    description: 登録日
+                    type: string
+                  updatedDatetime:
+                    description: 更新日時
+                    type: string
+      example:
+        waitTimeRange:
+          earliest: 10
+          latest: 15
+        callTime: "2024-12-30T08:00:00Z"
+        waitPeople: 2
+        waitingStatusCode: "001"
+        isReceptionClose: falsez
+        currentTime: "2024-02-21"
+        queuesData:
+          callingNumber:
+            callingNumber: "P1"
+            registeredDate: "2024-02-21T10:30:00Z"
+            updatedDatetime: "2024-02-21T10:30:00Z"
+          calledList:
+            - callingNumber: "P11"
+              registeredDate: "2024-02-21T10:30:00Z"
+              updatedDatetime: "2024-02-21T10:30:00Z"
+            - callingNumber: "G21"
+              registeredDate: "2024-02-21T11:00:00Z"
+              updatedDatetime: "2024-02-21T10:30:00Z"
+          waitingList:
+            - callingNumber: "A12"
+              registeredDate: "2024-02-21T10:30:00Z"
+              updatedDatetime: "2024-02-21T10:30:00Z"
+            - callingNumber: "A22"
+              registeredDate: "2024-02-21T11:00:00Z"
+              updatedDatetime: "2024-02-21T10:30:00Z"
+              
+    RcptInfoErrorResponse:
+      description: Jins APIからのエラー
+      properties:
+        code:
+          type: string
+          description: エラーコード
+        message:
+          type: string
+          description: エラーメッセージ
+        jinsTraceId:
+          type: string
+          description: Jins-Trace-ID
+        details:
+          type: string
+          description: エラー詳細
+      example:
+        code: DPFM_RCPT_0001
+        message: There are no records that match the store code.
+        jinsTraceId: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+        details: null
+
+    queueAttribs:
+      description: キュー属性
+      type: object
+      properties:
+        callingNumber:
+          type: string
+          description: 発信番号
+        registeredDate:
+          type: string
+          description: 登録日
+        updatedDatetime:
+          type: string
+          description: 更新日時
+        registeredDatetime:
+          type: string
+          description: 登録日時
+
+    ReceptionInfoAllItems:
+      description: 受付情報
+      type: object
+      properties:
+        registeredDate:
+          type: string
+          description: 登録日
+        visitingPurposeCode:
+          type: string
+          description: 来店目的コード
+        customerIssueCode:
+          type: string
+          description: 困りごとコード
+        prescriptionRegistCode:
+          type: string
+          description: 度数登録方法コード
+        callingNumber:
+          type: string
+          description: 呼出番号
+        receptionNumber:
+          type: string
+          description: 受付番号
+        statusCode:
+          type: string
+          description: ステータスコード
+        callingStatusCode:
+          type: string
+          description: 呼出状態コード
+        countryCodeAlpha2:
+          type: string
+          description: 国コード(alpha-2)
+        storeId:
+          type: integer
+          description: 店舗ID
+        customerName:
+          type: string
+          description: 注文者名
+        phoneNumber:
+          type: string
+          description: 電話番号
+        jinsAccountId:
+          type: string
+          description: JINSアカウントID
+        registeredUserId:
+          type: string
+          description: 登録者ID
+        registeredProgram:
+          type: string
+          description: 登録プログラム
+        registeredDatetime:
+          type: string
+          description: 登録日時
+          format: date-time
+        updatedUserId:
+          type: string
+          description: 更新者ID
+        updatedProgram:
+          type: string
+          description: 更新プログラム
+        updatedDatetime:
+          type: string
+          description: 更新日時
+          format: date-time
+        hasLensInCart:
+          type: boolean
+          description: カートにレンズが登録されているかどうかのフラグ
+        hasFrameInCart:
+          type: boolean
+          description: カートにフレームが登録されているかどうかのフラグ
+    ProcessesGetResponse:
+      type: object
+      description: 受付情報検索APIレスポンス
+      properties:
+        ReceptionInfoAllItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReceptionInfoAllItems'
+      example:
+        ReceptionInfoAllItems:
+          - registeredDate: '2025-03-28'
+            visitingPurposeCode: '010'
+            customerIssueCode: '001'
+            prescriptionRegistCode: '001'
+            callingNumber: A44
+            receptionNumber: 241230US00001
+            statusCode: '100'
+            callingStatusCode: '001'
+            countryCodeAlpha2: US
+            storeId: 83005
+            customerName: John Doe
+            phoneNumber: '07012345678'
+            jinsAccountId: null
+            registeredUserId: JINS0001
+            registeredProgram: Step2_test
+            registeredDatetime: '2025-03-28T05:01:00'
+            updatedUserId: JINS0001
+            updatedProgram: Step2_test
+            updatedDatetime: '2025-03-28T05:01:00'
+            hasLensInCart: true
+            hasFrameInCart: true
+          - registeredDate: '2025-03-28'
+            visitingPurposeCode: '010'
+            customerIssueCode: '001'
+            prescriptionRegistCode: '002'
+            callingNumber: A45
+            receptionNumber: 241230US00002
+            statusCode: '101'
+            callingStatusCode: '001'
+            countryCodeAlpha2: US
+            storeId: 83005
+            customerName: Smith
+            phoneNumber: '07012345679'
+            jinsAccountId: null
+            registeredUserId: JINS0001
+            registeredProgram: Step2_test
+            registeredDatetime: '2025-03-28T05:01:00'
+            updatedUserId: JINS0001
+            updatedProgram: Step2_test
+            updatedDatetime: '2025-03-28T05:01:00'
+            hasLensInCart: false
+            hasFrameInCart: false
+
+    CallManagementInfo:
+      description: 呼出し管理情報
+      type: object
+      properties:
+        timeRequiredUntilCall:
+          type: number
+          description: 案内時間
+        availableLines:
+          type: number
+          description: 視力測定ライン数
+        receptionCloseTime:
+          type: string
+          description: 受付案内終了時間
+          maxLength: 8
+        processingCloseTime:
+          type: string
+          description: 加工終了時間
+          maxLength: 8
+      example:
+        timeRequiredUntilCall: 200
+        availableLines: 10
+        receptionCloseTime: '08:00:00'
+        processingCloseTime: '20:00:00'
+    CallManagementGetResponse:
+      type: object
+      description: 呼出し管理情報取得APIレスポンス
+      properties:
+        callManagementInfo:
+          $ref: '#/components/schemas/CallManagementInfo'
+    ReceptionInfos:
+      description: 受付情報
+      type: object
+      properties:
+        registeredDate:
+          type: string
+          description: 登録日
+        visitingPurposeCode:
+          type: string
+          description: 来店目的コード
+        customerIssueCode:
+          type: string
+          description: 困りごとコード
+        prescriptionRegistCode:
+          type: string
+          description: 度数登録方法コード
+        callingNumber:
+          type: string
+          description: 呼出番号
+        receptionNumber:
+          type: string
+          description: 受付番号
+        statusCode:
+          type: string
+          description: ステータスコード
+        callingStatusCode:
+          type: string
+          description: 呼出状態コード
+        countryCodeAlpha2:
+          type: string
+          description: 国コード(alpha-2)
+        storeId:
+          type: integer
+          description: 店舗ID
+        customerName:
+          type: string
+          description: 注文者名
+        phoneNumber:
+          type: string
+          description: 電話番号
+        jinsAccountId:
+          type: string
+          description: JINSアカウントID
+        registeredDatetime:
+          type: string
+          description: 登録日時
+        updatedDatetime:
+          type: string
+          description: 更新日時
+    ReceptionGetResponse:
+      type: object
+      description: 待ち状況取得APIレスポンス
+      properties:
+        receptionInfos:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReceptionInfos'
+      example:
+        receptionInfos:
+          - registeredDate: '2025-01-14'
+            visitingPurposeCode: '010'
+            customerIssueCode: '001'
+            prescriptionRegistCode: '001'
+            callingNumber: A1
+            receptionNumber: 250114US00001
+            statusCode: '100'
+            callingStatusCode: '001'
+            countryCodeAlpha2: US
+            storeId: '1143416'
+            customerName: John Doe
+            phoneNumber: '07012345678'
+            jinsAccountId: null
+          - registeredDate: '2025-01-14'
+            visitingPurposeCode: '010'
+            customerIssueCode: '001'
+            prescriptionRegistCode: '002'
+            callingNumber: B1
+            receptionNumber: 250114US00002
+            statusCode: '101'
+            callingStatusCode: '001'
+            countryCodeAlpha2: US
+            storeId: '1143416'
+            customerName: Smith
+            phoneNumber: '07012345679'
+            jinsAccountId: null
+            registeredDatetime: "2025-05-28T06:10:36.667781"
+            updatedDatetime: "2025-05-28T06:10:36.667781"
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApplicationError"
+          example:
+            Jins-Trace-ID: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+            timestamp: 2024-09-30 23:26:25.536
+            systemName: DJ36-Sales
+            code: COM_0001
+            message: Validation error occurred.
+            details: The XXXX is requied.
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApplicationError"
+          example:
+            Jins-Trace-ID: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+            timestamp: 2024-09-30 23:26:25.536
+            systemName: DJ36-Sales
+            code: COM_0007
+            message: Authentication failed.
+            details: Staff ID or password is incorrect.
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApplicationError"
+          example:
+            Jins-Trace-ID: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+            timestamp: 2024-09-30 23:26:25.536
+            systemName: DJ36-Sales
+            code: COM_0003
+            message: Forbidden.
+            details: You do not have permission to access this resource.
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApplicationError"
+          example:
+            Jins-Trace-ID: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+            timestamp: 2024-09-30 23:26:25.536
+            systemName: DJ36-Sales
+            code: COM_0004
+            message: Specified data not found.
+            details: There is no recode matched XXXX.
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApplicationError"
+          example:
+            Jins-Trace-ID: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+            timestamp: 2024-09-30 23:26:25.536
+            systemName: DJ36-Sales
+            code: COM_0005
+            message: Transaction failed due to optimisitic lock failure.
+            details: The request could not be completed due to a conflict with the current state of the resource.
+    TooManyRequests:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApplicationError"
+          example:
+            Jins-Trace-ID: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+            timestamp: 2024-09-30 23:26:25.536
+            systemName: DJ36-Sales
+            code: COM_0006
+            message: Too Many Requests.
+            details: Duplicate api invocation detected.
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApplicationError"
+          example:
+            Jins-Trace-ID: 2389c607-f5ed-4789-95a3-efd78be1e8d9
+            timestamp: 2024-09-30 23:26:25.536
+            systemName: DJ36-Sales
+            code: COM_0007
+            message: Internal Server Error.
+            details: Unexpected error occurred.

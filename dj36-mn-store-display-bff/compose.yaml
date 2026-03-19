@@ -1,0 +1,163 @@
+services:
+  ##############################################################################
+  # Development
+  ##############################################################################
+  dev:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev
+    profiles:
+      - dev
+    container_name: mn-store-display-bff-dev
+    hostname: mn-store-display-bff-dev
+    shm_size: '4gb'
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/workspace:cached
+      - node_modules:/workspace/node_modules
+    environment:
+      DUMMY_SERVER: http://localhost:3000
+      GIT_AUTHOR_NAME: ${GIT_USERNAME}
+      GIT_COMMITTER_NAME: ${GIT_USERNAME}
+      GIT_AUTHOR_EMAIL: ${GIT_EMAIL_ADDRESS}
+      GIT_COMMITTER_EMAIL: ${GIT_EMAIL_ADDRESS}
+      SERVER_PORT: '3000'
+      NODE_ENV: 'development'
+      CART_SERVICE_US: "https://0r7jcf9ula-vpce-0911ff84940bae07e.execute-api.us-west-2.amazonaws.com/v1"
+      JINS_TRACE_ID: '2389c607-f5ed-4789-95a3-efd78be1e8d9'
+      JINS_USER_ID: 'U00001'
+      TZ: Asia/Ulaanbaatar
+    tty: true
+
+  ##############################################################################
+  # Debug
+  ##############################################################################
+  debug:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev
+    profiles:
+      - debug
+    container_name: mn-store-display-bff-debug
+    hostname: mn-store-display-bff-debug
+    shm_size: '4gb'
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/workspace:cached
+      - node_modules:/workspace/node_modules
+    environment:
+      DUMMY_SERVER: http://localhost:3000
+      SERVER_PORT: '3000'
+      NODE_ENV: 'development'
+      TZ: Asia/Ulaanbaatar
+    tty: true
+    command: npm run dev
+
+  ##############################################################################
+  # Lint
+  ##############################################################################
+  lint:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev
+    profiles:
+      - lint
+    container_name: mn-store-display-bff-lint
+    hostname: mn-store-display-bff-lint
+    shm_size: '1gb'
+    volumes:
+      - ./:/workspace:cached
+      - node_modules:/workspace/node_modules
+    environment:
+      DUMMY_SERVER: http://localhost:3000
+      SERVER_PORT: '3000'
+      NODE_ENV: 'development'
+      TZ: Asia/Ulaanbaatar
+    tty: true
+    command: npm run lint
+
+  ##############################################################################
+  # Generate
+  ##############################################################################
+  generate:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev
+    profiles:
+      - generate
+    container_name: mn-store-display-bff-generate
+    shm_size: '1gb'
+    volumes:
+      - ./:/workspace:cached
+      - node_modules:/workspace/node_modules
+    environment:
+      DUMMY_SERVER: http://localhost:3000
+      SERVER_PORT: '3000'
+      TZ: Asia/Ulaanbaatar
+    command: npm run generate
+
+  ##############################################################################
+  # Test
+  ##############################################################################
+  test:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev
+    profiles:
+      - test
+    container_name: mn-store-display-bff-test
+    shm_size: '1gb'
+    volumes:
+      - ./:/workspace:cached
+      - node_modules:/workspace/node_modules
+    environment:
+      DUMMY_SERVER: http://localhost:3000
+      SERVER_PORT: '3000'
+      TZ: Asia/Ulaanbaatar
+    command: npm run test
+
+  ##############################################################################
+  # Document
+  ##############################################################################
+  doc:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev
+    profiles:
+      - doc
+    container_name: mn-store-display-bff-doc
+    shm_size: '1gb'
+    volumes:
+      - ./:/workspace:cached
+      - node_modules:/workspace/node_modules
+    environment:
+      DUMMY_SERVER: http://localhost:3000
+      SERVER_PORT: '3000'
+      TZ: Asia/Ulaanbaatar
+    command: npm run doc
+
+  ##############################################################################
+  # Mock
+  ##############################################################################
+  mock:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: mock
+    profiles:
+      - mock
+    container_name: mn-store-display-bff-mock
+    shm_size: '1gb'
+    ports:
+      - 4010:4010
+
+volumes:
+  node_modules:
