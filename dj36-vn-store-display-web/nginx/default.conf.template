@@ -1,0 +1,20 @@
+server {
+  listen ${VITE_SERVER_PORT};
+  server_name localhost;
+
+  root /usr/share/nginx/html;
+  index index.html;
+
+  location / {
+    try_files $uri /index.html;
+  }
+
+  location /ws/ {
+    proxy_pass ${VITE_BFF_ENDPOINT};
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $host;
+  }
+  
+}

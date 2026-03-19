@@ -1,0 +1,67 @@
+/* index.css: This file will be use to keep global styles and tailwind configurations */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;700&display=swap');
+@import "tailwindcss";
+
+
+/*------------------------- Extends Tailwind default theme/configutations starts -------------------------*/
+@theme {
+  --color-red: #DA0024;
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+  --color-light-gray: #E6E6E6;
+   /* customize tailwind's break points to handle the responsiveness */
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1600px;
+  --breakpoint-3xl: 1920px;
+  --breakpoint-4xl: 2560px;
+  --primitive-font-family-text: 'Noto Sans';
+}
+/*------------------------- Extends Tailwind default theme/configutations ends -------------------------*/
+
+/*------------------------- font setup starts here -------------------------*/
+@font-face {
+  font-family: 'jins-next';
+  src: url('../../src/assets/fonts/JINS_NextLight.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'jins-next';
+  src: url('../../src/assets/fonts/JINS_NextRegular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'jins-next';
+  src: url('../../src/assets/fonts/JINS_NextMedium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'jins-next';
+  src: url('../../src/assets/fonts/JINS_NextBold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+/*------------------------- font setup ends here -------------------------*/
+
+/*------------------------- global styling starts -------------------------*/
+body{
+  font-family: var(--primitive-font-family-text);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  cursor: none;
+}
+.number {
+  font-family: jins-next;
+}
+/*------------------------- global styling ends -------------------------*/

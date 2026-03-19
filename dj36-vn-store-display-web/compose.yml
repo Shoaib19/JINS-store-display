@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  dev:
+    container_name: us-store-display-web-dev
+    build:
+      context: .
+      target: dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - TZ=Asia/Tokyo
+      - VITE_BFF_ENDPOINT=${VITE_BFF_ENDPOINT}
+      - VITE_SERVER_PORT=${VITE_SERVER_PORT}
+
+  prod:
+    container_name: us-store-display-web
+    build:
+      context: .
+      target: prod
+      args:
+        VITE_BFF_ENDPOINT: ${VITE_BFF_ENDPOINT}
+        VITE_SERVER_PORT: ${VITE_SERVER_PORT}
+    ports:
+      - "${VITE_SERVER_PORT}:${VITE_SERVER_PORT}"
+    environment:
+      - NODE_ENV=production
+      - TZ=Asia/Tokyo
